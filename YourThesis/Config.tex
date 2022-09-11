@@ -1,0 +1,107 @@
+%==============================================================
+% Thesis details
+%==============================================================
+
+\newcommand{\TheThesisType}{phd} % ``lic`` or ``phd``
+\newcommand{\TheAuthor}{Tommy Tram}
+\newcommand{\TheTitle}{Learning When To Drive in Uncertain Environments} 
+\newcommand{\TheSubtitle}{A reinforcement learning approach}
+% \newcommand{\TheSubtitle}
+\newcommand{\TheKeywords}{Autonomous driving, reinforcement learning, uncertain environments, deep Q-learning} % Keywords list, notice first one begins with capital and the list ends with fullstop
+
+
+% COVER PAGE TITLES
+% * used to explicitly define the layout of the cover page titles, use \\ for new lines
+% * Main title:, maximum three lines, optimal font size 30pt, decrease if title is too long
+% * Sub title: maximum two lines, comment out or leave empty if not needed
+\newcommand{\TheCoverPageTitle}{Learning When To Drive \\ in Uncertain Environments} 
+\newcommand{\TheCoverPageTitleFontSize}{30} % Only decrease if strictly necessary
+\newcommand{\TheCoverPageSubtitle}{A Reinforcement Learning approach}
+% COVER PAGE IMAGES
+% Want to remove image or portrait on the cover? Then just remove the corresponding line
+\newcommand{\TheCoverImage}{TemplateFiles/cover/cover.png}
+\newcommand{\TheCoverImageCaption}{An illustration of two vehicles approching an intersection. The blue vehicle has to make a decision to yield or drive while the intention of the red vehcile is uncertain.} % Added to the printing location page
+\newcommand{\TheCoverPortrait}{TemplateFiles/cover/portrait.JPG}
+
+
+\newcommand{\TheDepartment}{Electrical Engineering}
+\newcommand{\TheYear}{2022}
+\newcommand{\TheMonth}{December}
+\newcommand{\ReferenceFiles}{YourThesis/References.bib} % can include multiple comma separated files, e.g. {ref1.bib, ref2.bib}
+\newcommand{\TheDedication}{To my loving family} % remove or leave empty if no dedication, then Abstract will start on page 3 instead
+
+
+% Print info
+\newcommand{\TheISBN}{978-91-7905-623-0} % Get it from administration
+\newcommand{\TheReportSeries}{5089} % Get it from administration
+\newcommand{\TheISSN}{0346-718X} % Get it from administration
+\newcommand{\ThePrinter}{Chalmers Reproservice}
+
+% Following commands can be used to modify the default commands for specific pages
+\newcommand{\TheCoverPageAuthor}{\expandafter\MakeUppercase\expandafter{\TheAuthor}} % Name in full capitals
+\newcommand{\TheTitlePageAuthor}{\TheAuthor} 
+\newcommand{\TheTitlePageTitle}{\TheTitle} % use \\ for new lines
+\newcommand{\TheTitlePageSubtitle}{\TheSubtitle} % use \\ for new lines
+\newcommand{\ThePrintingLocationPageAuthor}{\TheAuthor} 
+\newcommand{\ThePrintingLocationPageTitle}{\TheTitlePageTitle} % use \\ for new lines
+\newcommand{\ThePrintingLocationPageSubitle}{\TheTitlePageSubtitle} % use \\ for new lines
+\newcommand{\TheAbstractPageAuthor}{\TheAuthor} 
+\newcommand{\TheAbstractPageTitle}{\TheTitlePageTitle} % use \\ for new lines
+\newcommand{\TheAbstractPageSubitle}{\TheTitlePageSubtitle} % use \\ for new lines
+
+
+%==============================================================
+% Publications
+%==============================================================
+% Add each paper that should be included in the thesis
+\addpaper{lstm}
+\addpaper{mpc}
+\addpaper{ensamble}
+\addpaper{belief}
+\addpaper{transfere-learning}
+
+\def \paperLSTM{Paper A}
+\def \paperMPC{Paper B}
+\def \paperEnsamble{Paper C}
+\def \paperBelief{Paper D}
+\def \paperTransfere{Paper E}
+
+
+% ##################################
+\def \paperPedestrian{IVO Paper A}
+\def \paperPlanner{IVO Paper B}
+\def \paperScenario{IVO Paper C}
+\def \paperSafe{IVO Paper D}
+\def \paperISS{IVO Paper E}
+\def \paperExp{IVO Paper F}
+% ##################################
+
+
+% IMPORTANT! 
+% Add any counter that should be reset in each paper, such as the numbering of theorems, algorithms etc. 
+% This depends on the packages that you include and may differ from thesis to thesis.
+% Already included: section,equation,figure,table,proposition,definition,lemma,theorem,footnote
+% Example: \newcommand{\ThePackageCounters}{algorithm, algocf, ...}
+\newcommand{\ThePackageCounters}{}
+
+% Add any paper that should be included in the list "Other publications..."
+
+%==============================================================
+% Custom commands and configurations (optional)
+%============================================================== 
+% add your custom commands and configurations here   
+\newcommand{\needref}{\textcolor{red}{(source)}}	% Mark missing references in the writing process
+
+\hyphenation{%	Add custom hyphenation
+nit-ri-fic-at-ion %
+de-nit-ri-fic-at-ion %
+bio-de-grad-ab-le %
+re-im-ple-men-ted %
+eu-tro-phi-ca-ti-on %
+LibRAS %
+bio-fil-ter %
+auto-no-mous%
+}
+
+\makeatletter\renewcommand\@pnumwidth{2em}\makeatother
+\overfullrule=1mm

@@ -1,0 +1,52 @@
+
+%==============================================================
+% DEFAULT PACKAGES
+% Add your own packages in ``YourThesis/Packages.tex''
+%==============================================================
+
+\usepackage[paperwidth=16.9cm,paperheight=23.9cm]{geometry} % used in cover page
+\usepackage{wrapfig} % used in cover page
+\usepackage{tikz} % used in cover page
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}	
+\usepackage[babel,english=american]{csquotes}
+\usepackage{scrlayer-scrpage}
+\usepackage{scrhack}
+\usepackage[hang,small]{caption} % hang: indent captions. small: smaller text.
+\usepackage[]{datetime}
+\usepackage{amsthm,mathtools}
+\usepackage[]{appendix}
+\usepackage[Sonny]{fncychap}
+\usepackage{bm}
+%\usepackage[framemethod=default]{mdframed}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}	% tables / merge two columns / multicolumn
+\usepackage{color}	
+\usepackage{graphicx}
+\usepackage{xspace} % for the ``space after newcommand'' problem
+\usepackage{letltxmacro}
+\usepackage{etoolbox}
+
+\definecolor{LinkColor}{rgb}{0,0,0.5}
+
+
+% Bibliography management
+\usepackage[natbib=true,
+			style=ieee,
+      mincitenames=1,
+      maxcitenames=2,
+      maxbibnames=6,
+      minbibnames=1,
+      url=false,
+      eprint=false,
+      doi=false]{biblatex}
+%\usepackage{silence}\WarningFilter{biblatex}{File 'english-ieee.lbx'} % this hides an unimportant warning that will be removed in v1.3a (2019-06-19) of biblatex-ieee
+
+\defbibheading{secbib}[\bibname]{%
+  \section*{#1}%
+  \addcontentsline{toc}{section}{\bibname}
+  \markboth{#1}{#1}
+  }

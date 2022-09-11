@@ -1,0 +1,301 @@
+\ProvidesPackage{TemplateFiles/AddMyPapers}
+
+
+\newcounter{papercounter}\renewcommand\thepapercounter{\Alph{papercounter}}
+\newcommand\addpaper[1]{% Creates an array of papers
+    \stepcounter{papercounter}%
+    \csdef{paper\thepapercounter}{#1}
+}
+\newcommand\getpaper[1]{\csuse{paper#1}}
+
+
+\newcounter{notpapercounter}\renewcommand\thenotpapercounter{\Alph{notpapercounter}}
+\newcommand\addnotincludedpaper[3]{% Creates an array of papers NOT included in thesis
+    \stepcounter{notpapercounter}%
+    \csdef{notpapertitle\thenotpapercounter}{#1}%
+    \csdef{notpaperauthor\thenotpapercounter}{#2}%
+    \csdef{notpaperinfo\thenotpapercounter}{#3}
+}
+
+
+\newcounter{paperindex}\renewcommand\thepaperindex{\Alph{paperindex}} % used to iterate over all papers
+% Commands to include papers in the thesis
+\newcommand\includepapers{
+    \setcounter{paperindex}{0}%
+    \whileboolexpr { test {\ifnumcomp{\value{paperindex}}{<}{\value{papercounter}}} }
+    {
+        \stepcounter{paperindex}
+        \includepaper{\getpaper{\thepaperindex}}
+    }
+}
+\newcommand{\LabelPrefix}{}
+\newcommand{\includepaper}[1]{
+    \graphicspath{ {YourThesis/papers/#1/} }
+	\begin{refsection}
+	\input{YourThesis/papers/#1/info}
+	\paper[\theshortpapertitle]{\thelongpapertitle}
+	%\paperauthor{\thepaperauthor}
+    \renewcommand{\LabelPrefix}{#1}
+	\label{sec:\LabelPrefix}
+	% Save the current definition of \label and \ref
+	\LetLtxMacro{\oldlabel}{\label}
+	\LetLtxMacro{\oldref}{\ref}
+	\makeatletter%
+	\LetLtxMacro{\oldmathlabel}{\ltx@label}
+	\LetLtxMacro{\oldhyperref}{\label@hyperref}
+	\makeatother%
+	% Redefine \label and \ref to always start with the 
+	% paper name. For instance, if the paper is in folder
+	% DummyPaper, then labels and refs will automatically
+	% start with DummyPaper:. In this way, the same label
+	% can be used in different papers, and still point
+	% to different things. If one wants to refer to
+	% something inside of an appended paper from outside,
+	% then <PaperName>: need to be appended when using \ref.
+	\renewcommand{\label}[1]{\oldlabel{\LabelPrefix:##1}}
+	\renewcommand{\ref}[1]{\oldref{\LabelPrefix:##1}}
+	\makeatletter%
+	\renewcommand{\ltx@label}[1]{\oldmathlabel{\LabelPrefix:##1}}%
+	\def\label@hyperref[##1]{\oldhyperref[{\LabelPrefix:##1}]}%
+	\makeatother%
+    \input{YourThesis/papers/#1/content.tex}
+    \printbibliography[heading=secbib]
+    % Restore \label and \ref to old meaning.
+    \LetLtxMacro{\label}{\oldlabel}
+    \LetLtxMacro{\ref}{\oldref}
+    \makeatletter%
+    \LetLtxMacro{\ltx@label}{\oldmathlabel}
+    \LetLtxMacro{\label@hyperref}{\oldhyperref}
+    \makeatother%
+	\clearpage
+	\end{refsection}
+}
+
+% Commands to auto generate the list of papers for the preface of the paper
+\newcommand\includelistofpapers{
+    This thesis is based on the following publications:
+    
+    \setcounter{paperindex}{0}%
+    \whileboolexpr { test {\ifnumcomp{\value{paperindex}}{<}{\value{papercounter}}} }
+    {
+        \stepcounter{paperindex}
+	    \input{YourThesis/papers/\getpaper{\thepaperindex}/info}
+        
+        \bigskip
+        [\thepaperindex] \thepaperauthor, ``\thelongpapertitle''. \theshortpaperinfo.
+        
+    }
+    
+    \ifnum\value{notpapercounter}>0
+        \newcounter{combinedcounter}\renewcommand\thecombinedcounter{\Alph{combinedcounter}}
+        \setcounter{combinedcounter}{\value{papercounter}}
+    
+        \bigskip
+        Other publications by the author, not included in this thesis, are:
+        
+        \setcounter{paperindex}{0}%
+        \whileboolexpr { test {\ifnumcomp{\value{paperindex}}{<}{\value{notpapercounter}}} }
+        {
+            \stepcounter{paperindex}\stepcounter{combinedcounter}
+            
+    	    \bigskip
+            %\getnotincludedpaper{\thepaperindex}
+            [\thecombinedcounter] 
+            \csuse{notpaperauthor\thepaperindex}, 
+            ``\csuse{notpapertitle\thepaperindex}''. 
+            \csuse{notpaperinfo\thepaperindex}.
+            
+        }
+    \fi
+    
+}
+
+
+% Commands to auto generate a summary of included papers
+\newcommand\includepapersummary{
+    \chapter{Summary of included papers}\label{chap:papersummary}
+    %
+    This chapter provides a summary of the included papers.
+    
+    \setcounter{paperindex}{0}%
+    \whileboolexpr { test {\ifnumcomp{\value{paperindex}}{<}{\value{papercounter}}} }
+    {
+        \stepcounter{paperindex}
+	    \input{YourThesis/papers/\getpaper{\thepaperindex}/info}
+	    
+	    \section{Paper \thepaperindex}
+        \begin{itemize} \item[] \thepaperauthor \\ \thelongpapertitle \\ \thelongpaperinfo \end{itemize}
+        
+        \thepapersummary
+        
+        
+        
+    }
+    
+}
+
+
+% Create a counter to track the current paper
+\newcommand\papername{Paper}
+\newcounter{paper}
+\renewcommand\thepaper{\Alph{paper}}
+\newcommand{\papermark}[1]{}
+
+
+% These commands are used to reset all the counters for each new paper
+\newcommand\addcounters[1]{\add@counters #1,\relax\noexpand\@eolst}
+\def\add@counters #1,#2\@eolst{\addtoreset{#1}\ifx\relax#2\relax\else\add@counters #2\@eolst\fi}
+\newcommand\addtoreset[1]{ \ifcsname c@#1\endcsname \counterwithin*{#1}{paper} \else\if#1\empty\else
+    \PackageError {ThesisTemplate} {Counter '#1' in 'ThePackageCounters' is undefined} {The counter ``#1`` in ``ThePackageCounters`` is not defined. \MessageBreak Please verify the correct name of the counter based on the packages that you have included.}
+\fi\fi }
+
+
+% Executed just before the first paper is included
+% mainly set the style of the counters
+\newcommand{\initpapers}{%
+    \expandafter\addcounters\expandafter{\ThePackageCounters,proposition,definition,lemma,theorem,footnote}
+    \renewcommand{\thefigure}{\arabic{figure}}
+    \renewcommand{\thetable}{\arabic{table}}
+    \renewcommand{\thetheorem}{\arabic{theorem}}
+    \renewcommand{\thedefinition}{\arabic{definition}}
+    \renewcommand{\thelemma}{\arabic{lemma}}
+}
+
+% Converts E2 PhD councils commands to the commands used in the legacy code.
+\def \papertitle [#1]#2{ \gdef \theshortpapertitle{#1} \gdef\thelongpapertitle{#2} }
+\def \paperauthor #1{ \gdef \thepaperauthor{#1} }
+\def \paperinfo [#1]#2{ \gdef \theshortpaperinfo{#1} \gdef\thelongpaperinfo{#2} }
+\def \papersummary #1{ \gdef \thepapersummary{#1} }
+
+% Defines the style of the abstract
+\renewenvironment{abstract}{%
+	\centerline{\normalsize\textbf{Abstract}}%
+  \vspace*{12pt}%
+	\begin{center}
+		\begin{minipage}{0.8\textwidth}
+}{%
+		\end{minipage}
+	\end{center}
+	\vspace*{12pt} 
+}
+
+% includes a new paper
+\newcommand\paper{%
+    \hypersetup{pageanchor=false} % Deactivate hyperref pageanchors for the parts not numbered
+	\if@openright\cleardoublepage\else\clearpage\fi%
+	\hypersetup{pageanchor=true} % Deactivate hyperref pageanchors for the parts not numbered
+	\renewcommand{\thepage}{\Alph{paper}\arabic{page}}%
+	\renewcommand{\theequation}{\Alph{paper}.\arabic{equation}}%
+	\renewcommand{\thesection}{\arabic{section}}%
+	\setcounter{page}{1}%
+	\stepcounter{chapter}%
+%	\global\@topnum\z@%
+%	\@afterindentfalse%
+	\secdef\@paper\@spaper%
+}
+\newcommand*\l@paper[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 1.0em \@plus\p@
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil \nobreak\hb@xt@\@pnumwidth{\hss #2}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi}
+\def\@paper[#1]#2{%
+	\ifnum \c@secnumdepth >\m@ne%                         
+			 \refstepcounter{paper}%
+			 \typeout{\papername\space\thepaper.}%
+			 \addcontentsline{toc}{chapter}%
+								 {\protect\numberline{\thepaper}#1}%
+	\else%
+		\addcontentsline{toc}{chapter}{#1}%%
+	\fi%
+	
+%	\papermark{#1}%
+%	\addtocontents{lof}{\protect\addvspace{12\p@}}%
+%	\addtocontents{lot}{\protect\addvspace{12\p@}}%
+	\if@twocolumn%
+		\@topnewpage[\@makepaperhead{#2}]%
+	\else%
+		\makepaperhead{#2}%
+		\@afterheading%
+	\fi%
+}%
+
+% prints out the page with all information
+\newcommand\makepaperhead[1]{%
+	\thispagestyle{empty}
+	\vspace*{1.6cm}
+	\begin{flushright}
+		{\bfseries\Large PAPER}\;\resizebox{!}{1.50cm}{\Alph{paper}}%
+		\rlap{\rule{5cm}{1.5cm}}
+
+		\bigskip	
+
+		{\bfseries #1}
+
+		\bigskip
+
+		\thepaperauthor
+
+		\vspace{5ex}
+
+		\thelongpaperinfo
+	\end{flushright}
+	\newpage
+	%------------------------------------------------------------------------------------
+	\thispagestyle{empty}
+	\vspace*{60ex}
+	%\copyright ~ 2012 IEEE
+
+	\vspace*{15ex}
+
+	{\small\textit{The layout  has been revised.\\ \vspace{0.2cm}}}
+	\newpage
+}
+
+\def\@makepaperhead#1{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+    \vskip 40\p@
+    \rm\huge\raggedleft \papername\space \thepaper
+        \par\nobreak
+        \vskip 40\p@
+    \fi
+    \interlinepenalty\@M
+    \large \bfseries #1\par\nobreak
+    \vskip 10\p@
+  }}
+	
+\def\@spaper#1{%
+	\if@twocolumn%
+		\@topnewpage[\@makespaperhead{#1}]%
+	\else%
+		\@makespaperhead{#1}%
+		\@afterheading%
+	\fi%
+}%
+
+\def\@makespaperhead#1{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright
+    \normalfont
+    \interlinepenalty\@M
+    \Huge \bfseries  #1\par\nobreak
+    \vskip 40\p@
+  }}
+
+\endinput
+
+
+
+
+

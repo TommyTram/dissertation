@@ -1,0 +1,87 @@
+\ProvidesPackage{TemplateFiles/GlobalSettings}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf} % Repair some KOMA-Script
+
+
+%==============================================================
+% Theorem Style settings 
+%==============================================================
+\newtheoremstyle{TheoremCommonStyle}%
+{0pt}%				Space above
+{0pt}%				Space below
+{\itshape}%			Body font
+{1em }%				Indent amount (\parindent)
+{\bfseries}% 		Thereom head font
+{:}%				Punctuation after Theorem head
+{.5em}%				Space after theorem head (\newline)
+{ }%				theorem head spec
+\newtheoremstyle{RemarkStyle}%
+{0pt}%				Space above
+{0pt}%				Space below
+{}%					Body font
+{1em }%				Indent amount (\parindent)
+{\bfseries}% 		Thereom head font
+{:}%				Punctuation after Theorem head
+{.5em}%				Space after theorem head (\newline)
+{ }%				theorem head spec
+
+\theoremstyle{TheoremCommonStyle} % style applies to lemmas, theorems and definitions
+	\newtheorem{lemma}{Lemma}
+	\newtheorem{theorem}{Theorem}
+	\newtheorem{definition}{Definition}
+	\newtheorem{proposition}{Proposition}
+\theoremstyle{RemarkStyle} % style applies only to remark
+	\newtheorem*{remark}{Remark}
+
+\newcommand{\acrlabel}[1]{\makebox[3cm][l]{{#1}:}}
+\newenvironment{acronyms}{\begin{list}{}{\renewcommand{\makelabel}{\acrlabel}}}{\end{list}}
+
+
+% =========================================================================================================
+% Appendix styling 
+% =========================================================================================================
+\newcounter{savetocdepth}
+
+% Define how title looks like (this redefines how it is linked , so one needs to rewrite the text Appendix when it is refed)
+\newcommand\appendixpreamble{
+	\appendices
+	\def\thesectiondis{\alph{\thesectiondis}.} 
+	\renewcommand\thesection{Appendix~\Alph{section}}
+	\def\thesubsectiondis{\alph{\thesubsectiondis}.} 
+	\renewcommand\thesubsection{\Alph{section}.\alph{subsection}}
+}
+
+% Define what to put in toc for section inside appendix and how to put it
+\newcommand{\appendixsection}[1]{
+  \addtocontents{toc}{\protect\setcounter{savetocdepth}{\value{tocdepth}}}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+  \section{#1}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+  \phantomsection
+  \addcontentsline{toc}{section}{Appendix \Alph{section} - #1}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{\value{savetocdepth}}}
+}
+
+% Define what to put in toc for subsection inside appendix and how to put it
+\newcommand{\appendixsubsection}[1]{
+  \addtocontents{toc}{\protect\setcounter{savetocdepth}{\value{tocdepth}}}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{0}}
+  \subsection{#1}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+  \phantomsection
+  \addcontentsline{toc}{subsection}{\Alph{section}.\arabic{subsection} - #1}
+  \addtocontents{toc}{\protect\setcounter{tocdepth}{\value{savetocdepth}}}
+}
+
+
+%==============================================================
+% document settings 
+%==============================================================
+\newcommand{\EmptyPage}{\newpage\thispagestyle{empty}\mbox{}\newpage}
+
+%\raggedbottom
+\renewcommand{\baselinestretch}{1.08}
+\renewcommand{\captionlabelfont}{\bfseries}
+\setlength{\parskip}{0pt}	% verhindert zu hohe Abstände zwischen Absätzen
+\setkomafont{pageheadfoot}{\normalfont\itshape} % Kursive Seitentitel
+\setkomafont{chapter}{\textsc} % Kursive Seitentitel
+
