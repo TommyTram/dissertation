@@ -1,12 +1,16 @@
 \chapter{Introduction}\label{chapter:intro}
-FILL
+The way of transportation is in a transformation phase and autonomous driving technology is expected to have a big impact. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. 
+
+Autonomous driving technology is expected to have a massive effect on the current transportation system and benefit society in many ways. For example, over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By removing humans from the control of the vehicles, autonomous driving could significantly improve the traffic safety. Furthermore, the productivity of commercial heavy vehicles is increased when fewer human drivers are required, and the road infrastructure could be utilized more efficiently by scheduling transports outside of rush hours, for example during nights~\cite{FAGNANT2015167}.
+
+Major progress towards deploying autonomous vehicles has been made during the last decade. The perception systems have been remarkably improved, largely due to the success of deep learning techniques~\cite{Janai2020}. The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}. However, how to approach the high-level decision-making in complex traffic situations is less explored and forms the main topic of this thesis.
 
 \section{Problem Formulation}
 The work presented in this thesis has in particular focused on the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] Q1? Learn a scalable policy that is able to handle different scenarios 
-	\item[\textbf{Q2.}] Q2? How can we combine MPC and RL? 
-	\item[\textbf{Q3.}] Q3? estimate Uncertainty of the decisions and intentions.
+	\item[\textbf{Q1.}] How can a decision-making agent for autonomous driving, that can handle different intersection and roundabouts (complex scenarios) be created? Learn a scalable policy that is able to handle different scenarios. relative coordinate system. Action space. 
+	\item[\textbf{Q2.}] How can domain knowlage (and models) be used to improve/assist a RL agent? MPC for actions, Particle filter for intention distrubution. 
+	\item[\textbf{Q3.}] How can the uncertainty of the RL agent be estimated? (RPF-in the output and PF-in the input space)
 \end{enumerate}
 
 
