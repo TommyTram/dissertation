@@ -10,12 +10,20 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{matrix}
 \usetikzlibrary{positioning}
+\usetikzlibrary{shapes.arrows}
 \usepackage{makecell}
 \usepackage{pgfplots}
+\usepgfplotslibrary{groupplots,dateplot}
 \pgfrealjobname{figures}
+\pgfplotsset{compat=newest}
 \usepackage{rotating}
 \usepackage{amssymb}
 \usepackage[english]{babel}
+
+\DeclareUnicodeCharacter{2212}{−}
+
+
+
 
 \begin{document}
 
@@ -412,7 +420,7 @@
 	\begin{tikzpicture}
 		\matrix (algo-text) [matrix of nodes,nodes={minimum width=4cm,minimum height=1cm}]
 		{    & \makecell{State \\ $s$} & \makecell{Particles \\ $b$} & \makecell{State Approximation \\  $\text{D}(b)$ } & \\
-			\makecell{Training \\ with intention} & DQN - FO & QMDP & QMDP-IE \\
+			\makecell{Training \\ with intention} & DQN FO & QMDP & QMDP-IE \\
 			\makecell{Training \\ without intention} & DQN without intent & QPF & QID \\
 		};
 		\def\y{-0.5}
@@ -441,6 +449,192 @@
 	\tikzstyle{arrow} = [thick,->,>=stealth, line width=1pt]
 	\tikzstyle{darrow} = [thick,<->,>=stealth, line width=1pt]
 
+	\beginpgfgraphicnamed{figures-1-4cars}%
+	\begin{tikzpicture}
+
+	\definecolor{darkgray176}{RGB}{176,176,176}
+	\definecolor{goldenrod1911910}{RGB}{191,191,0}
+	\definecolor{lightgray204}{RGB}{204,204,204}
+	
+	\begin{groupplot}[group style={group size=1 by 2, vertical sep = 0.5 cm},
+		width = 8 cm,
+        height = 4 cm]
+	\nextgroupplot[
+	scaled x ticks=manual:{}{\pgfmathparse{#1}},
+	tick align=outside,
+	tick pos=left,
+	x grid style={darkgray176},
+	xmin=-0.15, xmax=3.15,
+	xtick style={color=black},
+	xtick={0,1,2,3},
+	xticklabels={1 car,2 cars,3 cars,4 cars},
+	xticklabels={},
+	y grid style={darkgray176},
+	ylabel={Success Time [s]},
+	ymin=15, ymax=19,
+	ytick style={color=black}
+	]
+	\addplot [semithick, black, mark=*, mark size=3, mark options={solid}]
+	table {%
+	0 15.5470941883768
+	1 16.3007099391481
+	2 18.0119542619543
+	3 18.288522848034
+	};
+	
+	\nextgroupplot[
+	legend cell align={left},
+	legend style={
+		fill opacity=0.8,
+		draw opacity=1,
+		text opacity=1,
+		at={(1,0.5)},
+		anchor=west,
+		draw=lightgray204
+	},
+	tick align=outside,
+	tick pos=left,
+	x grid style={darkgray176},
+	xmin=-0.15, xmax=3.15,
+	xtick style={color=black},
+	xtick={0,1,2,3},
+	xtick={0,1,2,3},
+	xtick={0,1,2,3},
+	xtick={0,1,2,3},
+	xticklabels={1 car,2 cars,3 cars,4 cars},
+	xticklabels={1 car,2 cars,3 cars,4 cars},
+	xticklabels={1 car,2 cars,3 cars,4 cars},
+	xticklabels={1 car,2 cars,3 cars,4 cars},
+	y grid style={darkgray176},
+	ylabel={Outcome [\%]},
+	ymin=-0.14, ymax=2.94,
+	ytick style={color=black}
+	]
+	\addplot [semithick, goldenrod1911910, mark=square*, mark size=3, mark options={solid}]
+	table {%
+	0 0
+	1 0.5
+	2 1.7
+	3 2.8
+	};
+	\addlegendentry{safestop}
+	\addplot [semithick, red, mark=diamond*, mark size=3, mark options={solid}]
+	table {%
+	0 0.1
+	1 0.8
+	2 1.4
+	3 1.1
+	};
+	\addlegendentry{crashes}
+	\addplot [semithick, blue, mark=triangle*, mark size=3, mark options={solid}]
+	table {%
+	0 0.1
+	1 0.1
+	2 0.7
+	3 2
+	};
+	\addlegendentry{deadlock}
+	\end{groupplot}
+	
+	\end{tikzpicture}
+	\endpgfgraphicnamed
+
+	\tikzstyle{arrow} = [thick,->,>=stealth, line width=1pt]
+	\tikzstyle{darrow} = [thick,<->,>=stealth, line width=1pt]
+
+	\beginpgfgraphicnamed{figures-intention-t}%
+
+	\begin{tikzpicture}
+
+	\definecolor{darkgray176}{RGB}{176,176,176}
+	\definecolor{goldenrod1911910}{RGB}{191,191,0}
+	\definecolor{lightgray204}{RGB}{204,204,204}
+	
+	\begin{groupplot}[group style={group size=1 by 2, vertical sep = 0.5 cm},
+		width = 8 cm,
+        height = 4 cm]
+	\nextgroupplot[
+	scaled x ticks=manual:{}{\pgfmathparse{#1}},
+	tick align=outside,
+	tick pos=left,
+	x grid style={darkgray176},
+	xmin=0.4775, xmax=0.9725,
+	xtick style={color=black},
+	xticklabels={},
+	y grid style={darkgray176},
+	ylabel={Success Time [s]},
+	ymin=17, ymax=19,
+	ytick style={color=black}
+	]
+	\addplot [semithick, black, mark=*, mark size=3, mark options={solid}]
+	table {%
+	0.5 17.3008342022941
+	0.6 17.4186652763295
+	0.7 17.4573684210526
+	0.8 17.5966209081309
+	0.9 17.9760383386581
+	0.95 18.4449197860963
+	};
+	
+	\nextgroupplot[
+	legend cell align={left},
+	legend style={
+		fill opacity=0.8,
+		draw opacity=1,
+		text opacity=1,
+		at={(1,0.5)},
+		anchor=west,
+		draw=lightgray204
+	},
+	tick align=outside,
+	tick pos=left,
+	x grid style={darkgray176},
+	xmin=0.4775, xmax=0.9725,
+	xtick style={color=black},
+	y grid style={darkgray176},
+	ylabel={Outcome [\%]},
+	ymin=-0.29, ymax=6.09,
+	ytick style={color=black}
+	]
+	\addplot [semithick, goldenrod1911910, mark=square*, mark size=3, mark options={solid}]
+	table {%
+	0.5 2.2
+	0.6 3.1
+	0.7 4
+	0.8 4.8
+	0.9 5.5
+	0.95 5.8
+	};
+	\addlegendentry{safestop}
+	\addplot [semithick, red, mark=diamond*, mark size=3, mark options={solid}]
+	table {%
+	0.5 1.1
+	0.6 0.4
+	0.7 0.5
+	0.8 0
+	0.9 0
+	0.95 0
+	};
+	\addlegendentry{crashes}
+	\addplot [semithick, blue, mark=triangle*, mark size=3, mark options={solid}]
+	table {%
+	0.5 0.8
+	0.6 0.6
+	0.7 0.5
+	0.8 0.5
+	0.9 0.6
+	0.95 0.7
+	};
+	\addlegendentry{deadlock}
+	\end{groupplot}
+	\end{tikzpicture}
+	\endpgfgraphicnamed
+
+
+	\tikzstyle{arrow} = [thick,->,>=stealth, line width=1pt]
+	\tikzstyle{darrow} = [thick,<->,>=stealth, line width=1pt]
+
+	
 \newcommand{\diagramgraph}[3]{% #1=Image, #2=y-axis, #3=x-axis
 	\begin{sideways}
 		\parbox{\heightof{#1}}{%

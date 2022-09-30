@@ -6,16 +6,28 @@
 % \usepackage{showframe}
 \usepackage{subcaption}
 \usepackage{xargs}
-\usepackage{enumitem}
+\usepackage[inline]{enumitem}
 \usepackage{microtype}
 \usepackage{algorithm}
-\usepackage{siunitx}
+\usepackage[mode=text]{siunitx}
 \usepackage[noend]{algpseudocode}
 \usepackage[acronym,nomain]{glossaries}
 % \usepackage{enumerate}
 \usepackage{tabularx}
-% \usepackage{hyperref}
-% \usepackage{cleveref}
+
+\AtEveryBibitem{
+\ifentrytype{inproceedings}{
+ 	\clearlist{address}
+ 	\clearlist{publisher}
+ 	\clearname{editor}
+ 	\clearlist{organization}
+ 	\clearfield{url}  
+ 	\clearfield{doi}  
+ 	\clearfield{pages}  
+ 	\clearlist{location}
+ }{}
+ }
+\addbibresource{YourThesis/References.bib}
 
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
