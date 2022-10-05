@@ -48,3 +48,16 @@
 \numberwithin{Remark}{chapter}
 \numberwithin{Example}{chapter}
 \numberwithin{Lemma}{chapter}
+
+\definecolor{wheat}{rgb}{0.96,0.87,0.70}
+\definecolor{lightblue}{rgb}{0.8,0.8,1}
+\definecolor{lightred}{rgb}{1,0.8,0.8}
+\definecolor{lightgreen}{rgb}{0.8,1,0.8}
+\newcommand{\todo}[1]{
+	\begin{center}
+		\fcolorbox{wheat}{wheat}{\parbox[t]{0.9\linewidth}{\textbf{ToDo:} #1}}
+\end{center}}
+\newcommand{\tommy}[1]{
+	\begin{center}
+		\fcolorbox{lightblue}{lightblue}{\parbox[t]{0.9\linewidth}{\textbf{Tommy:} #1}}
+\end{center}}
