@@ -14,6 +14,7 @@
     \item discount factor 
 \end{itemize}
 
+
 % Now not using time index, e.g., s_t. Check if consistent with subsequent chapters.
 %    - Time index not used (much) in Paper 2-5, but in Paper 6. Slighlty inconsistent at the moment, but doesn't matter too much...
 
@@ -21,7 +22,18 @@
 % %how the problem of making sequential decisions based on uncertain information can be modeled, 
 % Markov decisions processes
 % and reinforcement learning. Notation that is used in subsequent chapters is also introduced. The material in this chapter is based on Kochenderfer~\cite{Kochenderfer2015} and Sutton et al.~\cite{Sutton2018}, which provide a comprehensive overview of MDPs and RL.
+This chapter briefly introduce the \gls{pomdp} framework and reinforcement learning.  
 
+
+\subsection{Partially observable Markov decision process}
+A \gls{pomdp} is a mathematical framework used for modeling sequential decision making problems under uncertainty. 
+It is a generalization of the \gls{mdp}
+It consists of a set of states $\mathcal{S}$, actions $\mathcal{A}$, observations $\Omega$, a transition model $T$, observation model $O$, reward function $R$, and a discount factor $\gamma$. 
+Together they create the tuple $(\mathcal{S},\mathcal{A},\Omega,T,O,R,\gamma)$ that formally defines a \gls{pomdp}~\cite{Kochenderfer2015}. 
+While in a state $s \in \mathcal{S}$ and executing an action $a \in \mathcal{A}$ the probability of transitioning to a future state $s^\prime$ is described by the transition model $T(s^\prime \mid s,a)$ and the reward $r$ is given by the reward function $R(s,a)$. 
+The agent only has access to partial information contained in its observation $o$ distributed according to $\Pr(o \mid s', a) = O(o, s', a)$.
+
+\tommy{CJ}
 This chapter provides a brief introduction to Markov decision processes and reinforcement learning.
 %, together with the notation that is used in subsequent chapters. 
 % The reader who is familiar with these concepts could probably skip this chapter and return in case of any confusion concerning the notation. 
