@@ -1,12 +1,17 @@
 \chapter{Introduction}\label{chapter:intro}
-The way of transportation is in a transformation phase and autonomous driving technology is expected to have a big impact. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. 
+The way of transportation is currently evolving and autonomous driving technology is expected to have a big impact on this transofrmation. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requiement of a present human for each transpotation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}.
 
-Autonomous driving technology is expected to have a massive effect on the current transportation system and benefit society in many ways. For example, over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By removing humans from the control of the vehicles, autonomous driving could significantly improve the traffic safety. Furthermore, the productivity of commercial heavy vehicles is increased when fewer human drivers are required, and the road infrastructure could be utilized more efficiently by scheduling transports outside of rush hours, for example during nights~\cite{FAGNANT2015167}.
+\todo{cite future of mixed-autonomy}
+% https://www.cmu.edu/traffic21/research-and-policy-papers/traffic21_policymaker_guide_summer_2021-22.pdf
 
+\todo{level 2: volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
+
+Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world.
+\tommy{rewrite}
 Major progress towards deploying autonomous vehicles has been made during the last decade. The perception systems have been remarkably improved, largely due to the success of deep learning techniques~\cite{Janai2020}. The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}. However, how to approach the high-level decision-making in complex traffic situations is less explored and forms the main topic of this thesis.
 
 \section{Problem formulation}
-The work presented in this thesis has in particular focused on the following research questions:
+The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
 	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different intersection and roundabouts (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. relative coordinate system. Action space. 
 	(specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
@@ -21,11 +26,6 @@ The work presented in this thesis has in particular focused on the following res
 	\item We want to drive through intersections. 
 	\item The intersection can be of different shapes. We assume we have a map of the intersection. 
 	\item There will be other cars crossing the same intersection. 
-	\item We have access to sensors on-board the ego vehicle. 
-	\item We dont assume any knowlage of traffic signs or traffic lights. 
-	\item We dont have v2v, or v2x communication. 
-	
-	To compensate for not having v2v or v2x communitaion, we have to predict what other driver will do. 
 	
 \end{enumerate}
 
@@ -33,7 +33,14 @@ The work presented in this thesis has in particular focused on the following res
 
 \section{Scope and limitations}
 FILL
-
+\begin{enumerate}
+	\item We have access to sensors on-board the ego vehicle. 
+	\item We dont assume any knowlage of traffic signs or traffic lights. 
+	\item We dont have v2v, or v2x communication. 
+	
+	To compensate for not having v2v or v2x communitaion, we have to predict what other driver will do. 
+	
+\end{enumerate}
 \section{System architecture}
 outline system architecture and limit this papre to comfortable decisions \gls{rl}
 
@@ -49,10 +56,15 @@ outline system architecture and limit this papre to comfortable decisions \gls{r
 \end{figure}
 
 \section{Contributions}
-
+\todo{reweite once theis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}
-	\item FILL
+	\item General approach to creating a decision making agent for driving in interactions. 
+	\item A neural network architecture that is invariat to permutations of the order of which surrounding traffic participants are observed, which speeds up training and improves the quality of the trained agent. 
+	\item A belief state representation using a particle filter and a comparison and analysis of different algorithms that ultilize the belief state. 
+	\item Two approached to solving a POMDP with hidden intention state. LSTM layer and belief state. 
+	\item General state space represenation that is invariat to permutations of the intersection design. 
+	\item Extention of RL methods that provide an estimate of the epostemic uncertainty and use it to create a confidence critiera that can identify situations with high uncertainty. 
 
 \end{enumerate}
 
