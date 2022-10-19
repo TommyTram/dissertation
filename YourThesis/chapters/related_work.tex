@@ -2,12 +2,25 @@
 \chapter{Related work}\label{chapter:related_work}
 
 \todo{Urban challange, winner Carnegie Mellon University John Dolan}
-\todo{Rule based methods}
+\section{Rule based methods and finite state machines}
+\todo{Rule based methods and finite state machines}
+Limitations:
+• Requires anticipating every situations
+• Difficult to scale to complex scenarios
+• Hard to take into account uncertainty (e.g. perception noise)
+
+\section{Planning methods}
 \todo{Motion planning, Predicting motion of surrounding vehicles, reactive (not intersactive)}
+
 MPC cite ivo:
 A robust scenario MPC approach for uncertain multi-modal obstacles,
 Real-Time Constrained Trajectory Planning and Vehicle Control for Proactive Autonomous Driving With Road Users.
 
+Limitations:
+• Requires a model
+• Computationally expensive
+
+\section{Learning based methods}
 \todo{POMDP model, online and offline solvers}
 Cite Maxime: 
 Cooperation-aware reinforcement learning for merging in dense traffic, 
@@ -18,6 +31,8 @@ Combining planning and deep reinforcement learning in tactical decision making f
 Tactical decision-making in autonomous driving by reinforcement learning with uncertainty estimation.
 
 \todo{cite Bo wahlberg, Morteza Haghir Chehreghani, Fernandez Llorca David, Christian Berge}
+
+
 
 \tommy{rewrite text}
 %Rule based methods
@@ -48,7 +63,7 @@ A hybrid approach between offline and online planning is pursued in a study by S
 
 \vspace{8pt}
 
-\section{Learning-based methods}
+\tommy{Learning-based methods}
 \tommy{rewrite}
 
 In planning-based methods, different algorithms are used to find a policy that maximizes the utility of the agent's behavior by using a model of the system. However, data-driven approaches are fundamentally different, since with this class of methods, an agent instead learns how to behave from observing data. This section describes different types of data-driven approaches that have been explored for autonomous driving.

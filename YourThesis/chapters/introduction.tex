@@ -11,6 +11,14 @@ Thanks to the rapid success of deep learning during the last decades, major prog
 Major progress towards deploying autonomous vehicles has been made during the last decade. The perception systems have been remarkably improved, largely due to the success of deep learning techniques~\cite{Janai2020}. The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}. However, how to approach the high-level decision-making in complex traffic situations is less explored and forms the main topic of this thesis.
 
 \section{Problem formulation}
+
+\begin{enumerate}
+	\item We want to drive through intersections. 
+	\item The intersection can be of different shapes. We assume we have a map of the intersection. 
+	\item There will be other cars crossing the same intersection. 
+	
+\end{enumerate}
+
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
 	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different intersection and roundabouts (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. relative coordinate system. Action space. 
@@ -20,30 +28,10 @@ The work presented in this thesis investigate the following research questions:
 	(How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
 \end{enumerate}
 
-
-
-\begin{enumerate}
-	\item We want to drive through intersections. 
-	\item The intersection can be of different shapes. We assume we have a map of the intersection. 
-	\item There will be other cars crossing the same intersection. 
-	
-\end{enumerate}
-
-
-
-\section{Scope and limitations}
-FILL
-\begin{enumerate}
-	\item We have access to sensors on-board the ego vehicle. 
-	\item We dont assume any knowlage of traffic signs or traffic lights. 
-	\item We dont have v2v, or v2x communication. 
-	
-	To compensate for not having v2v or v2x communitaion, we have to predict what other driver will do. 
-	
-\end{enumerate}
 \section{System architecture}
+\label{sec:system_architecture}
 outline system architecture and limit this papre to comfortable decisions \gls{rl}
-
+\tommy{depending on size of chapoter consider moving it to its own chapter}
 \begin{figure}[t]
 	\centering
 	\mbox{\parbox{\textwidth}{
@@ -54,6 +42,19 @@ outline system architecture and limit this papre to comfortable decisions \gls{r
 	}
 	\label{fig:system_architecture}
 \end{figure}
+
+\section{Scope and limitations}
+FILL
+\begin{enumerate}
+	\item We have access to sensors on-board the ego vehicle. 
+	\item We do not assume any knowlage of traffic signs or traffic lights. 
+	\item We do not have v2v, or v2x communication. 
+	\item Do not garantee safety, the best we can do its maing the decisons not trigger collision avoidance functions. 
+	
+	To compensate for not having v2v or v2x communitaion, we have to predict what other driver will do. 
+	
+\end{enumerate}
+
 
 \section{Contributions}
 \todo{reweite once theis is in a better state}

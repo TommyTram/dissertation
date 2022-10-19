@@ -1,24 +1,41 @@
 % !TEX root=../../Thesis.tex
-\chapter{Model-free RL approaches}
-\section{State representation}
+\chapter{Modeling Intersection Driving Scenarios}
+\section{Intersection scenarios}
+\section{State space}
+\section{Action space}
+\section{Transistion model}
+\subsection{Simulation scenarios or simulator}
+\section{Observation model}
+\section{Reward function}
+\section{Discussion}
+
+
+
+
+\chapter{Learning without a model}
+\tommy{Deep Q-learning approach}
+\section{Approach (State represenation, observable and unobservable)}
+
+\todo{State representation}
 This section describe the general state representation used in this research that enables these methods to be generalizable for different type of intersection and crossings. 
 By describing the state space as a set of distances to intersection points, we can abstract the map layout of different intersections and the same algorithms would work for intersections variations that we havent specifically trained on. 
 \todo{add image of intersection scenario with 90 degree entry point and 45 degree entry point.}
-\subsection{Observable states}
+\todo{Observable states}
 position, velocity and acceleration. 
-\subsection{Unobservable states}
+\todo{Unobservable states}
 intentions. traffic lights and traffic signs. 
-\section{Approach}
 \section{Simulated experiments}
 \section{Results and discussion}
 
-\chapter{Combining MCP and RL}
-\section{Action space, options}
+\chapter{Combining reinforcement learning and model based optimzation}
+\todo{as we see in previous chapter }
 \section{MPC}
-\section{Approach}
+
+\section{Approach, (Action space, options. MPC)}
 MPC has a mixed integer problem, calculating the optimal path for all possible action is very computationally heavy. 
 RL DQN. Only has descret actions. can not garantee safety. but is good at choosing actions with the best utility (value). 
 The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. 
+
 
 \section{Simulated experiments}
 We show the difference in a multi crossing scenario where the MPC can plan a path for both intersections while our previous DQN only handles one at a time. 
@@ -39,7 +56,8 @@ We show the difference in a multi crossing scenario where the MPC can plan a pat
 \subsection{Results and discussion}
 
 
-\chapter{Generalize over different scenarios}
+\chapter{Generalizing over different scenarios}
+\tommy{uncertrainty in MPC which one are we in?}
 \section{Approach}
 \section{Simulated experiments}
 \section{Results and discussion}

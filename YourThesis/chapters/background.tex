@@ -2,7 +2,7 @@
 \chapter{Technical background}\label{chapter:background}
 %
 
-\section{Partially observable Markov decision process}\label{section:pomdp}
+\section{Markov decision process}\label{sec:mdp}
 
 \begin{itemize}
     \item POMDP
@@ -25,7 +25,7 @@
 This chapter briefly introduce the \gls{pomdp} framework and reinforcement learning.  
 
 
-\subsection{Partially observable Markov decision process}
+\subsection{Partially observable Markov decision process}\label{section:pomdp}
 A \gls{pomdp} is a mathematical framework used for modeling sequential decision making problems under uncertainty. 
 It is a generalization of the \gls{mdp}
 It consists of a set of states $\mathcal{S}$, actions $\mathcal{A}$, observations $\Omega$, a transition model $T$, observation model $O$, reward function $R$, and a discount factor $\gamma$. 
@@ -40,9 +40,11 @@ This chapter provides a brief introduction to Markov decision processes and rein
 The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
 A comprehensive overview of MDPs and RL is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based.
 
+\section{Reinforcement learning}
 
-\section{Markov decision processes}
-\label{sec:mdp}
+
+\tommy{CJ: Markov decision processes}
+
 %MDP
 Sequential decision-making problems in stochastic environments are commonly modeled as MDPs. Importantly, an MDP satisfies the Markov property, which requires that the probability distribution of the next state only depends on the current state and the action taken by the agent, i.e., not on the history of previous states or actions. An MDP is formally defined as the tuple $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$, which is described in the following list~\cite[Ch. 4]{Kochenderfer2015}:
 %
@@ -92,8 +94,8 @@ Since the agent does not have direct access to the current state in a POMDP, the
 For many real-world problems, it is not possible to represent the probability distributions $T$ or $O$ explicitly. For some solution approaches, only samples are needed, and then it is sufficient to define a generative model $G$ that samples a new state or observation from a given state and action, i.e., $s' \sim G(s,a)$ for the MDP case~\cite[Ch. 4]{Kochenderfer2015} and $(s', o) \sim G(s,a)$ for the POMDP case~\cite[Ch. 6]{Kochenderfer2015}.
 
 
-\section{Reinforcement learning}
-\label{sec:rl}
+\tommy{Reinforcement learning}
+
 
 If all the elements $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$ of an MDP are known, an agent can use this model to directly compute an optimal policy. Such a problem is often considered a planning problem. For small MDPs, dynamic programming\footnote{Dynamic programming refers to simplifying a complex problem by breaking it down into smaller sub-problems, often in a recursive manner.} techniques can provide an exact solution, which is calculated offline, i.e., before the agent is deployed in the environment. For example, in value iteration~\cite[Ch. 4]{Kochenderfer2015}, the Bellman operator is iteratively applied to the value function for all states,
 %
