@@ -8,3 +8,8 @@ Make pdf:
 ```
 pdflatex Thesis.tex
 ```
+
+compile references
+```
+biber Thesis
+```

@@ -1,16 +1,52 @@
 \chapter{Introduction}\label{chapter:intro}
-The way of transportation is currently evolving and autonomous driving technology is expected to have a big impact on this transofrmation. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requiement of a present human for each transpotation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}.
+The way of transportation is currently evolving, and autonomous driving technology is expected to have a big impact on this transformation. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requirement of a present human for each transportation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}.
 
 \todo{cite future of mixed-autonomy}
 % https://www.cmu.edu/traffic21/research-and-policy-papers/traffic21_policymaker_guide_summer_2021-22.pdf
 
-\todo{level 2: volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
+\todo{Level 2: Volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
 
-Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world.
-\tommy{rewrite}
-Major progress towards deploying autonomous vehicles has been made during the last decade. The perception systems have been remarkably improved, largely due to the success of deep learning techniques~\cite{Janai2020}. The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}. However, how to approach the high-level decision-making in complex traffic situations is less explored and forms the main topic of this thesis.
+Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world. One clear benefactor of the new deep learning technics are the perception systems~\cite{Janai2020}. 
+% The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
+However, for scenarios complex scenarios such as urban intersections and round about with dense traffic remain challenging for autonomous vehicles. 
+This thesis presents methods for generating efficient and scalable decision strategies for autonomous vehicles. In this chapter we formulate the problem with tactical decision making and present the research questions that are investigated in this thesis. 
+
+\section{Autonomous Driving}
+
+When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}. Level $0$ is a vehicle with no autonomy, whereas a fully autonomous vehicle that can operate in any environment and without any human supervision is defined as level $5$. Popular \gls{adas} functions today, like Tesla autopilot and the Volvo Pilot Assist, are classified as level 2, with the main criteria being that the driver is in control and is supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to maintain safety. For level $3$ and higher the responsibility of driving is on the system. At level $3$ the driver still has to take control over the vehicle but at the request of the system, and at level $4$ and $5$ the autonomous driving features no longer require the driver to take over. Finally, the main difference between level $4$ and $5$ is the capability of driving anywhere, under all conditions. 
+\tommy{Level 2: You are diving, provide steering and breaking support to the driver, lane centering and adaptive cruise control}
+The methods presented in this thesis are aimed at an autonomy level between level $3$ and $5$. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an unsignalized intersection. 
+
+In this thesis, we refer the automated vehicle making the decisions as the ego vehicle.
+Other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other autonomous vehicles. 
+
+\subsection{Scenarios, unsignalized intersections}
+An unsignalized intersection is defined as any junction of two or more roads where the right-of-way for a car, bicycle and pedestrian is not controlled by a regulatory (i.e., STOP or YIELD) sign or a traffic signal.
+Recently nontraditional intersections are also becoming increasingly popular. The goal of these designs is to reduce the number and/or severity of conflict points by altering the customary vehicular paths at the intersection. In light of the increased focus on and occurrence of these intersection types, it is expected that the application of nontraditional designs will continue to spread.
+
+In this thesis we draw a separation between scenario and intersection. An intersection refers the geometrical shape of the intersection, like number of junctions, conflict points, turns and angle of incidence. 
+
+\tommy{what we want to say here is: define an unsignalized intersection. There are many variations. Roundabouts are defined as unsignalized intersection. To satisfy the requirement of being able to drive anywhere for level 5 it is necessary to find a method that can scale to these different scenarios}
+\tommy{maybe define intersection as the map, and scenario as the combination of traffic participants and their intentions.}
+
+\todo{Find an appropriate place for this section}
+ In light of the increased focus on and occurrence of these intersection types nationwide, it is expected that the application of nontraditional designs will continue to spread.
+
+
+
+
 
 \section{Problem formulation}
+\tommy{what do I want to say about figure \ref{fig:q_state}? this is an example of a discritizised }
+\begin{figure}[t]
+	\centering
+	\mbox{\parbox{.7\textwidth}{
+			\centering
+			\includegraphics[width=\linewidth]{YourThesis/chapters/figures/Q state.pdf} 
+	}}
+	\caption{Example of the potential q values in different states depending on the intention of the other driver}
+	\label{fig:q_state}
+\end{figure}
 
 \begin{enumerate}
 	\item We want to drive through intersections. 
@@ -21,22 +57,38 @@ Major progress towards deploying autonomous vehicles has been made during the la
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different intersection and roundabouts (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. relative coordinate system. Action space. 
+	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
 	(specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
-	\item[\textbf{Q2.}] How can AD domain knowlage (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distrubution. How can AD domain knowlage be used to create a state and action space that improves the RL agent?
-	\item[\textbf{Q3.}] How can the quality of a RL agent be imporved by accounting for uncertainty?
+	\item[\textbf{Q2.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
+	\item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty?
 	(How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
+
+	\item[\textbf{Q4.}] Where does ML/RL fit in the system architecure for decision making?
+	(PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
 \end{enumerate}
 
 \section{System architecture}
 \label{sec:system_architecture}
-outline system architecture and limit this papre to comfortable decisions \gls{rl}
-\tommy{depending on size of chapoter consider moving it to its own chapter}
+The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018, koretenkamp2016}. 
+
+The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
+
+The planner 
+\tommy{tactical planner GPS route, precautionary safety, }
+Tactical planning can be divided into three categories, the proactive, active and reactive. A proactive module would be something like a precautionary safety module that takes interprets the information about the environment and create constraints that is sent to the active planner, like  driveable area, allowed speeds and actions. These constraints are generated from a set of safety goals and rules, making this the first layer of protection that can ensure safety. 
+The role of the active planner is to take this sets of allowed actions and prescribe the behavior of the vehicle through decisions such as drive, yield or stop. These high level decisions are then sent to a motion planner that generates a safe dynamically feasible path for the vehicle for a shorter planning horizon of around $0.1$.
+
+
+\tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
+\todo{outline system architecture and limit this paper to comfortable decisions \gls{rl}}
+
+\tommy{depending on size of chapter consider moving it to its own chapter.}
+
 \begin{figure}[t]
 	\centering
 	\mbox{\parbox{\textwidth}{
 			\centering
-			\includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf}%We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.   
+			\includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf} %We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.   
 	}}
 	\caption{Representation of the system architecture.
 	}
@@ -47,25 +99,25 @@ outline system architecture and limit this papre to comfortable decisions \gls{r
 FILL
 \begin{enumerate}
 	\item We have access to sensors on-board the ego vehicle. 
-	\item We do not assume any knowlage of traffic signs or traffic lights. 
+	\item We do not assume any knowledge of traffic signs or traffic lights. 
 	\item We do not have v2v, or v2x communication. 
-	\item Do not garantee safety, the best we can do its maing the decisons not trigger collision avoidance functions. 
+	\item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
 	
-	To compensate for not having v2v or v2x communitaion, we have to predict what other driver will do. 
+	To compensate for not having v2v or v2x communication, we have to predict what other driver will do. 
 	
 \end{enumerate}
 
 
 \section{Contributions}
-\todo{reweite once theis is in a better state}
+\todo{Rewrite once thesis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}
 	\item General approach to creating a decision making agent for driving in interactions. 
-	\item A neural network architecture that is invariat to permutations of the order of which surrounding traffic participants are observed, which speeds up training and improves the quality of the trained agent. 
-	\item A belief state representation using a particle filter and a comparison and analysis of different algorithms that ultilize the belief state. 
+	\item A neural network architecture that is invariant to permutations of the order of which surrounding traffic participants are observed, which speeds up training and improves the quality of the trained agent. 
+	\item A belief state representation using a particle filter and a comparison and analysis of different algorithms that utilize the belief state. 
 	\item Two approached to solving a POMDP with hidden intention state. LSTM layer and belief state. 
-	\item General state space represenation that is invariat to permutations of the intersection design. 
-	\item Extention of RL methods that provide an estimate of the epostemic uncertainty and use it to create a confidence critiera that can identify situations with high uncertainty. 
+	\item General state space representation that is invariat to permutations of the intersection design. 
+	\item Extension of RL methods that provide an estimate of the epistemic uncertainty and use it to create a confidence criteria that can identify situations with high uncertainty. 
 
 \end{enumerate}
 

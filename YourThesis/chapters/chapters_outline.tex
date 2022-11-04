@@ -15,25 +15,25 @@
 \chapter{Learning without a model}
 \tommy{Deep Q-learning approach}
 \section{Approach (State represenation, observable and unobservable)}
-
+raindow paper, combine a number of state of the art technics and show what works 
 \todo{State representation}
 This section describe the general state representation used in this research that enables these methods to be generalizable for different type of intersection and crossings. 
-By describing the state space as a set of distances to intersection points, we can abstract the map layout of different intersections and the same algorithms would work for intersections variations that we havent specifically trained on. 
+By describing the state space as a set of distances to intersection points, we can abstract the map layout of different intersections and the same algorithms would work for intersections variations that we haven't specifically trained on. 
 \todo{add image of intersection scenario with 90 degree entry point and 45 degree entry point.}
 \todo{Observable states}
-position, velocity and acceleration. 
+Position, velocity and acceleration. 
 \todo{Unobservable states}
-intentions. traffic lights and traffic signs. 
+Intentions. Traffic lights and traffic signs. 
 \section{Simulated experiments}
 \section{Results and discussion}
 
-\chapter{Combining reinforcement learning and model based optimzation}
+\chapter{Combining reinforcement learning and model based optimization}
 \todo{as we see in previous chapter }
 \section{MPC}
 
 \section{Approach, (Action space, options. MPC)}
 MPC has a mixed integer problem, calculating the optimal path for all possible action is very computationally heavy. 
-RL DQN. Only has descret actions. can not garantee safety. but is good at choosing actions with the best utility (value). 
+RL DQN. Only has discrete actions. Can not guarantee safety but is good at choosing actions with the best utility (value). 
 The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. 
 
 
@@ -43,21 +43,22 @@ We show the difference in a multi crossing scenario where the MPC can plan a pat
 \section{Results and discussion}
 
 \chapter{Estimating the uncertainty}
-\todo{rewrite chapter name}
+\todo{Rewrite chapter name}
 
 \section{Uncertainty of the decision}
+\tommy{NN is a black box. The utility value q that come from the DQN works great if it was trained on the }
 \subsection{Approach}
 \subsection{Simulated experiments}
 \subsection{Results and discussion}
 
-\section{Uncertrainty of the intention}
+\section{Uncertainty of the intention}
 \subsection{Approach}
 \subsection{Simulated experiments}
 \subsection{Results and discussion}
 
 
 \chapter{Generalizing over different scenarios}
-\tommy{uncertrainty in MPC which one are we in?}
+\tommy{Uncertainty in MDP which one are we in?}
 \section{Approach}
 \section{Simulated experiments}
 \section{Results and discussion}
