@@ -1,0 +1,45 @@
+\documentclass{standalone}
+\usepackage[mode=buildnew]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,array}
+\newcommand{\dataset}{{\cal D}}
+\newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{bm}
+\usetikzlibrary{positioning, shapes, arrows}
+\begin{document}
+\begin{tikzpicture}[thick,scale=5]
+\coordinate (A1) at (5.0,0.2);
+\coordinate (A2) at (4.8,0);
+\coordinate (A3) at (4.8,-0.3);
+\coordinate (A4) at (5.1,-0.5);
+\coordinate (A5) at (5.4, -0.15);
+
+\node (mu1) at (5.0, 0.25) {$\mu_1$};
+\node (mu2) at (4.75, 0) {$\mu_2$};
+\node (mu3) at (4.75, -0.3) {$\mu_3$};
+\node (mu4) at (5.1, -0.55) {$\mu_4$};
+\node[text=red] (mu5) at (5.45, -0.15) {$\mu_5$};
+
+
+
+\draw (A1) -- (A2) -- (A3) -- (A4) -- (A5) -- cycle ;
+\path (A1.south) |- (A5.west) node [midway,above] {$\mathcal{C}(\mathcal{M}_s)$};
+
+\node (type5) at (5.9, -0.5) [circle,fill,color=violet,inner sep=1pt]{};
+\node (type1) at (5.4, -0.15) [circle,fill,color=red,inner sep=1pt]{};
+\node (type3) at (5.1, -0.35) [circle,fill,color=blue,inner sep=1pt]{};
+
+\matrix [draw,below left] at (current bounding box.north east) {
+  \node [circle,fill,color=red,inner sep=1pt, type1,label=right:Type I] {}; \\
+  \node [circle,fill,color=blue,inner sep=1pt, type3,label=right:Type III] {}; \\
+  \node [circle,fill,color=violet,inner sep=1pt, type5,label=right:Type VI] {}; \\
+};
+
+% or a cleaner version, as @TorbjørnT. said in the comments:
+% \node at (A1.south |- A5.west) {$\pi$};
+
+\end{tikzpicture}
+\end{document}

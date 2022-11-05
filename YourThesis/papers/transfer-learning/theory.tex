@@ -1,0 +1,71 @@
+\section{Theoretical Analysis}\label{sec:bounds}
+
+In this section, we further justify the use of our framework by deriving worst-case performance degradation bounds relative to the optimal controller. The performance loss is shown to be related to the size of the source MDP set $\mathcal{M}_s$ and the realisability of $\mdp^{*}$ under $\mathcal{C}(\mathcal{M}_s)$. A visualisation of the model dissimilarities is available in Figure~\ref{fig:trl}, where $||\mdp-\hat{\mdp}||$ is the model estimation error, $||\mdp^{*}-\mdp||$ is the model realisability error and $||\mdp^{*}-\hat{\mdp}||$ the total model deviation error.
+
+%In this section we will be studying the case of using a \textsc{Type III} algorithm in a \textsc{Type V} problem setting. That means the target MDP $\mdp_t$ might not be part of the convex set $\mathcal{C}(\mathcal{M}_s)$ of source MDPs. $\mdp_t$ will however be bounded in distance from the marginal of the source MDPs. This setting gives rise to three sources of estimation errors, namely \emph{value estimation error}, \emph{model estimation error} and \emph{realizability error}. Combined, they might look like the following,
+
+\iffalse
+\subsection{Performance Gap in the Realisable Setting}
+
+\begin{theorem}{Performance Gap of Realisable Models}
+    \begin{equation}
+        ||V_{{\mdp}_t}^{*}-\hat{V}_{{\mdp}_t, n}^{\pol^{*}(\hat{\Delta_{\mathrm{Realise}}})}|| \leq \, ???.
+    \end{equation}
+\end{theorem}
+\fi
+
+%\subsection{Performance Gap in the Non-Realisable Setting}
+
+\begin{theorem}[Performance Gap of Non-Realisable Models]\label{lemma:non-realisable}
+Let $d = |\mathcal{S}|^2|\mathcal{A}|$ be the dimensionality of the MDP and $\forall_{(s, a) \in \mathcal{S}\times \mathcal{A}} \, 0 \leq r(s, a) \leq 1$. Further, let $\mdp^{*}$ be the true underlying MDP, $\mdp$, the maximum likelihood $\mdp \in \underset{\mdp' \in \mathcal{C}(\mathcal{M}_s)}{\arg\min} \, \mathbb{P}(D_\infty \, | \, \mdp'), D_\infty \sim \mdp^{*}$ and $\hat{\mdp}$ a maximum likelihood estimator of $\mdp$. In addition, let $\pol^{*}, \pol, \hat{\pol}$ be the optimal policies for the respective MDPs. Let $||\mdp^{*}-\mdp||_2 \leq \Delta_{\mathrm{Realise}}$ be the \textbf{non-realisability bias} of $\mdp$ and $\epsilon$ be a cover of the convex set $\mathcal{C}(\mathcal{M}_s)$. Then, the performance gap is given by,
+%    \begin{equation}
+%       |V_{{\mdp^*}}^{*}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq \, \frac{2\gamma\sqrt{d}}{(1-\gamma)^2} (\Delta_{\mathrm{Realise}}+\epsilon) + \frac{2\gamma^t}{(1-\gamma)},
+%    \end{equation}
+    \begin{equation}
+        |V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| \leq \, \frac{2\gamma\sqrt{d}}{(1-\gamma)^2} (\Delta_{\mathrm{Realise}}+\epsilon),
+    \end{equation}
+%where $t$ is the number of iterations in the value estimation. This is of order $\mathcal{O}(\sqrt{d}(\Delta_{\mathrm{Realise}}+\epsilon)+\gamma^t)$.
+this is of order $\mathcal{O}(\sqrt{d}(\Delta_{\mathrm{Realise}}+\epsilon))$.
+\end{theorem}
+\begin{proof}[Proof of Theorem~\ref{lemma:non-realisable}]
+Given the assumptions in Lemma~\ref{lemma:non-realisable} hold true. Then, using triangle inequalities the performance gap can be bounded,
+
+%\begin{equation}
+%    |V_{{\mdp^*}}^{*}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq |V_{{\mdp^*}}^{*}-{V}_{{\mdp^*}}^{\hat{\pol}}| + |V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}|.
+%\end{equation}
+\begin{equation}
+\begin{aligned}\label{eq:triangle}
+    |V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| &= |V_{{\mdp^*}}^{*}-V_{\hat{\mdp}}^{\hat{\pol}}+V_{\hat{\mdp}}^{\hat{\pol}}-V_{{\mdp^*}}^{\hat{\pol}}|\\
+    &\leq |V_{{\mdp^*}}^{*}-V_{\hat{\mdp}}^{\hat{\pol}}|+|V_{\hat{\mdp}}^{\hat{\pol}}-V_{{\mdp^*}}^{\hat{\pol}}|
+\end{aligned}
+\end{equation}
+%Another application of the triangle inequality on the first term yields us,
+%\begin{equation}\label{eq:non-realisable-triplet}
+%\leq|V_{{\mdp^*}}^{*}-{V}_{\hat{\mdp}}^{\hat{\pol}}| + |V_{\hat{\mdp}}^{\hat{\pol}}-{V}_{{\mdp^*}}^{\hat{\pol}}| +|V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}|.
+%\end{equation}
+The first term on the right side of the inequality in Eq.~\ref{eq:triangle} can be bounded using (Theorem 7~\citet{zhang2020multi}),
+
+\begin{equation}
+    |V^{*}_{\mdp^{*}}-V_{\hat{\mdp}}^{\hat{\pol}}| \leq \frac{\gamma}{(1-\gamma)^2}||\mdp^{*}-\hat{\mdp}||_1.
+\end{equation}
+Likewise, the second term in the inequality can be bounded using the the general form of the Simulation Lemma (Lemma 4~\citet{kearns2002near}),
+
+\begin{equation}
+    |V_{\hat{\mdp}}^{\hat{\pol}}-{V}_{{\mdp^*}}^{\hat{\pol}}| \leq \frac{\gamma}{(1-\gamma)^2}||\mdp^{*}-\hat{\mdp}||_1.
+\end{equation}
+
+Using Cauchy-Schwartz and the triangle inequality the distance between the MDPs $\mdp^{*}, \hat{\mdp}$ can be bounded, $||\mdp^{*}-\hat{\mdp}||_1\leq\sqrt{d}||\mdp^{*}-\hat{\mdp}||_2 =\sqrt{d}\|\mu^*-\mu+\mu-\hat{\mu}\|_2\leq\sqrt{d}(||\mdp^{*}-\mdp||_2+||\mdp-\hat{\mdp}||_2)$. From our assumptions, we know $||\mdp^{*}-\mdp||_2\leq \Delta_{\mathrm{Realise}}$ and $||\mdp-\hat{\mdp}||_2 \leq \epsilon$. Thus, the final bound of Eq.~\ref{eq:triangle} is obtained,
+\begin{equation}\label{eq:bias_bound}
+|V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| \leq \frac{2\gamma\sqrt{d}}{(1-\gamma)^2}(\Delta_{\mathrm{Realise}}+\epsilon),
+\end{equation}
+which yields us the result.
+%Finally, the rightmost term in Eq.~\ref{eq:non-realisable-triplet} can be bounded using Theorem 6.5.9~\citep{dimitrakakis2018decision}.
+%\begin{equation}\label{eq:value_iteration}
+%    |V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq \frac{2\gamma^t}{1-\gamma}.
+%\end{equation}
+%Finally, joining Eq.~\ref{eq:bias_bound} and Eq.~\ref{eq:value_iteration} yields us the result.
+\end{proof}
+
+\begin{remark}[Performance Gap in the Realisable Setting]
+A trivial worst-case bound for the realisable case (Section~\ref{subsec:realisable}) can be obtained by setting $\Delta_{\mathrm{Realise}}=0$ as by definition in that case $\mdp^{*} \in \mathcal{C}(\mathcal{M}_s)$.
+\end{remark}

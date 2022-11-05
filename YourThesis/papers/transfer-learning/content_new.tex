@@ -1,0 +1,215 @@
+%%% Load required packages here (note that many are included already).
+
+% \usepackage{balance} % for balancing columns on the final page
+% \usepackage{amsmath,amsfonts}
+% \usepackage{algorithmic}
+% \usepackage{algorithm}
+% \usepackage{array}
+% \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+% \usepackage{textcomp}
+% \usepackage{stfloats}
+% \usepackage{url}
+% \usepackage{verbatim}
+% \usepackage{graphicx}
+% \usepackage{cite}
+% \usepackage[mode=buildnew]{standalone}
+% \usepackage{tikz}
+% \usepackage{kbordermatrix}
+% \usetikzlibrary{positioning, shapes, arrows, tikzmark,decorations.pathreplacing}
+% \tikzstyle{curly} = [decorate,decoration={brace,amplitude=10pt}]
+% \usepackage{mathrsfs}
+
+
+% % Definitions of handy macros can go here
+% \newcommand{\swap}[3][-]{#3#1#2} % just an example
+% %\usepackage{amssymb}
+% \input{macros}
+% %\usepackage{caption}
+% \usepackage{amsmath,array}
+% \newcommand{\dataset}{{\cal D}}
+% \newcommand{\fracpartial}[2]{\frac{\partial #1}{\partial  #2}}
+% \usepackage{mathtools}
+% %\usepackage{amssymb}
+% \usepackage{bm}
+% \usepackage[mode=buildnew]{standalone}
+% \usepackage{hyperref}
+% \usepackage{natbib}
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{corollary}{Corollary}[theorem]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{assumption}{Assumption}
+% \newtheorem{example}{Example}
+% \newtheorem{remark}{Remark}
+%\newenvironment{proof}{\paragraph{Proof:}}{\hfill$\square$}
+
+
+% command for comment boxes
+
+% \definecolor{wheat}{rgb}{0.96,0.87,0.70}
+% \definecolor{lightblue}{rgb}{0.8,0.8,1}
+% \definecolor{lightred}{rgb}{1,0.8,0.8}
+% \definecolor{lightgreen}{rgb}{0.8,1,0.8}
+% \newcommand{\todo}[1]{
+% 	\begin{center}
+% 		\fcolorbox{wheat}{wheat}{\parbox[t]{0.9\linewidth}{\textbf{ToDo:} #1}}
+% \end{center}}
+% \newcommand{\tommy}[1]{
+% 	\begin{center}
+% 		\fcolorbox{lightblue}{lightblue}{\parbox[t]{0.9\linewidth}{\textbf{Tommy:} #1}}
+% \end{center}}
+% \newcommand{\hannes}[1]{
+% 	\begin{center}
+% 		\fcolorbox{lightred}{lightred}{\parbox[t]{0.9\linewidth}{\textbf{Hannes:} #1}}
+% \end{center}}
+% \newcommand{\deba}[1]{
+% 	\begin{center}
+% 		\fcolorbox{lightgreen}{lightgreen}{\parbox[t]{0.9\linewidth}{\textbf{Deba:} #1}}
+% \end{center}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% AAMAS-2023 copyright block (do not change!)
+
+\newcommand {\matr}[2]{\left[\begin{array}{#1}#2\end{array}\right]}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\x}{{\mathbf{x}}}
+\renewcommand{\u}{{\mathbf{u}}}
+\newcommand{\w}{{\mathbf{w}}}
+\renewcommand{\r}{{\mathbf{r}}}
+
+\definecolor{wheat}{rgb}{0.96,0.87,0.70}
+\definecolor{lightblue}{rgb}{0.8,0.8,1}
+\definecolor{lightred}{rgb}{1,0.8,0.8}
+\definecolor{lightgreen}{rgb}{0.8,1,0.8}
+
+% \newcommand\argmax{\mathop{\rm arg\,max}}
+% \newcommand\argmin{\mathop{\rm arg\,min}}
+% \newcommand {\defn} {\triangleq}
+% \newcommand \Reals {\ensuremath{\mathbb{R}}}
+% \newcommand \E {\mathop{\mbox{\ensuremath{\mathbb{E}}}}\nolimits}
+% \newcommand \V {\mathop{\mbox{\ensuremath{\mathbb{V}}}}\nolimits}
+% \renewcommand \Pr {\mathop{\mbox{\ensuremath{\mathbb{P}}}}\nolimits}
+% %\newtheorem{lemma}{Lemma}
+% %% macros for symbols
+\newcommand \pol {\pi}
+\newcommand \Pol {\Pi}
+% \newcommand \bel {\beta}
+\newcommand \mdp {\mu}
+\newcommand \MDP {\mathcal{M}}
+\newcommand \return {R}
+\newcommand \utility {U}
+\newcommand \GP {\mathcal{GP}}
+\newcommand \param {\theta} %% unknown parameter
+\newcommand \Params {\Theta} %% unknown parameter
+
+
+
+\newcommand \disc {\gamma}
+\newcommand \MDPs {\mathcal{M}} %% The MDP
+\newcommand \Pols {\Pi} %% The policy
+\newcommand \VC[3] {V_{#1,#2}^{#3}}
+\newcommand \VS[2] {V_{#1,#2}^{*}}
+\newcommand \CS {\mathcal{S}} %% The state space
+\newcommand \CA {\mathcal{A}} %% The action space
+\newcommand \CV {\mathcal{V}} %% The value function estimate
+\newcommand \trans {\mathcal{T}} %% The transition kernel
+\newcommand \rew {\rho} %% The reward function\newcommand \disc {\gamma} %% discount factor
+\newcommand \abel {\hat{\xi}} %% approximate belief
+\newcommand \mbel {\psi} %% belief about MDPs 
+
+\newcommand \p {\partial}
+
+\newcommand \Bellman {\mathscr{L}}
+\newcommand \PBellman {\mathscr{P}}
+\newcommand \util {U}
+\newcommand \val {\vectorsym{v}}
+\newcommand \Vals {\mathcal{V}}
+\newcommand \discount {\gamma}
+\newcommand \horizon {T}
+
+%% Commands
+
+% \DeclareMathOperator{\st}{s.t.\,}
+% \DeclareMathOperator{\trace}{tr}
+
+\newcommand \onenorm[1]{\left\|#1\right\|_1}
+\newcommand \pnorm[2]{\left\|#1\right\|_{#2}}
+\newcommand \inftynorm[1]{\left\right\|#1\|_\infty}
+\newcommand \norm[1]{\left\|#1\right\|}
+
+
+\newcommand \dd {\, \mathrm{d}}
+\let\Pr\relax
+\newcommand \Pr {\mathbb{P}}
+
+\newcommand \cset[2] {\left\{#1 ~\middle|~ #2\right\}}
+\newcommand \set[1] {\left\{#1\right\}}
+\newcommand \ind[1] {\mathds{1}\left\{#1\right\}}
+
+\newcommand \KL[2] {D\left( #1 ~\middle\|~ #2\right)}
+
+% \DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\newcommand \Softmax {{\mathpzc{Softmax}}}
+\newcommand \GammaDist {{\mathpzc{Gamma}}}
+\newcommand \Dirichlet {{\mathpzc{Dir}}}
+\newcommand \Uniform {{\mathpzc{Unif}}}
+\newcommand \Bernoulli {{\mathpzc{Bern}}}
+\newcommand \Binomial {{\mathpzc{Binom}}}
+\newcommand \Beta {{\mathpzc{Beta}}}
+\newcommand \Geometric {{\mathpzc{Geom}}}
+\newcommand \Normal {{\mathpzc{N}}}
+\newcommand \Multinomial {{\mathpzc{Mult}}}
+\newcommand \Wishart {{\mathpzc{Wish}}}
+
+
+\if 1
+\newcommand \note[2][blue] {{\color{#1} \texttt{[#2]}}}
+\newcommand \cor[2][red] {{\color{#1}#2}}
+\newcommand \ins[2][magenta] {{\color{#1}#2}}
+\newcommand \del[2][red] {{\color{#1}\sout{#2}}}
+\newcommand \grm[2][green!50!black] {{\color{#1}#2}}
+\else
+
+\newcommand \ins[2][magenta] {{\color{#1}#2}}
+\fi
+
+%%% Use this environment to specify a short abstract for your paper.
+
+\begin{abstract}
+	For deploying model-based reinforcement learning in the wild, we aim to compute an efficient policy for an unseen Markov Decision Process (MDP) setting, where we do not have access to an explicit model. But due to availability of either simulators or data for similar tasks, we often can build accurate MDP models for similar problem settings (or tasks), which might differ slightly from the target MDP. 
+	In this paper, we study the problem of transferring the available MDP models to learn and plan efficiently in an unknown but similar MDP. We refer to it as \textit{Model Transfer Reinforcement Learning (MTRL)} problem. 
+	
+	First, we formulate MTRL for discrete MDPs and Linear Quadratic Regulators (LQRs) with continuous state-actions.
+	Then, we propose a generic two-stage algorithm, MLEMTRL, to address the MTRL problem in both the discrete and continuous settings. In the first-stage, MLEMTRL uses a \textit{constrained Maximum Likelihood Estimation (MLE)}-based approach to estimate the target MDP model using a set of known MDP models. In the second-stage, using the estimated target MDP model, MLEMTRL deploys a model-based planning algorithm appropriate for the MDP class.
+	Theoretically, we prove worst-case regret bounds for MLEMTRL both in realisable and non-realisable settings.
+	We empirically demonstrate that MLEMTRL allows faster learning in new MDPs than learning from scratch and also achieves near-optimal performance depending on the similarity of the available MDP models and the target MDP.
+\end{abstract}
+
+
+% \keywords{Reinforcement Learning, Transfer Learning, Maximum Likelihood Estimation, Linear Quadratic Regulator}
+
+
+% \newcommand{\BibTeX}{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}
+
+
+
+\input{YourThesis/papers/transfer-learning/introduction.tex}
+\input{YourThesis/papers/transfer-learning/transfer_RL.tex}
+%\input{MLE_MDP}
+%\input{planning}
+\input{YourThesis/papers/transfer-learning/algorithms.tex}
+\input{YourThesis/papers/transfer-learning/theory.tex}
+\input{YourThesis/papers/transfer-learning/experiments.tex}
+\input{YourThesis/papers/transfer-learning/discussion.tex}
+
+ 
+
+% \begin{acks}
+%     This work was partially supported by the Wallenberg AI, Autonomous Systems and Software Program (WASP) funded by the Knut and Alice Wallenberg Foundation and the computations were performed on resources at Chalmers Centre for Computational Science and Engineering (C3SE) provided by the Swedish National Infrastructure for Computing (SNIC).
+% \end{acks}
+
+
+
+
