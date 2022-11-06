@@ -14,6 +14,10 @@
 
 \chapter{Learning without a model}
 \tommy{Deep Q-learning approach}
+We want to formulate the problem in such a way that abstracts the information of traffic lights, traffic signs and intention. This way the car is closer to L5 by not relying on the different traffic lights
+
+One motivation example is in how traffic lights works. In sweden, we have sensors that can sense if there are cars in an intersection and create a traffic light schedule accordingly, compared to the US where the traffic signals set up using timers. As a consequense, Drivers approacing a yellow light 
+
 \section{Approach (State represenation, observable and unobservable)}
 raindow paper, combine a number of state of the art technics and show what works 
 \todo{State representation}
@@ -59,7 +63,21 @@ We show the difference in a multi crossing scenario where the MPC can plan a pat
 
 \chapter{Generalizing over different scenarios}
 \tommy{Uncertainty in MDP which one are we in?}
+As mentioned in the seciton \ref{mdp}. the \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). the work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T thanks to \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
+
+Application areas. A transition function is defined as the probability of transitioning from one state to another. This could be different for example when the ego vehicle properties are different, if the DQN is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the DQN is train in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The DQN/policy would probably not perform so well. 
+This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
+An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yeilds. 
+
 \section{Approach}
+Some easy solutions would to be have some geo identifier that can choose which policy to use given the country. That may work for an L4 system but could show to be difficult for an L5 system. Our approach is to use transfer RL to identify where we are in the convex hull of MDPs and then choose the policy for MDP we are closest too. 
+This does require some number of MDPs to span out the convex hull of models. 
+This can find a policy between MDPs. 
+Identify which MDP is closest. For example Downtown driving in one country may be similar to the driving stile to another. 
+\todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
+\todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
+
+
 \section{Simulated experiments}
 \section{Results and discussion}
 FILL

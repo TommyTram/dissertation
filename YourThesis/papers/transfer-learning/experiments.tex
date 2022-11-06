@@ -36,16 +36,17 @@ A jumpstart improvement can be verified by the behaviour of the algorithm during
 
 \noindent\textbf{CartPole.}
 The environment used to testbed our algorithm is the \emph{Cartpole} environment~\citep{barto1983neuronlike}. The task is to stabilise a pole attached to a cart and keep it upright for the total episode length of $200$ time steps. The state-space $s \in \mathbb{R}^4$ and the action-space $a \in [-1, 1]$. A continuous action applies a bounded force in the opposite direction on the cart. The original environment parameters are the \emph{gravity} $g=9.8$, \emph{mass of cart} $m=1.0$, \emph{mass of pole} $p=0.1$ and \emph{length of pole} $l = 0.5$. In order to construct our source tasks, we create a variation of these parameters in the following way,
-\[
-  \mathcal{M}_s = \kbordermatrix{
-    & g & m & p & l \\
-    \mdp_1 & 9.80 & 1.00 & 0.10 & 0.50 \\
-    \mdp_2 & 43.84 & 1.89 & 0.50 & 0.93 \\
-    \mdp_3 & 46.29 & 0.34 & 0.44 & 0.13 \\
-    \mdp_4 & 46.34 & 1.93 & 0.49 & 2.47 \\
-    \mdp_5 & 18.95 & 2.36 & 0.37 & 1.64
-  }.
-\]
+% \[
+%   \mathcal{M}_s = \kbordermatrix{
+%     & g & m & p & l \\
+%     \mdp_1 & 9.80 & 1.00 & 0.10 & 0.50 \\
+%     \mdp_2 & 43.84 & 1.89 & 0.50 & 0.93 \\
+%     \mdp_3 & 46.29 & 0.34 & 0.44 & 0.13 \\
+%     \mdp_4 & 46.34 & 1.93 & 0.49 & 2.47 \\
+%     \mdp_5 & 18.95 & 2.36 & 0.37 & 1.64
+%   }.
+% \]
+\todo{Fix kbordermatrix}
 
 These source tasks are then used to transfer knowledge from to the novel task. The maximum attainable return in this environment is $200$ which happens if the agent is able to balance the pole for the full episode length. In this setting, the MLEMTRL algorithm effectively creates a mixture of linear-Gaussians as the full likelihood model and obtains the mixture weights by using experience from the novel task.
 % outline
