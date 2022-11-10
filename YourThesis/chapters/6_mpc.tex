@@ -1,0 +1,18 @@
+\chapter{Combining reinforcement learning and model based optimization}
+\todo{as we see in previous chapter }
+\section{MPC}
+
+\section{Approach, (Action space, options. MPC)}
+MPC has a mixed integer problem, calculating the optimal path for all possible action is very computationally heavy. 
+RL DQN. Only has discrete actions. Can not guarantee safety but is good at choosing actions with the best utility (value). 
+The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. 
+
+
+\todo{reward function}
+added Q masking.
+Q-masking reduce the search space, in this work we showed it for unavailable actions but could be extended to actions limited by the precautionary safety module. 
+By combining the having the mpc cost as a negative rewward the \gls{dqn} can balance the control cost with the high level goal of reaching the goal and even choose an action that is on average good on a high level but may not seem that way to the \gls{mpc}.
+\section{Simulated experiments}
+We show the difference in a multi crossing scenario where the MPC can plan a path for both intersections while our previous DQN only handles one at a time. 
+
+\section{Results and discussion}
