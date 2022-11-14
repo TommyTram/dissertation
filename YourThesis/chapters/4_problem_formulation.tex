@@ -1,28 +1,41 @@
 % !TEX root=../../Thesis.tex
 \chapter{Modeling Intersection Driving Scenarios}
+\label{ch:modeling_intersection}
 To be able to derive algorithms for decision making we must first describe the mathematical formulation of the problem.  
 
 \section{Intersection scenarios}
 \tommy{show examples of intersections.}
+\tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
+
 \section{State space}
 \tommy{Coordinate system, distances to intersection, position, velocity and accelration of other vehicles. abstract away the information about traffic lights, traffic signs, as intention}
+
 \section{Action space}
 \tommy{options, take way, give way, follow car}
 short term goals presented in \paperLSTM.
+
 \section{Transistion model}
 \tommy{IDM, and other agents behaviors/intentions.}
+
 \subsection{Simulation scenarios or simulator}
 parameters, randomized cars. Behaviors. spawn rates and more. up to four cars. 
+
 \section{Observation model}
 \tommy{Everything in the state space except intention. Everything that is observable through the sensors in the car. }
+
 \section{Reward function}
 designing the reward model from the objective we are trying to achieve. this is not the optimal values. We are starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
+
 \section{Discussion}
+Why is it hard. 
+\tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
 
+With the \gls{mdp}, defined a typical intersection can be described as in Figure \ref{fig:intersection_zone}. From the figure we can divide the path of the ego vehicle into four zones. Starting from the end, zone 0 is the "safe zone" where the ego is our of danger and can return to nominal driving. Zone 1 is the conflict zone, this is where there is a possibility to collide with another vehicle. Zone 2 is critical decision zone, where this is the last chance the vehicle has to stop or cross. We define the size of this zone as the minimal distance the car needs to come to a complete stop to the start of the conflict zone. The final zone is zone 3, the information gathering zone, and is the furthest from the intersection and where the agent can observe the scenario and the other vehicles behavior over time. 
 
+the goal is to reach zone 0, 
+to do this the agent would want to minimize the time in zone 1, if there is chance of intersection with another car.
+Because our actions are formulated as options and designed to be conformtable with lower acceleration rates. The size of zone 2 is dependent on the vehicels current speed, which is dependent on how the vehicle behaved in zone 3. 
+Now there are two conflicting strategies, to minimize time in zone 1 the agent wants a high speed coming into the intersection. while it would want a low speed to shorten the zone 2 and the critical decision. 
 
-
-
-
-
+If we know the intention of the other vehicles the stochasticity in zone 1 would be gone and the problem becomes a scheduling problem of creating a velocity profile that minimizes the time to cross.  
 

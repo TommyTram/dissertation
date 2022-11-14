@@ -1,10 +1,10 @@
 \chapter{Learning without a model}
 \tommy{Deep Q-learning approach}
-We want to formulate the problem in such a way that abstracts the information of traffic lights, traffic signs and intention. This way the car is closer to L5 by not relying on the different traffic lights
+We want to formulate the problem in such a way that abstracts the information of traffic lights, traffic signs and intention. This way the car is closer to L5 by not relying on the different traffic lights.
 
 One motivation example is in how traffic lights works. In Sweden, we have sensors that can sense if there are cars in an intersection and create a traffic light schedule accordingly, compared to the US where the traffic signals set up using timers. As a consequence, Drivers approaching a yellow light 
 
-
+The \gls{dqn} algorithm uses a \gls{nn} and has two disadvantages. One is that the size of the network is fixed, this forces the input space to be fixed. Our state space is defined by the physical state of the surrounding cars, and the number of cars we observe at each situation variate. Therefor we need a way to invariate of 
 
 \section{Approach (State representation, observable and unobservable)}
 This paper explored the possibility of solving the problem with \gls{rl} by trying a verity of different methods from the rainbow paper with the addition to the LSTM layer and presented the results that had the highest impact on the conversion. 
@@ -20,6 +20,13 @@ Intentions. Traffic lights and traffic signs.
 large negative reward for invalid actions.
 \section{Simulated experiments}
 \section{Results and discussion}
+\begin{itemize}
+  \item STG as actions
+  \item shared weights
+  \item effect of replay, dropout 
+  \item comparing a dqn and Drqn 
+\end{itemize}
+however sensitive to noise. 
 
 LSTM take into account the history, but when applied in the real world with noise the model did not perform as well. 
 The immidiate reward for jerk is 

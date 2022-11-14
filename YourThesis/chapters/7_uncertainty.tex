@@ -1,16 +1,96 @@
 \chapter{Estimating the uncertainty}
 \todo{Rewrite chapter name}
+
 The motivation of handling uncertainty. In this chapter we present two approches to handling the uncertainty, one is the uncertainty in output of the \gls{dqn} and the other in the uncertainty of the intention estimation that is feed as an input to the \gls{dqn}.
+
+
 \section{Uncertainty of the decision}
 \tommy{NN is a black box. The utility value q that come from the DQN works great if it was trained on the }
+
+
 \subsection{Approach}
+One limitation of the DQN algorithm is that only the maximum likelihood estimate of the $Q$-values is returned. The risk of taking a particular action can be approximated as the variance in the estimated $Q$-value~\cite{Garcia2015}. One approach to obtain a variance estimation is through statistical bootstrapping~\cite{Efron1982}, which has been applied to the DQN algorithm~\cite{Osband2016}. The basic idea is to train an ensemble of neural network on different subsets of the available replay memory. The ensemble will then provide a distribution of $Q$-values, which can be used to estimate the variance. Osband et al. extended the ensemble method by adding a randomized prior function (RPF) to each ensemble member, which gives a better Bayesian posterior~\cite{Osband2018}. The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with equal architecture, i.e.,
+%
+\begin{align}
+	Q_k(s,a) = f(s,a;\theta_k) + \beta p(s,a;\hat{\theta}_k).
+\end{align}
+%
+Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat{\theta}_k$ of the prior network $p$ are fixed to the randomly initialized values. A parameter $\beta$ scales the importance of the networks. With the two networks, the loss function in Eq.~\ref{eq:loss} becomes
+%
+\begin{align}
+	\label{eq:loss_boot}
+	L(\theta_k) = \mathbb{E}_M \Big[ & (r + \gamma \max_{a'} (f_{\theta^-_k}+\beta p_{\hat{\theta}_k})(s',a') \nonumber \\
+	& - (f_{\theta_k}+ \beta p_{\hat{\theta}_k})(s,a) )^2 \Big].
+\end{align} 
+
+Algorithm~\ref{alg:training} outlines the complete ensemble RPF method, which was used in this work. An ensemble of $K$ trainable and prior neural networks are first initialized randomly. Each ensemble member is also assigned a separate experience replay memory buffer $m_k$ (although in a practical implementation, the replay memory can be designed in such a way that it uses negligible more memory than a shared buffer). For each new training episode, a uniformly sampled ensemble member, $\nu \sim \mathcal{U}\{1,K\}$, is used to greedily select the action with the highest $Q$-value. This procedure handles the exploration vs. exploitation trade-off and corresponds to a form of approximate Thompson sampling. Each new experience $e = (s_i, a_i, r_i, s_{i+1})$ is then added to the separate replay buffers $m_k$ with probability $p_\mathrm{add}$. Finally, the trainable weights of each ensemble member are updated by uniformly sample a mini-batch $M$ of experiences and using stochastic gradient descent (SGD) to backpropagate the loss of Eq.~\ref{eq:loss_boot}.
+
+\begin{algorithm}[!t]
+	\caption{Ensemble RPF training process}\label{alg:training}
+	\begin{algorithmic}[1]
+		\For{$k \gets 1$ to $K$}
+			\State Initialize $\theta_k$ and $\hat{\theta}_k$ randomly
+			\State $m_k \gets \{\}$
+		\EndFor
+		\State $i \gets 0$
+		\While{networks not converged}
+			\State $s_i \gets $ initial random state
+			\State $\nu \sim \mathcal{U}\{1,K\}$%, where $k \in \mathbb{N}$
+			\While{episode not finished}
+				\State $a_i \gets \argmax_{a} Q_\nu(s_i,a)$
+				\State $s_{i+1}, r_i \gets $ \Call{StepEnvironment}{$s_i, a_i$}
+				% \For{$i \in \{1,\dotsc,K\}$}
+				\For{$k \gets 1$ to $K$}
+					\If{$p \sim \mathcal{U}(0,1) < p_\mathrm{add}$}%, where $p \in \mathbb{R}$ 
+						\State $m_k \gets m_k \cup \{(s_i, a_i, r_i, s_{i+1})\}$
+					\EndIf
+					\State $M \gets $ sample mini-batch from $m_k$
+					\State update $\theta_k$ with SGD and loss $L(\theta_k)$
+				\EndFor
+				\State $i \gets i + 1$
+			\EndWhile
+		\EndWhile
+	\end{algorithmic}
+\end{algorithm}
+
+
+\tommy{Confidence criterion}
+
+The agent's uncertainty in choosing different actions can be defined as the coefficient of variation\footnote{Ratio of the standard deviation to the mean.} $c_\mathrm{v}(s,a)$ of the $Q$-values of the ensemble members.  
+In previous work, we introduced a confidence criterion that disqualifies actions with $c_\mathrm{v}(s,a) > c_\mathrm{v}^\mathrm{safe}$, where $c_\mathrm{safe}$ is a hard threshold~\cite{Hoel2020}. 
+The value of the threshold should be set so that $(s,a)$ combinations that are contained in the training distribution are accepted, and those which are not will be rejected. This value can be determined by observing values of $c_\mathrm{v}$ in testing episodes within the training distribution, see Sect.~\ref{sec:resultsWithinDistribution} for further details. 
+
+
+% A high uncertainty, where $c_\mathrm{v}(s,a) > c_\mathrm{v}^\mathrm{safe}$, indicates that $(s,a)$ is outside the training distribution. The parameter value $c_\mathrm{safe}$ can be set just above the observed values of $c_\mathrm{v}$ in testing episodes within the training distribution, see Sect.~\ref{sec:resultsWithinDistribution} for further details.
+
+When the agent is fully trained (i.e., not during the training phase), the policy chooses actions by maximizing the mean of the $Q$-values of the ensemble members, with the restriction $c_\mathrm{v}(s,a) < c_\mathrm{v}^\mathrm{safe}$, i.e.,
+%
+\begin{equation}
+	\begin{aligned}
+		\argmax_{a} \frac{1}{K} \sum_{k=1}^K Q_k(s,a),\\
+		\textrm{s.t.} \quad c_\mathrm{v}(s,a) < c_\mathrm{v}^\mathrm{safe}.
+	\end{aligned}
+\end{equation}
+%
+In a situation where no possible action fulfills the confidence criterion, a fallback action $a_\mathrm{safe}$ is chosen.
+
+
+
 \subsection{Simulated experiments}
+\todo{show the difference of having the uncertainty estimate not having the estimate}
+
 \subsection{Results and discussion}
+We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
+
 
 \section{Uncertainty of the intention}
 In paper A the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
 
 \subsection{Approach}
 We create a belief state using the probability distribution of estimated intention and compare four different methods of handling that 
+
 \subsection{Simulated experiments}
+
 \subsection{Results and discussion}
+We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
+The other work show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 
