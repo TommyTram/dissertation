@@ -35,18 +35,22 @@ The optimal value function $V^*$ is unique and follows the Bellman equation:
     V^*(s)= \max_{a} \left[ R(s, a) + \gamma \sum_{s'} T(s,a,s') V^*(s') \right].
     \label{eq:bellman}
 \end{equation}
+
 From the bellman equation one can deduce a state-action value function $Q(s,a)$ that satisfies $V^*(s)=\max_a Q(s,a)$. Given this Q function, a policy can be derived as $\pi(s) = \argmax_a Q(s,a)$. 
 
 The discount factor $\gamma$ will affect the results of the optimization problem. A discount factor set close to $0$ will make immediate rewards more important while a $\gamma$ closer to $1$ would give some weight to expected future reward as well. 
 
 \subsection{Partially observable Markov decision process}\label{section:pomdp}
-In many problems, the entire state of the environment is not always directly accessible to the agent. In these cases it is more common to use a \gls{pomdp}, which is an extension to the \gls{mdp} that can handle state uncertainty. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but it has two additional elements: 
+Sometimes the agent does not have direct access to the entire state of the environment. In these cases, it is more common to use a \gls{pomdp}, which is an extension to the \gls{mdp} with the ability to handle state uncertainty. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but it has two additional elements: 
 \begin{itemize}
     \item The observation space $\mathcal{O}$, which represents all possible observations that the agent can receive. This can be both discrete and continuous.
     \item The observation model $O(o|s',a)$, which describes the probability of observing $o \in \mathcal{O}$ in a given state $s'$ after taking an action $a$: $O(o,s',a)=\Pr(o|s',a)$.
 \end{itemize}
 
-In an \gls{pomdp}, events occur in the following order: from a given state $s$, the agent takes a
+\todo{continue}
+For a \gls{pomdp}, the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$. The agent then receives an observation $o$ related to $s'$ and $a$ according to the observation model $O$. 
+
+Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
 
 % \begin{itemize}
 %     \item \todo{rewrite}
