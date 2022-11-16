@@ -9,7 +9,7 @@ The way of transportation is currently evolving, and autonomous driving technolo
 Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world. One clear benefactor of the new deep learning technics are the perception systems~\cite{Janai2020}. 
 % The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
 However, for scenarios complex scenarios such as urban intersections and round about with dense traffic remain challenging for autonomous vehicles. 
-This thesis presents methods for generating efficient and scalable decision strategies for autonomous vehicles. In this chapter we formulate the problem for a tactical decision maker and present the research questions that are investigated in this thesis. 
+This thesis presents methods for generating efficient and scalable decision strategies for autonomous vehicles. In this chapter we introduce the problem of for tactical decision making in \gls{ad}, the scenarios that is studied, and a system architecture that separates the decision maker from the safety assurance. Then, the research questions, scope, limitations and contributions of this thesis is presented. 
 
 \section{Autonomous Driving}
 
@@ -26,7 +26,7 @@ An unsignalized intersection is defined as any junction of two or more roads whe
 Recently nontraditional intersections are also becoming increasingly popular. The goal of these designs is to reduce the number and/or severity of conflict points by altering the customary vehicular paths at the intersection. In light of the increased focus on and occurrence of these intersection types, it is expected that the application of nontraditional designs will continue to spread.
 
 In this thesis we draw a separation between scenario and intersection. An intersection refers the geometrical shape of the intersection, like number of junctions, conflict points, turns and angle of incidence. While a scenario is defined as the combination of intersection and traffic participants and their intentions. 
-For more details on specific intersections, see Section ~\ref{ch:modeling_intersection}.
+More detail on the specific intersections and scenarios considered in this work is presented in Chapter~\ref{ch:modeling_intersection}.
 
 \tommy{what we want to say here is: define an unsignalized intersection. There are many variations. Roundabouts are defined as unsignalized intersection. To satisfy the requirement of being able to drive anywhere for level 5 it is necessary to find a method that can scale to these different scenarios}
 \tommy{maybe define intersection as the map, and scenario as the combination of traffic participants and their intentions.}
@@ -74,73 +74,16 @@ Instead, we proposed that the decision making algorithms presented in this paper
 
 % \todo{include a description of ISO26262, motivate a redundant system for Asil D, making it important to separate the scope of the tactical decision making agent to be comfortable and efficient. Efficiency can be measured in different ways, but in this paper we refer to change in acceleration, number of times the agent reaches an undesired terminal state and the time it takes to reach the goal.}
 
-\tommy{FIND A SECTION some discussion. Collisions in this thesis, may sound critical and extreme. But collisions in this content is for the purpose of the simulator and for the terminal state of the agent. Translated to a system perspective, it would mean that a backup collision avoidance algorithm had to interfere and in the worst case take over. }
+
 
 \section{Approach}
 Human driving can be described as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
 This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
 A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
 In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
+Investigate how \gls{rl} methods can be used in practice to create a tactical decision making agent for \gls{ad}.
 
-\tommy{what do I want to say about figure \ref{fig:zones}? This is an example of a discretized }
 
-\begin{figure}[t]\label{fig:zones}
-	\mbox{\parbox{\textwidth}{
-		\centering
-		\begin{tikzpicture}
-			\def\xstart{-7};
-
-			% Zones
-			% \fill [green] (3,-1) rectangle (1,1);
-			% \node[rectangle,
-			% 	draw=white,
-			% 	text = olive,
-			% 	fill = green!30!black,
-			% 	minimum width = 2cm, 
-    	% 	minimum height = 2cm] 
-			% 	(z0) at (2,0) {0};
-			% \node[rectangle,
-			% 	draw=white,
-			% 	text = olive,
-			% 	fill = green!30!black,
-			% 	minimum width = 2cm, 
-    	% 	minimum height = 2cm] 
-			% 	(z1) at (z0.west)-(2,0) {1};
-			% \fill [red] (1,1) rectangle (-1,-1);
-			% \fill [orange] (-1,-1) rectangle (-3.5,1);
-			% \fill [gray] (-3.5,1) rectangle (\xstart,-1);
-
-			% \node[xshift=0 cm,draw,minimum height=1cm,minimum width=\w cm,anchor=west,outer sep=0pt]{\n};
-
-			% \node at (-2,4) {\Huge $1$};
-
-			% Crossing
-			\draw[line width=0.5mm] (\xstart, 1) -- (-1, 1) -- (-1, 5);
-			\draw[line width=0.5mm] (\xstart, -1) -- (-1, -1) -- (-1, -2);
-			\draw[line width=0.5mm] (1, 5) -- (1, 1) -- (3, 1);
-			\draw[line width=0.5mm] (1, -2) -- (1, -1) -- (3, -1);
-
-			% \draw (-3, 0) -- (2, 0);
-			% \draw (0, 3) -- (0, -2);
-			
-			% cars
-			\node[inner sep=0pt] (ego_car) at (-7,0)
-			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
-		%		\draw (-5, -0.5) rectangle ++(2, 1);s
-			\node[inner sep=0pt] (target_car) at (0,4)
-			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-		%		\draw (-0.5, 3) rectangle ++(1, 2);
-
-	\end{tikzpicture}
-	}}
-
-	% \mbox{\parbox{.7\textwidth}{
-	% 		\centering
-	% 		\includegraphics[width=\linewidth]{YourThesis/chapters/figures/Q state.pdf} 
-	% }}
-	\caption{Example of the potential q values in different states depending on the intention of the other driver}
-	\label{fig:q_state}
-\end{figure}
 
 \begin{enumerate}
 	\item We want to drive through intersections. 
@@ -151,16 +94,19 @@ In some cases like highway driving the uncertainty is very low, but when it come
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
-	(specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
-	\item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
-	LSTM or other netowrk structures can find the hidden state that is intention. 
-	\item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
+	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving through an unsignalized intersection?
+	% \item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
+	% (specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
+	\item[\textbf{Q2.}] Can we find a good driving policy without explicitly predicting other drivers intentions?
+	% \item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
+	% LSTM or other netowrk structures can find the hidden state that is intention. 
+	\item[\textbf{Q3.}] How can AD domain knowledge and models be used to improve the action and state space for a RL agent? 
+	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
 	\item[\textbf{Q4.}] How can the quality of a RL agent be improved by accounting for uncertainty?
 	(How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
 
-	\item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
-	(PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
+	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
+	% (PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
 \end{enumerate}
 
 

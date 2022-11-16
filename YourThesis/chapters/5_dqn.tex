@@ -1,10 +1,14 @@
 \chapter{Learning without a model}
+\begin{center}
+\textit{\textbf{RQ 1: How can RL be used to create a decision-making agent for autonomous driving through an unsignalized intersection?}}
+\end{center}
+\vspace{12pt}
 \tommy{Deep Q-learning approach}
 We want to formulate the problem in such a way that abstracts the information of traffic lights, traffic signs and intention. This way the car is closer to L5 by not relying on the different traffic lights.
 
 One motivation example is in how traffic lights works. In Sweden, we have sensors that can sense if there are cars in an intersection and create a traffic light schedule accordingly, compared to the US where the traffic signals set up using timers. As a consequence, Drivers approaching a yellow light 
 
-The \gls{dqn} algorithm uses a \gls{nn} and has two disadvantages. One is that the size of the network is fixed, this forces the input space to be fixed. Our state space is defined by the physical state of the surrounding cars, and the number of cars we observe at each situation variate. Therefor we need a way to invariate of 
+The \gls{dqn} algorithm uses a \gls{nn} and has two disadvantages. One is that the size of the network is fixed, this forces the input space to be fixed. Our state space is defined by the physical state of the surrounding cars, and the number of cars we observe at each situation variate. %Therefor we need a way to invariate of 
 
 \section{Approach (State representation, observable and unobservable)}
 This paper explored the possibility of solving the problem with \gls{rl} by trying a verity of different methods from the rainbow paper with the addition to the LSTM layer and presented the results that had the highest impact on the conversion. 
@@ -31,3 +35,5 @@ however sensitive to noise.
 LSTM take into account the history, but when applied in the real world with noise the model did not perform as well. 
 The immidiate reward for jerk is 
 \tommy{finding time to intersection and position itself in a way that does not conflict with other cars.}
+
+\tommy{FIND A SECTION. Collisions in this thesis, may sound critical and extreme. But collisions in this content is for the purpose of the simulator and for the terminal state of the agent. Translated to a system perspective, it would mean that a backup collision avoidance algorithm had to interfere and in the worst case take over. }

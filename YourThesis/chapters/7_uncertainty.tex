@@ -87,7 +87,9 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 In paper A the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
 
 \subsection{Approach}
-We create a belief state using the probability distribution of estimated intention and compare four different methods of handling that 
+
+
+Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
 
 \subsection{Simulated experiments}
 

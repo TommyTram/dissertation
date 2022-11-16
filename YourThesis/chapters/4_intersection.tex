@@ -1,6 +1,12 @@
 % !TEX root=../../Thesis.tex
 \chapter{Modeling Intersection Driving Scenarios}
 \label{ch:modeling_intersection}
+
+\begin{center}
+  \textit{\textbf{RQ 1: How can RL be used to create a decision-making agent for autonomous driving through an unsignalized intersection?}}
+  \end{center}
+  \vspace{12pt}
+  
 To be able to derive algorithms for decision making we must first describe the mathematical formulation of the problem.  
 
 \section{Intersection scenarios}
@@ -30,7 +36,45 @@ designing the reward model from the objective we are trying to achieve. this is 
 Why is it hard. 
 \tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
 
-With the \gls{mdp}, defined a typical intersection can be described as in Figure \ref{fig:intersection_zone}. From the figure we can divide the path of the ego vehicle into four zones. Starting from the end, zone 0 is the "safe zone" where the ego is our of danger and can return to nominal driving. Zone 1 is the conflict zone, this is where there is a possibility to collide with another vehicle. Zone 2 is critical decision zone, where this is the last chance the vehicle has to stop or cross. We define the size of this zone as the minimal distance the car needs to come to a complete stop to the start of the conflict zone. The final zone is zone 3, the information gathering zone, and is the furthest from the intersection and where the agent can observe the scenario and the other vehicles behavior over time. 
+\begin{figure}[t]
+	\mbox{\parbox{\textwidth}{
+		\centering
+		\begin{tikzpicture}
+			\def\xstart{-7};
+
+			\coordinate (p) at (3,0);
+			\foreach \n/\w/\c in {z0/2/green,z1/2/red,z2/2.5/orange,z3/3.5/blue}{
+				\node[rectangle,
+				draw=none,
+				anchor=east,
+				text = black,
+				fill = \c!60,
+				minimum width = \w cm, 
+				minimum height = 2cm] 
+				(n) at (p) {\Huge \n};
+				
+				\coordinate (p) at (n.west);
+			}
+
+			% Crossing
+			\draw[line width=0.5mm] (\xstart, 1) -- (-1, 1) -- (-1, 5);
+			\draw[line width=0.5mm] (\xstart, -1) -- (-1, -1) -- (-1, -2);
+			\draw[line width=0.5mm] (1, 5) -- (1, 1) -- (3, 1);
+			\draw[line width=0.5mm] (1, -2) -- (1, -1) -- (3, -1);
+			
+			% cars
+			\node[inner sep=0pt] (ego_car) at (-7,0)
+			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+			\node[inner sep=0pt] (target_car) at (0,4)
+			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+
+	\end{tikzpicture}
+	}}
+	\caption{Intersection scenario divided into zones describing what is required of the decision maker in different zones}
+	\label{fig:zones}
+\end{figure}
+
+With the \gls{mdp}, defined a typical intersection can be described as in Figure \ref{fig:zones}. From the figure we can divide the path of the ego vehicle into four zones. Starting from the end, zone 0 is the "safe zone" where the ego is our of danger and can return to nominal driving. Zone 1 is the conflict zone, this is where there is a possibility to collide with another vehicle. Zone 2 is critical decision zone, where this is the last chance the vehicle has to stop or cross. We define the size of this zone as the minimal distance the car needs to come to a complete stop to the start of the conflict zone. The final zone is zone 3, the information gathering zone, and is the furthest from the intersection and where the agent can observe the scenario and the other vehicles behavior over time. 
 
 the goal is to reach zone 0, 
 to do this the agent would want to minimize the time in zone 1, if there is chance of intersection with another car.
