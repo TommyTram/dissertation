@@ -76,22 +76,43 @@ Instead, we proposed that the decision making algorithms presented in this paper
 
 \tommy{FIND A SECTION some discussion. Collisions in this thesis, may sound critical and extreme. But collisions in this content is for the purpose of the simulator and for the terminal state of the agent. Translated to a system perspective, it would mean that a backup collision avoidance algorithm had to interfere and in the worst case take over. }
 
-\section{Problem formulation}
-\tommy{what do I want to say about figure \ref{fig:q_state}? This is an example of a discretized }
+\section{Approach}
+Human driving can be described as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
+This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
+A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
+In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
 
-\begin{figure}[t]
+\tommy{what do I want to say about figure \ref{fig:zones}? This is an example of a discretized }
+
+\begin{figure}[t]\label{fig:zones}
 	\mbox{\parbox{\textwidth}{
 		\centering
 		\begin{tikzpicture}
 			\def\xstart{-7};
 
 			% Zones
-			\fill [green] (3,-1) rectangle (1,1);
-			\fill [red] (1,1) rectangle (-1,-1);
-			\fill [orange] (-1,-1) rectangle (-3.5,1);
-			\fill [gray] (-3.5,1) rectangle (\xstart,-1);
+			% \fill [green] (3,-1) rectangle (1,1);
+			% \node[rectangle,
+			% 	draw=white,
+			% 	text = olive,
+			% 	fill = green!30!black,
+			% 	minimum width = 2cm, 
+    	% 	minimum height = 2cm] 
+			% 	(z0) at (2,0) {0};
+			% \node[rectangle,
+			% 	draw=white,
+			% 	text = olive,
+			% 	fill = green!30!black,
+			% 	minimum width = 2cm, 
+    	% 	minimum height = 2cm] 
+			% 	(z1) at (z0.west)-(2,0) {1};
+			% \fill [red] (1,1) rectangle (-1,-1);
+			% \fill [orange] (-1,-1) rectangle (-3.5,1);
+			% \fill [gray] (-3.5,1) rectangle (\xstart,-1);
 
-			% \node at (0,4) {\Huge $1$};
+			% \node[xshift=0 cm,draw,minimum height=1cm,minimum width=\w cm,anchor=west,outer sep=0pt]{\n};
+
+			% \node at (-2,4) {\Huge $1$};
 
 			% Crossing
 			\draw[line width=0.5mm] (\xstart, 1) -- (-1, 1) -- (-1, 5);
