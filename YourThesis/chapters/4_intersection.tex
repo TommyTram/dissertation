@@ -7,36 +7,101 @@
   \end{center}
   \vspace{12pt}
   
+As previously mentioned in Section~\ref{sec:intro_approach}, driving through an intersection is a sequential decision making problem and can be mathematically formulated using a \gls{pomdp}, introduced in Section~\ref{sec:pomdp}. This Chapter defines the \gls{pomdp} for the intersection studied in this thesis, by 
 To be able to derive algorithms for decision making we must first describe the mathematical formulation of the problem.  
 
 \section{Intersection scenarios}
+% \begin{figure}
+%   \mbox{\parbox{\textwidth}{\label{fig:intersection_scenario}
+% 	\centering
+% 	\begin{tikzpicture}
+
+%     % Crossing
+%     \def\crossverticalx{0}
+%     \def\crosstopy{8}
+%     \def\crossboty{-2.5}
+%     \def\crossleftx{-7}
+    
+%     \draw[thick] (\crossleftx, 1) -- (-1, 1) -- (-1, \crosstopy);
+%     \draw[thick] (\crossleftx, -1) -- (-1, -1) -- (-1, \crossboty);
+%     \draw[thick] (1, \crosstopy) -- (1, 1) -- (3, 1);
+%     \draw[thick] (1, \crossboty) -- (1, -1) -- (3, -1);
+    
+%     % cars
+%     \node[inner sep=0pt] (ego_car) at (-6,0)
+%     {\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+%     \draw[->] ([yshift=0.2cm]ego_car.east) -- node[above] {$v^{ego}$} ($ (ego_car) + (2,0.2)$ );
+%     \draw[|-|] ([yshift=-0.2cm]ego_car.east) -- node[below] {$p^{ego}_{0}=v^{ego}*\tau_{int}$} (-1,-0.2);
+  
+%     \node[inner sep=0pt] (target_car_3) at (0,7)
+%     {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+%     \node (tc_text3a) [right=of target_car_3, align=center] {Car 3};
+%     \node (tc_text3b) [left=of target_car_3, align=center] {Conflict Car};
+%     \draw[->] ([xshift=0.3cm]target_car_3.south) -- node[right] {$v^{3}_0$} ($ (target_car_3) + (.3,-2)$ );
+%     \draw[|-|] ([xshift=-0.8cm]target_car_3.south) -- (-.8,1);
+%     \node (tc_tti) [below left= 0.9cm and -0.7cm of target_car_3, align=center] {$p^3_{0}$  \\ $\tau_{int}$};
+  
+%     \node[inner sep=0pt] (target_car_2) at (0,2.5)
+%     {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+%     \node (tc_text2) [right=of target_car_2] {Car 2};
+    
+%     \node[inner sep=0pt] (target_car_1) at (0,-1.5)
+%     {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+%     \node (tc_text1) [right=of target_car_1] {Car 1};
+  
+%     \end{tikzpicture}
+%   }}
+% 	\caption{Observations that makes the state}
+	
+% \end{figure}
+
+Figure \ref{fig:intersection_scenario} shows a simple intersection with one crossing point. 
 \tommy{show examples of intersections.}
 \tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
 
+
+
 \section{State space}
+From Section~\ref{sec:mdp}, the state space contains all the information necessary about the agent and environment to be able to transition to any given state. In the scenario from Figure~\ref{fig:intersection_scenario}, the red car on the horizontal lane represents the ego vehicle and the blue cars on the vertical lane are the other vehicels. 
+Let's start by defining the information needed. Starting with the terminal states: goal, to know if this state is reached we need to know the distance from ego to goal $p_{goal}$. Collision, we need to know the position of all surrounding traffic participants and a description of the intersection itself. Instead of using a Cartesian coordinate system, we propose using relative distance measures instead. This way, states describing the intersection and its participants are generalizable to different intersection designs, e.g., the angle of incidence and number of crossing points. 
+The we have velocity and acceleration of all the traffic participants, to be able to predict what position they will be in the next state. Finally, the intention of all the other participants. This state is necessary to efficently navigate through an interdection. \paperBelief shows a comparision between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
+\paperLSTM proposed the first set of states. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
 \tommy{Coordinate system, distances to intersection, position, velocity and accelration of other vehicles. abstract away the information about traffic lights, traffic signs, as intention}
 
 \section{Action space}
 \tommy{options, take way, give way, follow car}
-short term goals presented in \paperLSTM.
+One of the limitations of deep Q-learning is that the action space has to be discreet. In other work it is common to set the action space to diffecnt acceleration request. However, we propose using short term goals as actions, this is also refered to as options \cite{options}. The short term goals are high level objectives like stop at the start of the intersection, follow car with id 1 or drive through the intersection at the reference speed. 
+This high level action is then sent to a sliding mode controller that generates an acceleration. 
+In \paperMPC the actions is sent to a \gls{mpc} to generate a velocity profile that considers consecutive intersection points, this appoach is decribed in more detail in Chapter~\ref{ch:mpc}.  
 
 \section{Transistion model}
+In this work the transision model is not known to the agent and \gls{rl} is used to learn this model through experience, by taking actions at different states in an environment and recording the reward and what state the agent transition into.
+the environment in this work is a simulator and the main thing the agent is traying to learn is the transision of the other vehicles which depends on their intentions. 
+The intentions are models as predetermined actions while folloing a \gls{idm} ontop of that. This makes the interaction between cars more complicated. 
 \tommy{IDM, and other agents behaviors/intentions.}
+\paperLSTM random parameters, speeds and spawn rates. 
+\paperMPC cautious, give way, take way
+
 
 \subsection{Simulation scenarios or simulator}
 parameters, randomized cars. Behaviors. spawn rates and more. up to four cars. 
+singla crossing, double crossing, 
 
 \section{Observation model}
+The observation model can be interpeted as the noise from the sensors, \paperLSTM assumes perfect sensing while \paperBelief has some added noise to the observed states. 
+The observation space is usually the same as the state space without the intention state. Because there are no sensors that can detect other drivers intentions. 
 \tommy{Everything in the state space except intention. Everything that is observable through the sensors in the car. }
 
 \section{Reward function}
 designing the reward model from the objective we are trying to achieve. this is not the optimal values. We are starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
-
+All papers formulated the reward based on the terminal states: goal, collision and timeout. 
+\paperLSTM and \paperMPC has a continious negative reward for change in acceleration to punish jerk that would come from changing between actions that would make it uncomfortable for the passengers. 
+\paperLSTM also gives a relative large negative reward for choosing to follow a car that does not exist. 
 \section{Discussion}
 Why is it hard. 
 \tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
 
-\begin{figure}[t]
+\begin{figure}
 	\mbox{\parbox{\textwidth}{
 		\centering
 		\begin{tikzpicture}

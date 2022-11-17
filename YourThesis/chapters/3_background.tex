@@ -3,15 +3,15 @@
 This chapter briefly introduce the \gls{pomdp} framework and reinforcement learning. A more comprehensive overview of \gls{pomdp}s and \gls{rl} is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based. The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
 
 \section{Markov decision process}\label{sec:mdp}
-A \gls{mdp} is a mathematical framework for modeling discrete time sequential decision making problems. It involves an agent making decisions in an environment evolving over time according to a stochastic process. The state of the environment contains all the information necessary about the agent and environment at a given time to be able to transition to a next state. This property is referred to as the Markov property. 
+A \gls{mdp} is a mathematical framework for modeling discrete time sequential decision making problems. It involves an agent making decisions in an environment evolving over time according to a stochastic process. The state of the environment contains all the information necessary about the agent and environment at a given time to be able to transition to any given state. This property is referred to as the Markov property. 
 
 The \gls{mdp} is formally defines as the tuple $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$, described by the following list~\cite{Kochenderfer2015}:
 \begin{itemize}
     \item The state space $\mathcal{S}$ represents the set of all possible states of the environment. This set could consist of both discrete and continuous states.
     \item The action space $\mathcal{A}$ represents the set of all possible actions the agent can take. The action space can  consist of both discrete and continuous actions. Since this thesis focuses on high-level decision-making, only discrete actions are considered.
     \item The state transition model $T(s' \mid s,a)$ describes the probability $\Pr(s' \mid s,a)$ that the system transitions to the next state $s' \in \mathcal{S}$ from state $s \in \mathcal{S}$ when action $a \in \mathcal{A}$ is taken.
-    \item The reward function $R(s,a)$ returns a scalar reward or penalty $r$ for each action $a$ an agent takes in a given state $s$. The design of the reward function should reflect on the overall objective that the agent should maximize.
-    \item The discount factor $\gamma \in [0,1)$ is a scalar that discounts the value of future rewards. A low discount factor $\gamma = 0$ would lead to an agent only consider the immediate reward.
+    \item The reward function $R(s,a)$ returns a scalar reward $r$ for each action $a$ an agent takes in a given state $s$. The design of the reward function should reflect on the overall objective that the agent should maximize.
+    \item The discount factor $\gamma \in [0,1)$ is a scalar that discounts the value of future rewards. The discount factor $\gamma$ will affect the results of the optimization problem. A discount factor set close to $0$ will make immediate rewards more important while a $\gamma$ closer to $1$ would give some weight to expected future reward as well. 
 \end{itemize}
 
 A policy $\pi$ is defined as the mapping from state to action and the goal of the agent is to take a sequence of actions that maximize the accumulated reward. The value of being in a state while following a policy is described by the value function
@@ -26,10 +26,8 @@ The optimal value function $V^*$ is unique and follows the Bellman equation:
 
 From the bellman equation one can deduce a state-action value function $Q(s,a)$ that satisfies $V^*(s)=\max_a Q(s,a)$. Given this Q function, a policy can be derived as $\pi(s) = \argmax_a Q(s,a)$. 
 
-The discount factor $\gamma$ will affect the results of the optimization problem. A discount factor set close to $0$ will make immediate rewards more important while a $\gamma$ closer to $1$ would give some weight to expected future reward as well. 
-
-\subsection{Partially observable Markov decision process}\label{section:pomdp}
-Sometimes the agent does not have direct access to the entire state of the environment. In these cases, it is more common to use a \gls{pomdp}, which is an extension to the \gls{mdp} with the ability to handle state uncertainty. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but it has two additional elements: 
+\subsection{Partially observable Markov decision process}\label{sec:pomdp}
+Sometimes the agent does not have direct access to the entire state of the environment. In these cases, it is more common to use a \gls{pomdp}, which is an extension to the \gls{mdp} that also models state uncertainty. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but it has two additional elements: 
 \begin{itemize}
     \item The observation space $\mathcal{O}$, which represents all possible observations that the agent can receive. This can be both discrete and continuous.
     \item The observation model $O(o|s',a)$, which describes the probability of observing $o \in \mathcal{O}$ in a given state $s'$ after taking an action $a$: $O(o,s',a)=\Pr(o|s',a)$.
@@ -37,7 +35,7 @@ Sometimes the agent does not have direct access to the entire state of the envir
 
 For a \gls{pomdp}, the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$. The agent then receives an observation $o$ related to $s'$ and $a$ according to the observation model $O$. 
 
-In this paper, the observable states are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} specifies the \gls{pomdp} used in this work. 
+In this paper, the observable states are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} formulates the \gls{pomdp} studied in this work. 
 
 % Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
 

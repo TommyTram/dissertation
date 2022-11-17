@@ -1,4 +1,4 @@
-\chapter{Introduction}\label{chapter:intro}
+\chapter{Introduction}\label{ch:intro}
 The way of transportation is currently evolving, and autonomous driving technology is expected to have a big impact on this transformation. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requirement of a present human for each transportation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}.
 
 \todo{cite future of mixed-autonomy}
@@ -39,13 +39,13 @@ More detail on the specific intersections and scenarios considered in this work 
 The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018, koretenkamp2016}. 
 \begin{figure}[t]
 \centering
-\mbox{\parbox{\textwidth}{
+\mbox{\parbox{\textwidth}{\label{fig:system_architecture}
 		\centering
 		\includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf} %We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.   
 }}
 \caption{Representation of the system architecture.
 }
-\label{fig:system_architecture}
+
 \end{figure}
 
 The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
@@ -57,7 +57,7 @@ At the same time, a reactive, collision avoidance, module make sure that the cho
 In the industry today the main standard for functional safety in motorized vehicles is the ISO 26262 standard, titled "Road vehicles – Functional safety"~\cite{ISO26262}. It uses a \gls{asil} to classify the inherent safety risk in an automotive system and the functions or modules of such a system. The \gls{asil} classification is used to express the level of risk reduction required to prevent a specific hazard, from \gls{asil} D to \gls{asil} A. \gls{asil} D represents the highest hazard level and \gls{asil} A the lowest. There is a level with no safety relevance and only standard Quality Management processes are required, this level is referred to as QM.
 
 Although safety is arguably the most important part for enabling autonomous driving, the work in this paper does not make any safety guaranties. 
-Instead, we proposed that the decision making algorithms presented in this paper are used in system architecture like in Figure \ref{mpc:fig:Architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM.
+Instead, we proposed that the decision making algorithms presented in this paper are used in system architecture like in Figure \ref{fig:system_architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM.
 
 \tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
 
@@ -77,13 +77,14 @@ Instead, we proposed that the decision making algorithms presented in this paper
 
 
 \section{Approach}
+\label{sec:intro_approach}
 Human driving can be described as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
 This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
 A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
 In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
 Investigate how \gls{rl} methods can be used in practice to create a tactical decision making agent for \gls{ad}.
 
-
+\tommy{This paper focus on the DQN algorithm and investigate how far we can push it for decision making}
 
 \begin{enumerate}
 	\item We want to drive through intersections. 
@@ -103,13 +104,11 @@ The work presented in this thesis investigate the following research questions:
 	\item[\textbf{Q3.}] How can AD domain knowledge and models be used to improve the action and state space for a RL agent? 
 	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
 	\item[\textbf{Q4.}] How can the quality of a RL agent be improved by accounting for uncertainty?
-	(How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
+	% (How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
 
 	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
 	% (PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
 \end{enumerate}
-
-
 
 \section{Scope and limitations}
 The following aspects of \gls{rl} to create a tactical decision making agent for autonomous driving are not considred in this thesis. 

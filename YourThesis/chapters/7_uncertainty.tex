@@ -1,5 +1,9 @@
 \chapter{Estimating the uncertainty}
 \todo{Rewrite chapter name}
+\begin{center}
+	\textit{\textbf{RQ 3: How can the quality of a RL agent be improved by accounting for uncertainty?}}
+	\end{center}
+	\vspace{12pt}
 
 The motivation of handling uncertainty. In this chapter we present two approches to handling the uncertainty, one is the uncertainty in output of the \gls{dqn} and the other in the uncertainty of the intention estimation that is feed as an input to the \gls{dqn}.
 
@@ -53,6 +57,15 @@ Algorithm~\ref{alg:training} outlines the complete ensemble RPF method, which wa
 	\end{algorithmic}
 \end{algorithm}
 
+\begin{align*}
+r_t = &\begin{cases}
+1 & \text{at reaching the goal, }\\
+-1 & \text{at a collision},\\
+-\left(\frac{j_t}{j_{\max}}\right)^2\frac{\Delta \tau}{\tau_\mathrm{max}} & \text{at non-terminating steps.}
+% \label{eq:reward}
+\end{cases} 
+\end{align*}
+
 
 \tommy{Confidence criterion}
 
@@ -94,5 +107,92 @@ Because the state is no longer observable, the agent must reason about the histo
 \subsection{Simulated experiments}
 
 \subsection{Results and discussion}
+
+\begin{figure}[!t]
+	\mbox{\parbox{\textwidth}{
+	\centering
+	\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
+	}}
+	\caption{Proportion of test episodes where the ego vehicle reached its goal (dashed), and episode return (solid), over training steps for the ensemble RPF and DQN methods. The shaded areas show the standard deviation for $5$ random seeds.}
+	% \label{fig:returnAndSuccess}
+\end{figure}
+
+% ZZZ Change left y-axis to percent, to make it more clear that it refers to a proportion
+
+\begin{figure}[!t]
+	\mbox{\parbox{\textwidth}{
+	\centering
+		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
+		}}
+		\caption{Mean coefficient of variation $c_\mathrm{v}$ for the chosen action during the test episodes. The dark shaded area shows percentiles $10$ to $90$, and the bright shaded area shows percentiles $1$ to $99$.}
+	% \label{fig:cv}
+\end{figure}
+
+\begin{figure}[!t]
+	\mbox{\parbox{\textwidth}{
+	\centering
+		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_at_collision_wo_type_3_fonts.pdf}
+		}}
+		\caption{Uncertainty $c_\mathrm{v}$ during the time steps before one of the collisions in the test episodes, within the training distribution. The collision occurs at $t=0$ s.}
+	% \label{fig:cvDuringCrash}
+\end{figure}
+
+\begin{figure}[!t]
+	\mbox{\parbox{\textwidth}{
+		\centering
+	\begin{subfigure}[]{0.99\columnwidth}
+	\centering
+		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/collisions_outside_distribution_2_wo_type_3_fonts.pdf}
+		\caption{Proportion of collisions.}
+	\end{subfigure}
+	
+	\vspace{5pt}
+	
+	\begin{subfigure}[]{0.99\columnwidth}
+	\centering
+		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/activation_rate_2_wo_type_3_fonts.pdf}
+		\caption{Proportion of episodes where $a_\mathrm{safe}$ was used at least once.}
+	\end{subfigure}
+	\caption{Performance of the ensemble RPF agent, with and without the confidence criterion, and the DQN agent, in test episodes with different set speeds $v_\mathrm{d}^j$ for the surrounding vehicles. %The shaded areas show the standard deviation for $5$ random seeds.
+	}
+	}}
+	% \label{fig:performanceOutsideDistribution}
+\end{figure}
+
+\begin{figure}[!t]
+	\mbox{\parbox{\textwidth}{
+	\centering
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen1.pdf}
+		\caption{$t=0$, initial situation.}
+	\end{subfigure}%
+	~ 
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen2.pdf}
+		\caption{$t=1$, DQN and ensemble RPF without confidence criterion.}
+	\end{subfigure}
+	
+	\vspace{5pt}
+	
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen3.pdf}
+		\caption{$t=1$, ensemble RPF with confidence criterion.}
+	\end{subfigure}
+	~ 
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen4.pdf}
+		\caption{$t=1.5$, ensemble RPF with confidence criterion.}
+	\end{subfigure}
+	}}
+	\caption{Example of a situation outside of the training distribution,
+	where there would be a collision if the confidence criterion is not used. The vehicle at the top is here approaching the crossing at $20$ m/s.}
+	% \label{fig:collisionOutsideDistribution}
+
+\end{figure}
+
 We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
 The other work show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 

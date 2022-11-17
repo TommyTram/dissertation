@@ -7,7 +7,7 @@
 \renewcommand{\r}{{\mathbf{r}}}
 
 
-\chapter{Combining reinforcement learning and model based optimization}
+\chapter{Combining reinforcement learning and model based optimization}\label{ch:mpc}
 \begin{center}
 \textit{\textbf{RQ 3: How can AD domain knowledge and models be used to improve the action and state space for a RL agent?}}
 \end{center}
@@ -26,9 +26,11 @@ The reward function takes in the predicted outcome of the model in the MPC and c
 
 \tommy{in this work we simulate three different intention agents, take way, give way and cautious agent.}
 \begin{figure}[t!]
+	\mbox{\parbox{\textwidth}{
 	\centering
 	% \vspace{0.3cm}
 	\includegraphics[width=0.7\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
+	}}
 	\caption{Example of how velocity profile of the different intention agents can look like. All agents have the same starting velocity of $12$m/s and are approaching the same intersection}
 	% \label{fig:intention_profiles}
 	% \vspace{-0.3cm}
@@ -101,4 +103,52 @@ The reference points, $\r^\x_k$, $\r^\u_k$ are assumed to be set-points of a con
 \section{Simulated experiments}
 We show the difference in a multi crossing scenario where the MPC can plan a path for both intersections while our previous DQN only handles one at a time. 
 
+\begin{figure}[t]
+	\mbox{\parbox{\textwidth}{
+	\centering
+	\includegraphics[width=.95\columnwidth]{YourThesis/papers/mpc/figures/figures-scenarios.pdf}
+	}}
+	\caption{Illustration of a intersection scenario, where the solid line is a single crossing and together with the dashed line creates a double crossing.}
+	% \label{fig:scenario}
+\end{figure}
+
 \section{Results and discussion}
+
+% \begin{figure}[t!]
+	% \mbox{\parbox{\textwidth}{
+% 	\centering
+% 	\includegraphics[width=\columnwidth]{YourThesis/papers/mpc/figures/figures-successrate.pdf}
+% }}
+% 	\caption{Average MPC and SM success rate for a single corssing after evaluating the policy 300 episodes.}
+% 	\label{fig:result1}
+% \end{figure}
+
+% \begin{figure}[t!]
+% 	\centering
+% 	\includegraphics[width=\columnwidth]{YourThesis/papers/mpc/figures/figures-crashratio.pdf}
+% 	\vspace{-4em}
+% 	\caption{Average MPC and SM crash to timeout ratio for a single crossing after evaluating the policy in 300 episodes. A CTR of $0$ means that all failures are timeouts, while a CTR of $1$ means that all failures are collisions.}
+% 	\label{fig:result2}
+% \end{figure}
+
+\begin{table}[t!]
+	\mbox{\parbox{\textwidth}{
+	\centering
+	\begin{tabular}{ |p{1,6cm}||p{1,2cm}|p{1,2cm}|p{1,2cm}|p{1,2cm}|}
+	\hline
+	Controller &\multicolumn{2}{|c|}{Success Rate}
+	&\multicolumn{2}{|c|}{Timeout Ratio}\\
+	\hline
+	 & Single & Double & Single & Double\\
+	\hline
+	SM & $96.1\%$ & $90.9\%$ & $72\%$ & $93\%$\\
+	MPC & $97.3\%$ & $95.2\%$ & $45\%$ & $76\%$\\
+	\hline
+	\end{tabular}
+	}}
+	\caption{Average success rates and collision to timeout rates.}% across single and double crossings.}   
+
+% \label{tab:successrate}
+\end{table}
+
+synergies between mpc and dqn
