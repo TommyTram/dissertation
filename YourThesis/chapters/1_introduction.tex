@@ -1,18 +1,16 @@
-\chapter{Introduction}\label{ch:intro}
-The way of transportation is currently evolving, and autonomous driving technology is expected to have a big impact on this transformation. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requirement of a present human for each transportation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}.
-
-\todo{cite future of mixed-autonomy}
-% https://www.cmu.edu/traffic21/research-and-policy-papers/traffic21_policymaker_guide_summer_2021-22.pdf
+\chapter{Introduction} \label{ch:intro}
+The way of transportation is currently evolving, and autonomous driving technology is expected to have a big impact on this transformation~\cite{traffic21}. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requirement of a present human for each transportation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. Number of parking spots in cities can be reduced if the vehicle can autonomously drive itself to a less crowded area when not in use and drive itself back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
 
 \todo{Level 2: Volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
 
-Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world. One clear benefactor of the new deep learning technics are the perception systems~\cite{Janai2020}. 
+Thanks to the rapid success of deep learning during the last decades, major progress towards deploying autonomous vehicles in the real world. One clear benefactor of the new deep learning technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
 % The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
-However, for scenarios complex scenarios such as urban intersections and round about with dense traffic remain challenging for autonomous vehicles. 
-This thesis presents methods for generating efficient and scalable decision strategies for autonomous vehicles. In this chapter we introduce the problem of for tactical decision making in \gls{ad}, the scenarios that is studied, and a system architecture that separates the decision maker from the safety assurance. Then, the research questions, scope, limitations and contributions of this thesis is presented. 
+However, for complex scenarios such as urban intersections and roundabouts with dense traffic remain challenging for autonomous vehicles because it forces an interaction between road users. 
+is essential for making a good decision on when to drive or yield. 
+This thesis presents methods for generating efficient and scalable decision strategies for autonomous vehicles. In this chapter we introduce the problem of for tactical decision making in \gls{ad}, the scenarios that are studied, and a system architecture that separates the decision maker from the safety assurance system. Then, the research questions are presented in Section~\ref{sec:research_questions}. The scope and limitations are listed in Section~\ref{sec:scope}. Finally, the contributions of this thesis is presented in Section~\ref{sec:contributions}. 
 
 \section{Autonomous Driving}
-
+\label{sec:intro_ad}
 When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. L0 is a vehicle with no autonomy, whereas a fully autonomous vehicle that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like Tesla autopilot and the Volvo Pilot Assist, are classified as level 2, with the main criteria being that the driver is in control and is supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to maintain safety. For L3 and higher the responsibility of driving is on the system. At L3 the driver still has to take control over the vehicle but at the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. 
 % \tommy{Level 2: You are diving, provide steering and breaking support to the driver, lane centering and adaptive cruise control}
 The methods presented in this thesis are aimed at an autonomy level between L3 and L5. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an unsignalized intersection. 
@@ -22,10 +20,15 @@ Other traffic participants are assumed to be vehicles driven by other human driv
 
 
 \subsection{Scenarios and unsignalized intersections}
-An unsignalized intersection is defined as any junction of two or more roads where the right-of-way for a car, bicycle and pedestrian is not controlled by a regulatory (i.e., STOP or YIELD) sign or a traffic signal.
-Recently nontraditional intersections are also becoming increasingly popular. The goal of these designs is to reduce the number and/or severity of conflict points by altering the customary vehicular paths at the intersection. In light of the increased focus on and occurrence of these intersection types, it is expected that the application of nontraditional designs will continue to spread.
+\label{sec:intro_intersections}
+When a pedestrian approach a crossing they have been taught at a young age to look at both sides of the road before crossing. The same apply for a human driver approaching an intersection. 
 
-In this thesis we draw a separation between scenario and intersection. An intersection refers the geometrical shape of the intersection, like number of junctions, conflict points, turns and angle of incidence. While a scenario is defined as the combination of intersection and traffic participants and their intentions. 
+When a human driver approach an intersection, it is natural to observe the environment to identify the traffic light, signs and other approaching vehicles. 
+In this thesis an unsignalized intersection is defined as any junction of two or more roads where the right-of-way for a car, bicycle and pedestrian is not controlled by a regulatory (i.e., STOP or YIELD) sign or a traffic signal.
+The intention of the other driver can be guided by the 
+% Recently nontraditional intersections are also becoming increasingly popular. The goal of these designs is to reduce the number and/or severity of conflict points by altering the customary vehicular paths at the intersection. In light of the increased focus on and occurrence of these intersection types, it is expected that the application of nontraditional designs will continue to spread.
+
+In this thesis we draw a separation between scenario and intersection. An intersection refers the geometrical shape of the intersection, like number of junctions, conflict points, turns and angle of incidence. While a scenario is defined as the combination of an intersection, its' traffic participants, their intentions, positions and velocities. 
 More detail on the specific intersections and scenarios considered in this work is presented in Chapter~\ref{ch:modeling_intersection}.
 
 \tommy{what we want to say here is: define an unsignalized intersection. There are many variations. Roundabouts are defined as unsignalized intersection. To satisfy the requirement of being able to drive anywhere for level 5 it is necessary to find a method that can scale to these different scenarios}
@@ -76,8 +79,8 @@ Instead, we proposed that the decision making algorithms presented in this paper
 
 
 
-\section{Approach}
-\label{sec:intro_approach}
+\section{Research questions}
+\label{sec:research_questions}
 Human driving can be described as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
 This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
 A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
@@ -111,6 +114,7 @@ The work presented in this thesis investigate the following research questions:
 \end{enumerate}
 
 \section{Scope and limitations}
+\label{sec:scope}
 The following aspects of \gls{rl} to create a tactical decision making agent for autonomous driving are not considred in this thesis. 
 
 \begin{enumerate}
@@ -127,6 +131,7 @@ The following aspects of \gls{rl} to create a tactical decision making agent for
 
 
 \section{Contributions}
+\label{sec:contributions}
 \todo{Rewrite once thesis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}

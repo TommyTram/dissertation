@@ -79,7 +79,7 @@ The minimisation gives the search direction $\bm{d}_k$ for the $k$-th iteration.
 When an appropriate model $\mdp^t$ has been identified at time step $t$, the next stage of the algorithm involves model-based planning in the estimated MDP. We describe two model-based planning techniques, \textsc{ValueIteration} and \textsc{RiccatiIteration} for tabular MDPs and LQRs, respectively.
 
 \noindent\textsc{ValueIteration~.}
-Given the model, $\mdp^t$ and the associated reward function $\mathcal{R}$, the optimal value function of $\mdp^t$ can be computed iteratively using the following equation~\citep{sutton2018reinforcement}.
+Given the model, $\mdp^t$ and the associated reward function $\mathcal{R}$, the optimal value function of $\mdp^t$ can be computed iteratively using the following equation~\citep{Sutton2018}.
 \begin{equation}\label{eq:value_iteration}
     V_{\mdp^t}^{*}(s) = \underset{a}{\max} \, \sum_{s'}\mathcal{T}_{s,s'}^a\Big(\mathcal{R}(s,a)+\gamma V_{\mdp^t}^{*}(s')\Big).
 \end{equation}

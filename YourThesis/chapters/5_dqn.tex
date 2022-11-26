@@ -1,6 +1,7 @@
 \chapter{Learning without a model}
+\tommy{rebruiken ska vara som en tidningsrubrik}
 \begin{center}
-\textit{\textbf{RQ 1: Can we find a good driving policy without explicitly predicting other drivers intentions?}}
+\textit{\textbf{RQ 2: Can we find a good driving policy without explicitly predicting other drivers intentions?}}
 \end{center}
 \vspace{12pt}
 \tommy{Deep Q-learning approach}
@@ -16,10 +17,10 @@ This paper explored the possibility of solving the problem with \gls{rl} by tryi
 This section describes the general state representation used in this research that enables these methods to be generalizable for different type of intersection and crossings. 
 By describing the state space as a set of distances to intersection points, we can abstract the map layout of different intersections and the same algorithms would work for intersections variations that we haven't specifically trained on. 
 \todo{add image of intersection scenario with 90 degree entry point and 45 degree entry point.}
-\todo{Observable states}
-Position, velocity and acceleration. 
-\todo{Unobservable states}
-Intentions. Traffic lights and traffic signs. 
+\todo{Network model}
+Shared weights, DQN vs DRQN. 
+\todo{Learning tools}
+experience replay and dropout. 
 \todo{explain rewards}
 large negative reward for invalid actions.
 \section{Simulated experiments}

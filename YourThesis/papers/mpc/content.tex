@@ -25,7 +25,7 @@
 Self driving cars is a fast advancing field with Advanced Driver-Assistance Systems becoming a requirement in modern day cars. Decision making for self drving cars can be difficult to solve with simple rule based system in complex scenarios like intersections, while human drivers have a good intuition about when to drive and how to drive comfortably. Sharing the road with other road users requires interaction, which can make rule based decision making complex \cite{Liebner2012DriverModel}.
 Many advancements aim to bring self driving Level 4 to the market by trying to imitate human drivers \cite{Bansal2018ChauffeurNet:Worst} or predicting what other drivers in traffic are planning to do \cite{Zyner2017LongPrediction}.
 
-Previous research \cite{Tram2018LearningQ-Learning} showed that reinforcement learning (RL) can be used to learn a negotiation behaviour between cars without vehicle to vehicle communication when driving in an intersection. The method found a policy that learned to drive though an intersection, with crossing traffic, where other vehicles have different intentions and avoided collision. The previous method could use the same algorithm, but trained on different type of intersections and still find a general policy that would get to the other side of the intersection while avoiding collision. 
+Previous research \cite{Tram2018} showed that reinforcement learning (RL) can be used to learn a negotiation behavior between cars without vehicle to vehicle communication when driving in an intersection. The method found a policy that learned to drive through an intersection, with crossing traffic, where other vehicles have different intentions and avoided collision. The previous method could use the same algorithm, but trained on different type of intersections and still find a general policy that would get to the other side of the intersection while avoiding collision. 
 By modeling the decision process as a partially observable Markov decision process, uncertainty in the environment or sensing can be accounted for \cite{BrechtelProbabilisticPOMDPs} and still be safe \cite{BoutonReinforcementDriving}. 
 
 Because the decision policy is separated from the control, high level decision making can focus on the task, when to drive, while the low level control that handles the comfort of passengers in the car by generating a smooth acceleration profile. Previous work showed how this worked for intersections with a single crossing point, where Short Term Goal (STG) actions could choose one car to follow. This gives the RL policy a flexibility to choose actions that can safely transverse through the intersection by switching between different STG. %However, every time the policy chooses a new action it will generate a new acceleration profile that may generate jerk and discomfort for the passenger in the self driving car. 
@@ -163,7 +163,7 @@ For any action $a$ that results in the following of an obstacle $j$, the ego-veh
 \end{itemize}
 
 \subsection{Sliding mode agent}
-To benchmark the performance of using MPC, a SM controller that was used in \cite{Tram2018LearningQ-Learning} is introduced. 
+To benchmark the performance of using MPC, a SM controller that was used in \cite{Tram2018} is introduced. 
 \begin{subequations}
 	\label{eq:sliding_mode}
 	\begin{align}
@@ -180,7 +180,7 @@ To benchmark the performance of using MPC, a SM controller that was used in \cit
 	&a^e = \min(a^e_{\mathrm{sm}}, a^e_\mathrm{p} ).
 	\end{align}
 \end{subequations}
-The SM controller aims to keep a minimum distance to a target car with a velocity of $v^e$, by controlling the acceleration $a^e_{\mathrm{sm}}$. $c_1$, $c_2$, and  $\mu$ are tuning parameters to control the comfort of the controller. In case there is no target car, the controller maintains a target velocity $v_{\mathrm{max}}$ with a regular p-controller from \eqref{eq:p-controller} with a proportional constant $K$. The final acceleration is given by \eqref{eq:final_acc}. For more details about the SM agent see \cite{Tram2018LearningQ-Learning}.
+The SM controller aims to keep a minimum distance to a target car with a velocity of $v^e$, by controlling the acceleration $a^e_{\mathrm{sm}}$. $c_1$, $c_2$, and  $\mu$ are tuning parameters to control the comfort of the controller. In case there is no target car, the controller maintains a target velocity $v_{\mathrm{max}}$ with a regular p-controller from \eqref{eq:p-controller} with a proportional constant $K$. The final acceleration is given by \eqref{eq:final_acc}. For more details about the SM agent see \cite{Tram2018}.
 
 \begin{figure}[t!]
 	\centering
@@ -203,7 +203,7 @@ There are three different intention agents for crossing traffic with predetermin
 	\label{fig:Network}
 \end{figure}
 \label{sec:q-learning}
-The deep Q-network is structured as a three layer neural network with shared weights and a Long Short-Term Memory based on previous work \cite{Tram2018LearningQ-Learning} and shown in Fig. \ref{fig:Network}. The input features $\xi_n$ are composed of observations $o_t$, introduced in section \ref{sec:pomdp} and shown in Fig. \ref{fig:observations}, with up to four observed vehicles: 
+The deep Q-network is structured as a three layer neural network with shared weights and a Long Short-Term Memory based on previous work \cite{Tram2018} and shown in Fig. \ref{fig:Network}. The input features $\xi_n$ are composed of observations $o_t$, introduced in section \ref{sec:pomdp} and shown in Fig. \ref{fig:observations}, with up to four observed vehicles: 
 %, our findings showed the importance of sharing the weights for different target vehicles, similar work by Hoel et al. \cite{Hoel} but with a Convolutional Nerual Network and a pooling layer also come to the same conclusion. 
 
 %\vspace{0.3cm}
@@ -251,7 +251,7 @@ the optimal policy $\pi^*$ is then given by taking the action that gives the hig
 
 \subsection{Q-masking}
 \label{sec:masking}
-Q-masking \cite{Mukadam2017} helps the learning process by reducing the actions space by disabling actions the agent does not need to explore. If there are less than $N$ cars, it would then be meaningless to choose to follow a car that does not exist. Which motivates masking off cars that does not exist. In previous work \cite{Tram2018LearningQ-Learning}, a high negative reward was given when an action to follow a car that did not exist was chosen, while the algorithm continued with a default action take way. The agent quickly learned to not choose cars that did not exist, but with Q-masking, the agent does not even have to explore these options. For other details about the training see \cite{Tram2018LearningQ-Learning}.
+Q-masking \cite{Mukadam2017} helps the learning process by reducing the actions space by disabling actions the agent does not need to explore. If there are less than $N$ cars, it would then be meaningless to choose to follow a car that does not exist. Which motivates masking off cars that does not exist. In previous work \cite{Tram2018}, a high negative reward was given when an action to follow a car that did not exist was chosen, while the algorithm continued with a default action take way. The agent quickly learned to not choose cars that did not exist, but with Q-masking, the agent does not even have to explore these options. For other details about the training see \cite{Tram2018}.
 
 \subsection{Simulation environment}
 All agents are spawned with random initial speed $v_0 \in [10,30]$m/s, position $p^i_0 \in [10,55]$m and intention. The cars dimensions are $2$ m wide and $4$ m long. The ego car operates within comfort bounds and therefore has a limited maximum acceleration and deceleration of $5$ m/s$^2$. 
