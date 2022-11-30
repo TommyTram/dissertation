@@ -2,6 +2,7 @@
 % YOUR PACKAGES <<<
 %==============================================================
 \usepackage{amsmath}
+% \newcommand\numberthis{\refstepcounter{equation}\tag{\theequation}} % for numbering in  the align* environment
 \usepackage{amssymb}
 % \usepackage{showframe}
 \usepackage{subcaption}
@@ -14,6 +15,12 @@
 \usepackage[acronym,nomain]{glossaries}
 % \usepackage{enumerate}
 \usepackage{tabularx}
+
+\sisetup{
+display-per-mode = fraction,
+inline-per-mode = symbol,
+group-separator = {,}
+}
 
 \AtEveryBibitem{
 \ifentrytype{inproceedings}{
