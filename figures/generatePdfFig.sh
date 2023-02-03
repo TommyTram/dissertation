@@ -1,4 +1,4 @@
 #!/bin/bash
-pdflatex --jobname=$1 $2.tex
-mv $1.pdf imgs/$1.pdf
+pdflatex --jobname=$2 $1
+mv $2.pdf imgs/$2.pdf
 rm *.log
