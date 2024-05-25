@@ -1,16 +1,27 @@
 \section{Discussions and Future Work}\label{sec:discussion}
-In this work, we aim to answer the questions,
+In this work, we aim to answer two central questions.
+%1. \emph{How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?}
+% 2. \emph{Does the constructed model allows us to perform efficient planning and yield improvements over learning from scratch?} 
 \begin{enumerate}
-    \item \emph{How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?}
-    \item \emph{Does the constructed model allows us to perform efficient planning and yield improvements over learning from scratch?}
+   \item \emph{How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?}
+   \item \emph{Does the constructed model allow us to perform efficient planning and yield improvements over learning from scratch?}
 \end{enumerate}
-Our answer to the first question is by adopting the \emph{Model Transfer Reinforcement Learning} framework and weighting existing knowledge together with data from the novel task. We accomplished this by the way of a maximum likelihood procedure, which resulted in a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage. 
 
-The second question is answered by the empirical results in Section~\ref{sec:impacts} and the theoretical results in Section~\ref{sec:bounds}. We can clearly see the model allows for generalisation to novel tasks, given that the tasks are similar enough to the existing task. 
+Our answer to the first question is by adopting the \emph{Model Transfer Reinforcement Learning} framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage. 
+The second question is answered by the empirical results in Section~\ref{sec:experiments} and the theoretical results in Section~\ref{sec:bounds}. Further, the model allows generalising to novel tasks, given that the tasks are similar enough to the existing task(s). 
 
-We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains. We verify the relation of the \emph{regret} w.r.t the model dissimilarity in terms of KL-divergence and the quick, near-optimal performance of the algorithm in the case where the new domain is similar. In addition to this, we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 
+We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains. We verify the quick, near-optimal performance of the algorithm in the case where the new domain is similar and we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings.
+As a future work, it would be interesting to study the MTRL framework under Bayesian setting~\citep{tamar2022regularization} and to deploy it with a risk-sensitive value function~\citep{eriksson2022sentinel,saac}.
+
+\section*{ACKNOWLEDGMENTS}
+This work was partially supported by the Wallenberg AI, Autonomous Systems and Software Program (WASP) funded by the Knut and Alice Wallenberg Foundation. D. Basu acknowledges the Inria-Kyoto University Associate Team “RELIANT” and the ANR JCJC grant for the REPUBLIC project (ANR22-CE23-0003-01).
+
+
+% \balance
+% balance should be at the end of last page to balance citations
+%We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains. We verify the relation of the \emph{regret} w.r.t the model dissimilarity in terms of KL-divergence and the quick, near-optimal performance of the algorithm in the case where the new domain is similar. In addition to this, we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 
 
 %%% balances text on the left column of the final page!
 
 %%%
-\textit{Future work.} An interesting future work is to derive tighter bounds for the \emph{realisable} case in Section~\ref{subsec:realisable}. Note $\delta=0$ in the realisable setting but the large constant $\epsilon$ remains. A concentration bound in the number of samples from the true MDP could be constructed using the proof techniques in~\citet{anastasiou2019normal} and~\citet{ouhamma2022bilinear}. We would also like to investigate larger and more difficult problems. One challenge is devising tractable models in such cases, and to be able to do optimal model-based planning for large scale problems. We would start by considering large problems that can be written as LQR problems, such as~\citep{tunyasuvunakool2020dm_control} and Mujoco~\citep{todorov2012mujoco}.
+%\textit{Future work.} An interesting future work is to derive tighter bounds for the \emph{realisable} case in Section~\ref{subsec:realisable}. Note $\delta=0$ in the realisable setting but the large constant $\epsilon$ remains. A concentration bound in the number of samples from the true MDP could be constructed using the proof techniques in~\citet{anastasiou2019normal} and~\citet{ouhamma2022bilinear}. We would also like to investigate larger and more difficult problems. One challenge is devising tractable models in such cases, and to be able to do optimal model-based planning for large scale problems. We would start by considering large problems that can be written as LQR problems, such as~\citep{tunyasuvunakool2020dm_control} and Mujoco~\citep{todorov2012mujoco}.

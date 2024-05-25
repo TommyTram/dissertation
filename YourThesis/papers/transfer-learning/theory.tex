@@ -1,6 +1,6 @@
-\section{Theoretical Analysis}\label{sec:bounds}
+\section{Theoretical Analysis of MLEMTRL}\label{sec:bounds}
 
-In this section, we further justify the use of our framework by deriving worst-case performance degradation bounds relative to the optimal controller. The performance loss is shown to be related to the size of the source MDP set $\mathcal{M}_s$ and the realisability of $\mdp^{*}$ under $\mathcal{C}(\mathcal{M}_s)$. A visualisation of the model dissimilarities is available in Figure~\ref{fig:trl}, where $||\mdp-\hat{\mdp}||$ is the model estimation error, $||\mdp^{*}-\mdp||$ is the model realisability error and $||\mdp^{*}-\hat{\mdp}||$ the total model deviation error.
+In this section, we further justify the use of our framework by deriving worst-case performance degradation bounds relative to the optimal controller. The performance loss is shown to be related to the realisability of $\mdp^{*}$ under $\mathcal{C}(\mathcal{M}_s)$. In Figure~\ref{fig:trl}, we visualise the model dissimilarities, where $||\mdp-\hat{\mdp}||_1$ is the model estimation error, $||\mdp^{*}-\mdp||_1$ is the realisability gap and $||\mdp^{*}-\hat{\mdp}||_1$ the total deviation of the estimated model. Note that by the norm on MDP, we always refer to the $L_1$ norm over transition matrices.
 
 %In this section we will be studying the case of using a \textsc{Type III} algorithm in a \textsc{Type V} problem setting. That means the target MDP $\mdp_t$ might not be part of the convex set $\mathcal{C}(\mathcal{M}_s)$ of source MDPs. $\mdp_t$ will however be bounded in distance from the marginal of the source MDPs. This setting gives rise to three sources of estimation errors, namely \emph{value estimation error}, \emph{model estimation error} and \emph{realizability error}. Combined, they might look like the following,
 
@@ -16,56 +16,72 @@ In this section, we further justify the use of our framework by deriving worst-c
 
 %\subsection{Performance Gap in the Non-Realisable Setting}
 
-\begin{theorem}[Performance Gap of Non-Realisable Models]\label{lemma:non-realisable}
-Let $d = |\mathcal{S}|^2|\mathcal{A}|$ be the dimensionality of the MDP and $\forall_{(s, a) \in \mathcal{S}\times \mathcal{A}} \, 0 \leq r(s, a) \leq 1$. Further, let $\mdp^{*}$ be the true underlying MDP, $\mdp$, the maximum likelihood $\mdp \in \underset{\mdp' \in \mathcal{C}(\mathcal{M}_s)}{\arg\min} \, \mathbb{P}(D_\infty \, | \, \mdp'), D_\infty \sim \mdp^{*}$ and $\hat{\mdp}$ a maximum likelihood estimator of $\mdp$. In addition, let $\pol^{*}, \pol, \hat{\pol}$ be the optimal policies for the respective MDPs. Let $||\mdp^{*}-\mdp||_2 \leq \Delta_{\mathrm{Realise}}$ be the \textbf{non-realisability bias} of $\mdp$ and $\epsilon$ be a cover of the convex set $\mathcal{C}(\mathcal{M}_s)$. Then, the performance gap is given by,
+\begin{theorem}[Performance Gap for Non-Realisable Models]\label{lemma:non-realisable}
+Let $\mdp^* = (\mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{T}^*, \gamma)$ be the true underlying MDP. Further, let $\mdp = (\mathcal{S}, \mathcal{A}, \mathcal{R}, \mathcal{T}, \gamma)$ be the maximum log-likelihood $$\mdp \in \arg\max\nolimits_{\mdp' \in \mathcal{C}(\mathcal{M}_s)}~- \log \mathbb{P}(D_\infty \, | \, \mdp'), D_\infty \sim \mdp^{*}$$ and $\hat{\mdp} = (\mathcal{S}, \mathcal{A}, \mathcal{R}, \hat{\mathcal{T}}, \gamma)$ be a maximum log-likelihood estimator of $\mdp$. In addition, let $\pol^*, \pol, \hat{\pol}$ be the optimal policies for the respective MDPs. Then, if $\mathcal{R}$ is a bounded reward function $\forall_{(s, a)} \, r(s, a) \in [0, 1]$ and with $\epsilon_{\mathrm{Estim}}$ being the estimation error and $$\epsilon_{\mathrm{Realise}} \triangleq \min_{\mdp \in \mathcal{C}(\mathcal{M}_s)}\|\mdp^{*}-\mdp\|_1 $$ the realisability gap. Then, the performance gap is given by,
+\begin{equation}
+    ||V_{\mdp^*}^*-V_{\mdp^*}^{\hat{\pol}}||_\infty \leq \frac{3(\epsilon_{\mathrm{Estim}}+\epsilon_{\mathrm{Realise}})}{(1-\gamma)^2}.
+\end{equation}
+
+%Let $d = |\mathcal{S}|^2|\mathcal{A}|$ be the dimensionality of the MDP and $\mathcal{R}$ be a common bounded reward function. Further, let $\mdp^{*}$ be the true underlying MDP, $\mdp$, the maximum likelihood $\mdp \in \underset{\mdp' \in \mathcal{C}(\mathcal{M}_s)}{\arg\min} \, \mathbb{P}(D_\infty \, | \, \mdp'), D_\infty \sim \mdp^{*}$ and $\hat{\mdp}$ a maximum likelihood estimator of $\mdp$. In addition, let $\pol^{*}, \pol, \hat{\pol}$ be the optimal policies for the respective MDPs. Let $||\mdp^{*}-\mdp||_2 \leq \Delta_{\mathrm{Realise}}$ be the \textbf{non-realisability bias} of $\mdp$ and $\epsilon$ be a cover of the convex set $\mathcal{C}(\mathcal{M}_s)$. Then, the performance gap is given by,
 %    \begin{equation}
 %       |V_{{\mdp^*}}^{*}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq \, \frac{2\gamma\sqrt{d}}{(1-\gamma)^2} (\Delta_{\mathrm{Realise}}+\epsilon) + \frac{2\gamma^t}{(1-\gamma)},
 %    \end{equation}
-    \begin{equation}
-        |V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| \leq \, \frac{2\gamma\sqrt{d}}{(1-\gamma)^2} (\Delta_{\mathrm{Realise}}+\epsilon),
-    \end{equation}
+    %\begin{equation}
+    %    |V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| \leq \, \frac{2\gamma\sqrt{d}}{(1-\gamma)^2} (\Delta_{\mathrm{Realise}}+\epsilon),
+    %\end{equation}
 %where $t$ is the number of iterations in the value estimation. This is of order $\mathcal{O}(\sqrt{d}(\Delta_{\mathrm{Realise}}+\epsilon)+\gamma^t)$.
-this is of order $\mathcal{O}(\sqrt{d}(\Delta_{\mathrm{Realise}}+\epsilon))$.
+%this is of order $\mathcal{O}(\sqrt{d}(\Delta_{\mathrm{Realise}}+\epsilon))$.
 \end{theorem}
-\begin{proof}[Proof of Theorem~\ref{lemma:non-realisable}]
-Given the assumptions in Lemma~\ref{lemma:non-realisable} hold true. Then, using triangle inequalities the performance gap can be bounded,
+For the full proof, see %Appendix~\ref{sec:proof_non_realisability}.
+Appendix A.1. This result is comparable to recent results such as~\citep{zhang2020multi} but here with an explicit decomposition into model estimation error and realisability gap terms.
+%For the full proof, see Appendix A.1. This result is comparable to recent results such as~\citet{zhang2020multi} but here with an explicit decomposition into model estimation error and realisability gap terms.
 
-%\begin{equation}
-%    |V_{{\mdp^*}}^{*}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq |V_{{\mdp^*}}^{*}-{V}_{{\mdp^*}}^{\hat{\pol}}| + |V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}|.
-%\end{equation}
-\begin{equation}
-\begin{aligned}\label{eq:triangle}
-    |V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| &= |V_{{\mdp^*}}^{*}-V_{\hat{\mdp}}^{\hat{\pol}}+V_{\hat{\mdp}}^{\hat{\pol}}-V_{{\mdp^*}}^{\hat{\pol}}|\\
-    &\leq |V_{{\mdp^*}}^{*}-V_{\hat{\mdp}}^{\hat{\pol}}|+|V_{\hat{\mdp}}^{\hat{\pol}}-V_{{\mdp^*}}^{\hat{\pol}}|
-\end{aligned}
-\end{equation}
-%Another application of the triangle inequality on the first term yields us,
-%\begin{equation}\label{eq:non-realisable-triplet}
-%\leq|V_{{\mdp^*}}^{*}-{V}_{\hat{\mdp}}^{\hat{\pol}}| + |V_{\hat{\mdp}}^{\hat{\pol}}-{V}_{{\mdp^*}}^{\hat{\pol}}| +|V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}|.
-%\end{equation}
-The first term on the right side of the inequality in Eq.~\ref{eq:triangle} can be bounded using (Theorem 7~\citet{zhang2020multi}),
-
-\begin{equation}
-    |V^{*}_{\mdp^{*}}-V_{\hat{\mdp}}^{\hat{\pol}}| \leq \frac{\gamma}{(1-\gamma)^2}||\mdp^{*}-\hat{\mdp}||_1.
-\end{equation}
-Likewise, the second term in the inequality can be bounded using the the general form of the Simulation Lemma (Lemma 4~\citet{kearns2002near}),
-
-\begin{equation}
-    |V_{\hat{\mdp}}^{\hat{\pol}}-{V}_{{\mdp^*}}^{\hat{\pol}}| \leq \frac{\gamma}{(1-\gamma)^2}||\mdp^{*}-\hat{\mdp}||_1.
-\end{equation}
-
-Using Cauchy-Schwartz and the triangle inequality the distance between the MDPs $\mdp^{*}, \hat{\mdp}$ can be bounded, $||\mdp^{*}-\hat{\mdp}||_1\leq\sqrt{d}||\mdp^{*}-\hat{\mdp}||_2 =\sqrt{d}\|\mu^*-\mu+\mu-\hat{\mu}\|_2\leq\sqrt{d}(||\mdp^{*}-\mdp||_2+||\mdp-\hat{\mdp}||_2)$. From our assumptions, we know $||\mdp^{*}-\mdp||_2\leq \Delta_{\mathrm{Realise}}$ and $||\mdp-\hat{\mdp}||_2 \leq \epsilon$. Thus, the final bound of Eq.~\ref{eq:triangle} is obtained,
-\begin{equation}\label{eq:bias_bound}
-|V_{{\mdp^*}}^{*}-V_{{\mdp^*}}^{\hat{\pol}}| \leq \frac{2\gamma\sqrt{d}}{(1-\gamma)^2}(\Delta_{\mathrm{Realise}}+\epsilon),
-\end{equation}
-which yields us the result.
-%Finally, the rightmost term in Eq.~\ref{eq:non-realisable-triplet} can be bounded using Theorem 6.5.9~\citep{dimitrakakis2018decision}.
-%\begin{equation}\label{eq:value_iteration}
-%    |V_{{\mdp^*}}^{\hat{\pol}}-\hat{V}_{{\mdp^*}, t}^{\hat{\pol}}| \leq \frac{2\gamma^t}{1-\gamma}.
-%\end{equation}
-%Finally, joining Eq.~\ref{eq:bias_bound} and Eq.~\ref{eq:value_iteration} yields us the result.
-\end{proof}
+\begin{remark}[Bound on $L_1$ Norm Difference in the Realisable Setting]\label{remark:l1_norm}
+It is known~\citep{strehl2005theoretical, auer2008near, qian2020concentration} that in the realisable setting, it is possible to bound the model estimation error term $\epsilon_{\mathrm{Estim}}$ via the following argument. Let $\mdp^*$ be the true underlying MDP, and $\hat{\mdp}$ be an MLE estimate of $\mdp^*$, as defined in Theorem~\ref{lemma:non-realisable}. If $\mathcal{R}$ is a bounded reward function, i.e. $r(s, a) \in [0, 1], \forall{(s, a)}$, and $\epsilon_{\mathrm{Estim}}$ is upper bound on the $L_1$ norm between $\mathcal{T}^*$ and $\hat{\mathcal{T}}$. If $n^{s,a}$ be the number of times $(s,a)$ occur together, then with probability $1-SA\delta$,
+\begin{equation*}
+        ||\mathcal{T}^*-\hat{\mathcal{T}}||_1 \leq \epsilon_{\mathrm{Estim}} \leq \sum_{s\in\mathcal{S}}\sum_{a\in\mathcal{A}}\sqrt{\frac{2\log\big((2^S -2)/\delta)\big)}{n^{s,a}}}. %\leq \sqrt{2 S + \log (1/\delta)} \sum_{s\in\mathcal{S}}\sum_{a\in\mathcal{A}}\frac{1}{\sqrt{n^{s,a}}}
+\end{equation*}
+    From this, it can be said that the total $L_1$ norm then scales on the order of $\mathcal{O}(SA\sqrt{S+\log(1/\delta)}/\sqrt{T})$.
+\end{remark}
+This result is specific to tabular MDPs. In tabular MDPs, the maximum likelihood estimate coincides with the empirical mean model. Further details are in %Appendix~\ref{sec:proof_remark}.
+Appendix A.2.
+%For full details, see Appendix A.2.
 
 \begin{remark}[Performance Gap in the Realisable Setting]
-A trivial worst-case bound for the realisable case (Section~\ref{subsec:realisable}) can be obtained by setting $\Delta_{\mathrm{Realise}}=0$ as by definition in that case $\mdp^{*} \in \mathcal{C}(\mathcal{M}_s)$.
+A trivial worst-case bound for the realisable case (Section~\ref{subsec:realisable}) can be obtained by setting $\epsilon_{\mathrm{Realise}}=0$ because by definition of the realisable case $\mdp^{*} \in \mathcal{C}(\mathcal{M}_s)$.
 \end{remark}
+
+% For some reason references to line number in the Algorithms do not work?
+
+\section{A Meta-Algorithm for MLEMTRL under Non-realisability}\label{sec:meta_mlemtrl}
+
+To guarantee good performance even in the non-realisable setting, we can proceed in two steps. First, we can add the target task to the set of source tasks. Second, we can construct a meta-algorithm, combining the model estimated by MLEMTRL and the empirical estimation of the target task. In this section, we propose a meta-algorithm based on the latter. We illustrate it in Algorithm~\ref{alg:meta-mlemtrl}. 
+
+\begin{algorithm}[h!]
+\caption{Meta-MLEMTRL}\label{alg:meta-mlemtrl}
+\begin{algorithmic}[1]
+%\State ${\textsc{MLEMTRL}(\bm{w}^0,\mathcal{M}_s, D_0, \lambda, \gamma, T}) $
+\State \textbf{Input:} prior $p$, weights $\bm{w}^0$, $m$ source MDPs $\mathcal{M}_s$, data $D_0$, discount factor $\gamma$, iterations $T$.
+\For{$t=0, \hdots, T$}
+\State\textsc{// Stage 1: Obtain Model Weights //}
+%\State \hspace{1.0cm} $\bm{w}^{t+1}\leftarrow  \bm{w}^t -\lambda\nabla_{\bm{w}}\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mdp_i), D_t \sim \mdp^{*}, \mdp_i\in\mathcal{M}_s$
+\State $\bm{w}^{t+1}\leftarrow  \textsc{MLEMTRL}(\bm{w}^t, \mathcal{M}_s, \mathcal{D}_t, \gamma, 1)$
+\State Estimate the MDP: $\mdp^{t+1} = \sum_{i=1}^m w_i \mdp_i$
+\State Compute log-likelihood $\ell_{\mathrm{MLEM}}^{t+1} = \log \mathbb{P}(\mathcal{D}_t \, | \, \mdp^{t+1})$
+\State Compute log-likelihood of empirical model  $\ell_{\mathrm{Empirical}}^{t+1} = \log \mathbb{P}(\mathcal{D}_t \, | \, \hat{\mdp}^{t+1})$ 
+%\State Compute maximum a posteriori $\tilde{\mdp}^{t+1} = \arg\max \Big\{\mathbb{P}(\mdp^{t+1})=\exp\Big(\ell_{\mathrm{MLEM}}^{t+1}\Big)p, \mathbb{P}(\hat{\mdp}^{t+1})= \exp\Big(\ell_{\mathrm{Empirical}}^{t+1}\Big)(1-p)\Big\}$\label{lin:meta-mlemtrl}
+\State Sample $\tilde{\mdp}^{t+1}$ as $\mdp^{t+1}$ w.p. $\propto p\exp\Big(\ell_{\mathrm{MLEM}}^{t+1}\Big)$ and $\hat{\mdp}^{t+1}$ w.p. $\propto (1-p)\exp\Big(\ell_{\mathrm{Empirical}}^{t+1}\Big)$.\label{lin:meta-mlemtrl}
+\State\textsc{// Stage 2: Model-based Planning //}
+\State Compute the policy: $\pol^{t+1} \in \underset{\pol}{\arg\max} \, V_{\tilde{\mdp}^{t+1}}^\pol$
+\State\textsc{// Control //}
+\State Observe $s_{t+1}, r_{t+1} \sim \mdp^{*}(s_t, a_t), a_t\sim \pol^{t+1}(s_t)$
+\State Update the dataset $D_{t+1} = D_t \cup \{s_t, a_t, s_{t+1}, r_{t+1}\}$
+\EndFor
+%\RETURN An estimated MDP model $\tilde{\mdp}^T$ and a policy $\pol^T$
+\State \textbf{return} An estimated MDP model $\tilde{\mdp}^T$ and a policy $\pol^T$
+\end{algorithmic}
+\end{algorithm}
+
+The main change in Algorithm~\ref{alg:meta-mlemtrl} compared to Algorithm~\ref{alg:mlemtrl} is internally keeping track of the empirical model, and in Line 8, computing a posterior probability distribution over the respective models by weighting the two likelihoods together with their respective priors. The resulting algorithm then trades off its bias to the prior based on the choice of prior hyperparameter $p$. Since asymptotically the likelihood of the data under the empirical model is greater than the likelihood of the data under the MLEM-estimated model, as more and more data is collected the Meta-MLEMTRL algorithm performs similarly to the optimal planning using the empirical estimate. This is intended behaviour and allows for the algorithm to asymptotically plan optimally even in the non-realisable setting. 
+
+We experimentally study the behaviour of Meta-MLEMTRL and its dependence on the prior parameter $p$ in the next section.

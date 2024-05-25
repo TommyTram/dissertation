@@ -1,6 +1,8 @@
+%\vspace*{-.8em}
 \section{MLEMTRL: MTRL with Maximum Likelihood Model Transfer}\label{sec:algorithms}
-In this section, we will present the proposed algorithm, MLEMTRL. The algorithm consists of two-stages, a \emph{model estimation} stage and a \emph{planning} stage. After having obtained a plan, then the agent will carry out its decision-making in the environment to acquire new experiences. We sketch an overview of MLEMTRL in Algorithm~\ref{alg:mlemtrl}.
-\begin{algorithm}[ht!]
+Now, we present the proposed algorithm, MLEMTRL. The algorithm consists of two stages, a \emph{model estimation} stage, and a \emph{planning} stage. After having obtained a plan, then the agent will carry out its decision-making in the environment to acquire new experiences. We sketch an overview of MLEMTRL in Algorithm~\ref{alg:mlemtrl}. For completeness, we also provide an extension to MLEMTRL called Meta-MLEMLTRL. This extension combines the MLEMTRL estimated model with the empirical model of the target task. This allows us to identify the true model even in the non-realisable setting. The details of this algorithm are available in Section~\ref{sec:meta_mlemtrl}.%For brevity of space, further details are deferred to Appendix~\ref{sec:meta_mlemtrl}.
+
+\begin{algorithm}[t!]
 \caption{Maximum Likelihood Estimation for Model-based Transfer Reinforcement Learning (MLEMTRL)}\label{alg:mlemtrl}
 \begin{algorithmic}[1]
 %\State ${\textsc{MLEMTRL}(\bm{w}^0,\mathcal{M}_s, D_0, \lambda, \gamma, T}) $
@@ -8,7 +10,8 @@ In this section, we will present the proposed algorithm, MLEMTRL. The algorithm 
 \For{$t=0, \hdots, T$}
 \State\textsc{// Stage 1: Model Estimation //}
 %\State \hspace{1.0cm} $\bm{w}^{t+1}\leftarrow  \bm{w}^t -\lambda\nabla_{\bm{w}}\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mdp_i), D_t \sim \mdp^{*}, \mdp_i\in\mathcal{M}_s$
-\State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{\mdp_i \in \mathcal{M}_s} w_i \mdp_i), \bm{w}^t) , D_t \sim \mdp^{*}$\label{lin:optimiser}
+\State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mdp_i), \bm{w}^t)$\label{lin:optimiser}
+%\State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{\mdp_i \in \mathcal{M}_s} w_i \mdp_i), \bm{w}^t) , D_t \sim \mdp^{*}$\label{lin:optimiser}
 \State Estimate the MDP: $\mdp^{t+1} = \sum_{i=1}^m w_i \mdp_i$
 \State\textsc{// Stage 2: Model-based Planning //}
 \State Compute the policy: $\pol^{t+1} \in \underset{\pol}{\arg\max} \, V_{\mdp^{t+1}}^\pol$
@@ -16,21 +19,26 @@ In this section, we will present the proposed algorithm, MLEMTRL. The algorithm 
 \State Observe $s_{t+1}, r_{t+1} \sim \mdp^{*}(s_t, a_t), a_t\sim \pol^{t+1}(s_t)$
 \State Update the dataset $D_{t+1} = D_t \cup \{s_t, a_t, s_{t+1}, r_{t+1}\}$
 \EndFor
-\Return An estimated MDP model $\mdp^T$ and a policy $\pol^T$
+%\RETURN An estimated MDP model $\mdp^T$ and a policy $\pol^T$
+\State \textbf{return} An estimated MDP model $\mdp^T$ and a policy $\pol^T$
 \end{algorithmic}
 \end{algorithm}
 
 \subsection{Stage 1: Model Estimation}
-The first stage of the proposed algorithm is \emph{model estimation}. During this procedure, the likelihood of the data needs to be computed for the appropriate MDP class. In the tabular setting, we use a product of multinomial likelihoods, where the data likelihood is over the distribution of successor states $s'$ for a given state-action pair $(s, a)$. In the LQR setting, we use a linear-Gaussian likelihood, which is also expressed as a product over data observed from target MDP. 
+% \noindent\underline{\textbf{Stage 1: Model Estimation:}}
+The first stage of the proposed algorithm is \emph{model estimation}. During this procedure, the likelihood of the data needs to be computed for the appropriate MDP class. In the tabular setting, we use a product of multinomial likelihoods, where the data likelihood is over the distribution of successor states $s'$ for a given state-action pair $(s, a)$. In the LQR setting, we use a linear-Gaussian likelihood, which is also expressed as a product over data observed from the target MDP. 
 
 \noindent\textbf{Likelihood for Tabular MDPs.}
 The log-likelihood that we attempt to maximise in tabular MDPs is a product over $|\mathcal{S}|\times|\mathcal{A}|$ of pairs of multinomials, where $p_i$ is the probability of event $i$, $n^{s,a}$ is the number of times the state-action pairs $(s, a)$ appear in the data $D_t$, and $x_i^{s,a}$ is the number of times the state-action pair $(s, a, s_i)$ occurs in the data. That is, $\sum_{i=1}^{|\mathcal{S}|} x_i^{s,a} = n^{s,a}$. Specifically,
-\begin{align*}
-\begin{aligned}
-    \log \mathbb{P}(D_t \, | \, \bm{p}) &= \log \Bigg(\prod_{(s, a) \in \mathcal{S}\times\mathcal{A}} n^{s,a}!\prod_{i=1}^{|\mathcal{S}|}\frac{p_i^{x^{s,a}_i}}{x^{s,a}_i!} \Bigg)\\
-    &= \sum_{(s,a)\in\mathcal{S}\times\mathcal{A}} \Bigg(\log n^{s, a}!+\Big(\sum_{i=1}^{|\mathcal{S}|}x_i^{s,a}\log p_i - \log x_i^{s,a}!\Big)\Bigg).
-\end{aligned}
-\end{align*}
+%\begin{align*}
+%\begin{aligned}
+%    \log \mathbb{P}(D_t \, | \, \bm{p}) &= \log \Bigg(\prod_{s, a} n^{s,a}!\prod_{i=1}^{|\mathcal{S}|}\frac{p_i^{x^{s,a}_i}}{x^{s,a}_i!} \Bigg)\\
+%    &= \sum_{s,a} \Bigg(\log n^{s, a}!+\Big(\sum_{i=1}^{|\mathcal{S}|}x_i^{s,a}\log p_i - \log x_i^{s,a}!\Big)\Bigg).
+%\end{aligned}
+%\end{align*}
+\begin{equation}
+    \log \mathbb{P}(D_t \, | \, \bm{p}) = \log \Bigg(\prod_{s, a} n^{s,a}!\prod_{i=1}^{|\mathcal{S}|}\frac{p_i^{x^{s,a}_i}}{x^{s,a}_i!} \Bigg)
+\end{equation}
 
 \noindent\textbf{Likelihood for Linear-Gaussian MDPs.}
 For continuous state-action MDPs, we use a linear-Gaussian likelihood. In this context, let $d_s$ be the dimensionality of the state-space, $\bm{s} \in \mathbb{R}^{d_s}$ and $d_a$ be the dimensionality of the action-space. Then, the mean function $\mathbf{M}$ is a $\mathbb{R}^{d_s}\times\mathbb{R}^{d_a+d_s}$ matrix. The mean visitation count to the successor state $\bm{s}_t'$ when an action $\bm{a}_t$ is taken at state $\bm{s}_t$ is given by $\mathbf{M}(\bm{a}_t, \bm{s}_t)$. We denote the corresponding covariance matrix of size $\mathbb{R}^{d_s}\times\mathbb{R}^{d_s}$ by $\mathbf{S}$. Thus, we express the log-likelihood by
@@ -54,54 +62,42 @@ Because of the constraint on $\bm{w}$, this is a constrained nonlinear optimisat
 
 \noindent{\textsc{Optimiser}.} In our implementations, we use Sequential Least-Squares Quadratic Programming (SLSQP)~\citep{kraft1988software} as the \textsc{Optimiser}. SLSQP is a quasi-Newton method solving a quadratic programming subproblem for the Lagrangian of the objective function and the constraints.
 
-Specifically, in Line~\ref{lin:optimiser} of Algorithm~\ref{alg:mlemtrl}, we compute the next weight vector $\bm{w}^{t+1}$ by solving the optimisation problem in Eq.~\ref{eq:constrained_likelihood}. Let $f(\bm{w}) = \log \mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mdp_i)$. Further, let $\lambda=\{\lambda_1,\hdots,\lambda_m\}$ and $\kappa$ be Lagrange multipliers. We then define the Lagrangian $\mathcal{L},$
+Specifically, in Line 4 of Algorithm~\ref{alg:mlemtrl}, we compute the next weight vector $\bm{w}^{t+1}$ by solving the optimisation problem in Eq.~\eqref{eq:constrained_likelihood}. Let $f(\bm{w}) = \log \mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mdp_i)$. Further, let $\lambda=\{\lambda_1,\hdots,\lambda_m\}$ and $\kappa$ be Lagrange multipliers. We then define the Lagrangian $\mathcal{L},$
 \begin{equation}
     \mathcal{L}(\bm{w}, \lambda,\kappa) = f(\bm{w})-\lambda^\top\bm{w}-\kappa(1-\mathbf{1}^\top\bm{w}).
 \end{equation}
 
-Next, we replace the full objective in Eq.~\ref{eq:constrained_likelihood} by its local quadratic approximation.
-\begin{equation}
-\begin{aligned}
-    f(\bm{w}) &\approx f(\bm{w}^k)+\nabla f(\bm{w}^k)(\bm{w}-\bm{w}^k)\\&+\frac{1}{2}(\bm{w}-\bm{w}^k)\nabla^2f(\bm{w}^k)(\bm{w}-\bm{w}^k).
-\end{aligned}
-\end{equation}
+%Next, we replace the full objective in Eq.~\eqref{eq:constrained_likelihood} by its local quadratic approximation.
+%\begin{equation}
+%\begin{aligned}
+%    f(\bm{w}) &\approx f(\bm{w}^k)+\nabla f(\bm{w}^k)(\bm{w}-\bm{w}^k)\\&+\frac{1}{2}(\bm{w}-\bm{w}^k)\nabla^2f(\bm{w}^k)(\bm{w}-\bm{w}^k).
+%\end{aligned}
+%\end{equation}
 
-Here, $\bm{w}^k$ is the $k$-th iterate. Finally, taking the local approximation, we define the optimisation problem as:
+Here, $\bm{w}^k$ is the $k$-th iterate. Finally, taking the local approximation of Eq.~\eqref{eq:constrained_likelihood}, we define the optimisation problem as:
 \begin{equation}
     \begin{aligned}
         &\underset{\bm{d}}{\min} \, \frac{1}{2}\bm{d}^\top \nabla^2 \mathcal{L}(\bm{w},\lambda,\kappa)\bm{d}+\nabla f(\bm{w}^k)\bm{d}+f(\bm{w}^k)\\
         &\textrm{s.t.} \, \bm{d} + \bm{w}^k \geq 0, \mathbf{1}^\top\bm{w}^k = 1.
     \end{aligned}
 \end{equation}
-The minimisation gives the search direction $\bm{d}_k$ for the $k$-th iteration. Applying this repeatedly and using the construction above ensures that the constraints posed in Eq.~\ref{eq:constrained_likelihood} are adhered to at every step of MLEMTRL. At convergence, the $k$-th iterate, $\bm{w}^k$ is considered as the next $\bm{w}^{t+1}$ in Line~\ref{lin:optimiser} in Algorithm~\ref{alg:mlemtrl}.
+This minimisation problem yields the search direction $\bm{d}_k$ for the $k$-th iteration. Applying this iteratively and using the construction above ensures that the constraints posed in Eq.~\eqref{eq:constrained_likelihood} are adhered to at every step of MLEMTRL. At convergence, the $k$-th iterate, $\bm{w}^k$ is considered as the next $\bm{w}^{t+1}$ in Line~\ref{lin:optimiser} of Algorithm~\ref{alg:mlemtrl}.
 
 \subsection{Stage 2: Model-based Planning}
+% \noindent\underline{\textbf{Stage 2: Model-based Planning:}}
 When an appropriate model $\mdp^t$ has been identified at time step $t$, the next stage of the algorithm involves model-based planning in the estimated MDP. We describe two model-based planning techniques, \textsc{ValueIteration} and \textsc{RiccatiIteration} for tabular MDPs and LQRs, respectively.
 
-\noindent\textsc{ValueIteration~.}
-Given the model, $\mdp^t$ and the associated reward function $\mathcal{R}$, the optimal value function of $\mdp^t$ can be computed iteratively using the following equation~\citep{Sutton2018}.
+\noindent\textsc{ValueIteration.}
+Given the model, $\mdp^t$ and the associated reward function $\mathcal{R}$, the optimal value function of $\mdp^t$ can be computed iteratively as~\citep{sutton2018reinforcement}:
 \begin{equation}\label{eq:value_iteration}
     V_{\mdp^t}^{*}(s) = \underset{a}{\max} \, \sum_{s'}\mathcal{T}_{s,s'}^a\Big(\mathcal{R}(s,a)+\gamma V_{\mdp^t}^{*}(s')\Big).
 \end{equation}
-The fixed-point solution to Eq.\ref{eq:value_iteration} is the optimal value function. When the optimal value function has been obtained. One can simply select the action maximising the action-value function. Let $\pol^{t+1}$ be the policy selecting the maximising action for every state, then $\pol^{t+1}$ is the policy the model-based planner will use at time step $t+1$.
+The fixed-point solution to Eq.\ref{eq:value_iteration} is the optimal value function. When the optimal value function has been obtained, one can simply select the action maximising the action-value function. Let $\pol^{t+1}$ be the policy selecting the maximising action for every state, then $\pol^{t+1}$ is the policy the model-based planner will use at time step $t+1$.
 
 \noindent\textsc{RiccatiIteration.}
-An LQR-based control system is defined by its system matrices~\citep{kalman1960new}. Let $d_s$ be the state dimensionality and $d_a$ be the action dimensionality. Then, $\mathbf{A} \in \mathbb{R}^{s_d}\times\mathbb{R}^{s_d}$ is a matrix describing state associated state transitions. $\mathbf{B} \in \mathbb{R}^{s_d}\times\mathbb{R}^{s_a}$ is a matrix describing control associated state transitions. The final two system matrices are cost related with $\mathbf{Q} \in \mathbb{R}^{s_d}\times\mathbb{R}^{s_d}$ being a positive definite cost matrix of states and $\mathbf{R} \in \mathbb{R}^{s_a}\times\mathbb{R}^{s_a}$ a positive definite cost matrix of control inputs. The transition model described under this model is given by,
-\begin{equation}
-    \bm{s}_{t+1}-\bm{s}_t = \mathbf{A}\bm{s}_t + \mathbf{B}\bm{a}_t.
-\end{equation}
-When an MDP is mentioned in the context of an LQR system in this work, the MDP is the set of system matrices. Further, the cost (or reward) of a policy $\pol$ under an MDP $\mdp$ is given by,
-\begin{equation}
+A LQR-based control system, and thus, the corresponding MDP, is defined by four system matrices~\citep{kalman1960new}: $\mathbf{A}, \mathbf{B}, \mathbf{Q},\mathbf{R}$. The matrices $\mathbf{A, B}$ are associated with the transition model $\bm{s}_{t+1}-\bm{s}_t = \mathbf{A}\bm{s}_t + \mathbf{B}\bm{a}_t$. The matrices $\mathbf{Q, R}$ dictate the quadratic cost (or reward) of a policy $\pol$ under an MDP $\mdp$ is
+\begin{equation*}
     V_{\mdp}^\pol = \sum_{t=0}^T \bm{s}_t^\top \mathbf{Q}\bm{s}_t + \bm{a}_t^\top \mathbf{R}\bm{a}_t.
-\end{equation}
-Optimal policy identification can be accomplished using~\citep{willems1971least}, which begins by solving for the cost-to-go matrix $\mathbf{P}$ by,
-\begin{align*}
-    \underset{\mathbf{P}}{\textrm{solve}}~~~~\mathbf{A}^\top \mathbf{P}\mathbf{A}-\mathbf{P}+\mathbf{Q}-(\mathbf{A}^\top \mathbf{P}\mathbf{B})(\mathbf{R}+\mathbf{B}^\top\mathbf{P}\mathbf{B})^{-1}(\mathbf{B}^\top \mathbf{P}\mathbf{A}) = 0.
-\end{align*}
-
-Then, using $\mathbf{P}$ the control input $\bm{a}$ for a particular state $\bm{s}$ is
-\begin{equation}
-    \bm{a} = -(\mathbf{R}+\mathbf{B}^\top\mathbf{P}\mathbf{B})^{-1}(\mathbf{B}^\top\mathbf{P}\mathbf{A})\bm{s}.
-\end{equation}
-
-With some abuse of notation and for compactness, we allow ourselves to write $\bm{a}_t = -(\mathbf{R}+\mathbf{B}^\top\mathbf{P}\mathbf{B})^{-1}(\mathbf{B}^\top\mathbf{P}\mathbf{A})\bm{s}_t$ for $\bm{a}_t \sim \pol(\bm{s}_t)$.
+\end{equation*}
+Optimal policy is identified following~\citep{willems1971least} that states $\bm{a}_t = -\mathbf{K}\bm{s}_t$ at time $t$, where $\mathbf{K}$ is computed using $\mathbf{A}, \mathbf{B}, \mathbf{Q},\mathbf{R}$. %We refer to Appendix~\ref{sec:riccati} for details.
+We refer to Appendix B for details.
