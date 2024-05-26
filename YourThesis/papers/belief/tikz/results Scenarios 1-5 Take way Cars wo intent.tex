@@ -1,0 +1,113 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{goldenrod1911910}{RGB}{191,191,0}
+\definecolor{green01270}{RGB}{0,127,0}
+\definecolor{lightgray204}{RGB}{204,204,204}
+
+\begin{groupplot}[group style={group size=1 by 2}]
+\nextgroupplot[
+height=3.5cm,
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+tick pos=left,
+width=7cm,
+x grid style={darkgray176},
+xmin=-0.2, xmax=4.2,
+xtick style={color=black},
+ytick={13,15,17,19,21},
+xtick={0,1,2,3,4},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+xticklabels={},
+y grid style={darkgray176},
+ylabel={Success Time [s]},
+ymin=13, ymax=21,
+ytick style={color=black}
+]
+\addplot [semithick, black, mark=*, mark size=3, mark options={solid}]
+table {%
+0 13.5619959677419
+1 16.9007190265487
+2 20.5162469536962
+3 20.4080622347949
+4 19.7671118530885
+};
+
+\nextgroupplot[
+height=3.5cm,
+legend cell align={left},
+legend style={
+  fill opacity=0.8,
+  draw opacity=1,
+  text opacity=1,
+  at={(1,0.5)},
+  anchor=west,
+  draw=lightgray204
+},
+tick align=outside,
+tick pos=left,
+width=7cm,
+x grid style={darkgray176},
+xmin=-0.2, xmax=4.2,
+xtick style={color=black},
+xtick={0,1,2,3,4},
+xtick={0,1,2,3,4},
+xtick={0,1,2,3,4},
+xtick={0,1,2,3,4},
+xtick={0,1,2,3,4},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+xticklabels={1 car,2 cars,3 cars,4 cars,5 cars},
+y grid style={darkgray176},
+ylabel={Outcome [\%]},
+ymin=-1, ymax=100,
+ytick style={color=black}
+]
+\addplot [semithick, green01270, mark=*, mark size=3, mark options={solid}]
+table {%
+0 99.2
+1 90.4
+2 61.55
+3 35.35
+4 29.95
+};
+\addlegendentry{goal}
+\addplot [semithick, goldenrod1911910, mark=square*, mark size=3, mark options={solid}]
+table {%
+0 0
+1 0.75
+2 21.6
+3 49.5
+4 53.25
+};
+\addlegendentry{safestop}
+\addplot [semithick, red, mark=diamond*, mark size=3, mark options={solid}]
+table {%
+0 0.8
+1 8.85
+2 16.85
+3 15.15
+4 16.8
+};
+\addlegendentry{collision}
+\addplot [semithick, blue, mark=triangle*, mark size=3, mark options={solid}]
+table {%
+0 0
+1 0
+2 0
+3 0
+4 0
+};
+\addlegendentry{deadlock}
+\end{groupplot}
+
+% \draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+%   scale=0.5,
+%   anchor=north,
+%   text=black,
+%   rotate=0.0
+% ]{Scenarios 1-5 Take way Cars wo intent};
+\end{tikzpicture}

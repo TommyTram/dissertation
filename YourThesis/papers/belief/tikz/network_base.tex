@@ -1,0 +1,17 @@
+\begin{tikzpicture}
+
+    \def\pfx{-1.2};
+    \def\pfy{-2.6};
+    
+    \def\BeliefSize{Z};
+    \basenet{6};
+
+    \node[](ego_state) at (-0.8,0.3) {$s_\mathrm{ego}$};
+    \node[](target_state) at (-0.8,\pfy+.3) {$s_{1:N}$};
+    
+    \draw [connection]  ($(input_ego-west)-(1.1,0)$)  -- node {\midarrow} (input_ego-west);
+    \draw [connection]  ($(input_target1-southwest)-(1.1,0)$)  -- node {\midarrow} (input_target1-southwest);
+    \draw [connection]  (fc2-east)  -- node {\midarrow} ($(fc2-east)+(1.1,0)$);
+
+
+\end{tikzpicture}

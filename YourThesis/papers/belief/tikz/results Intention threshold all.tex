@@ -1,0 +1,122 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{goldenrod1911910}{RGB}{191,191,0}
+\definecolor{green01270}{RGB}{0,127,0}
+\definecolor{lightgray204}{RGB}{204,204,204}
+
+\begin{groupplot}[group style={group size=1 by 2}]
+\nextgroupplot[
+height=3.5cm,
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+tick pos=left,
+width=7cm,
+x grid style={darkgray176},
+xmin=-0.3, xmax=6.3,
+xtick style={color=black},
+xtick={0,1,2,3,4,5,6},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+xticklabels={},
+y grid style={darkgray176},
+ylabel={Success Time [s]},
+ymin=14, ymax=20,
+ytick style={color=black}
+]
+\addplot [semithick, black, mark=*, mark size=3, mark options={solid}]
+table {%
+0 14.9030054644809
+1 15.7334844559585
+2 16.1706398996236
+3 16.541095890411
+4 17.145
+5 17.7761241291957
+6 18.9131596526386
+};
+
+\nextgroupplot[
+height=3.5cm,
+legend cell align={left},
+legend style={
+  fill opacity=0.8,
+  draw opacity=1,
+  text opacity=1,
+  at={(1,0.5)},
+  anchor=west,
+  draw=lightgray204
+},
+tick align=outside,
+tick pos=left,
+width=7cm,
+x grid style={darkgray176},
+xmin=-0.3, xmax=6.3,
+xtick style={color=black},
+xtick={0,1,2,3,4,5,6},
+xtick={0,1,2,3,4,5,6},
+xtick={0,1,2,3,4,5,6},
+xtick={0,1,2,3,4,5,6},
+xtick={0,1,2,3,4,5,6},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+xticklabels={0.50,0.60,0.70,0.80,0.90,0.95,0.99},
+y grid style={darkgray176},
+ylabel={Outcome [\%]},
+ymin=-1, ymax=100,
+ytick style={color=black}
+]
+\addplot [semithick, green01270, mark=*, mark size=3, mark options={solid}]
+table {%
+0 73.2
+1 77.2
+2 79.7
+3 80.3
+4 80
+5 78.95
+6 74.85
+};
+\addlegendentry{goal}
+\addplot [semithick, goldenrod1911910, mark=square*, mark size=3, mark options={solid}]
+table {%
+0 3.5
+1 7.8
+2 11.85
+3 16.2
+4 18.15
+5 18.9
+6 19.95
+};
+\addlegendentry{safestop}
+\addplot [semithick, red, mark=diamond*, mark size=3, mark options={solid}]
+table {%
+0 23.25
+1 14.95
+2 8.25
+3 3.3
+4 1.35
+5 0.95
+6 0.85
+};
+\addlegendentry{collision}
+\addplot [semithick, blue, mark=triangle*, mark size=3, mark options={solid}]
+table {%
+0 0.05
+1 0.05
+2 0.2
+3 0.2
+4 0.5
+5 1.2
+6 4.35
+};
+\addlegendentry{deadlock}
+\end{groupplot}
+
+% \draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+%   scale=0.5,
+%   anchor=north,
+%   text=black,
+%   rotate=0.0
+% ]{Intention threshold};
+\end{tikzpicture}

@@ -15,6 +15,21 @@
 \usepackage[acronym,nomain]{glossaries}
 % \usepackage{enumerate}
 \usepackage{tabularx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{patterns}
+\usetikzlibrary{fit}
+\usetikzlibrary{calc}
+\usetikzlibrary{matrix}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.arrows}
+\usepackage{rotating}
+\usepackage[english]{babel}
+\usepackage{import}
+\subimport{YourThesis/papers/belief/tikz/layers/}{init}
+\usetikzlibrary{3d} %for including external image 
+\pgfplotsset{compat=1.16}
+\usepgfplotslibrary{groupplots,dateplot}
 
 \sisetup{
 display-per-mode = fraction,

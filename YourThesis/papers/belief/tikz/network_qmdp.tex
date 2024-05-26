@@ -1,0 +1,63 @@
+\begin{tikzpicture}
+    %\node[](obs_eq) at (-2,2) {$o = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop}, \{\hat{p}^{j}_\mathrm{int}, \hat{v}^j\}_{j=1}^N).$};
+    % \node[](obs) at (-1.5,0) {$o$};
+    % % \node[](obs) at (-1.5,0) {$b_m$};
+    % \node[](ego_state) at (-0.5,0.3) {$s_\mathrm{ego}$};
+    % \node[](target_state) at (-0.55,-2.3) {$x_m$};
+    % \node[](target_state) at (-0.55,-2.3) {$\hat{s}_{n,[m]}$};
+    
+    %\node (ego_state) at (0.1, 1) {$\hat{s}_e = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop})$};
+
+    %\node (target_state) at (-2, -3.5) {$\hat{s}_j = \{p^{j}_\mathrm{int}, v^j, i^j\}_{j=1}^N$};
+    %\node (intent_state) at (-2, -4) {Intent from particle};
+
+    %\node (q_value) at (8, -6) {\Large $Q = \frac{1}{M} \sum_{m=1}^M Q_{particle}$ eq.$(16)$};
+
+    \def\pfx{-1.5}
+    \def\pfy{-1.8}
+    \def\radius{.95}
+
+    \node[](obs) at (\pfx,0) {$o$};
+    % \node[](obs) at (-1.5,0) {$b_m$};
+    \node[](ego_state) at (-0.5,0.3) {$s_\mathrm{ego}$};
+    \node[](target_state) at (-0.55,\pfy+.3) {$x_m$};
+    
+    \makepointcloud
+
+    \def\BeliefSize{}
+    \baseinput{1};
+    
+    \node[draw,fill=blue!5,thick,inner sep=3pt,minimum width=1mm, minimum height=38mm, dashed, align=center] (dqn) at (2,\pfy/2-.3,0){See \\ Figure \ref{fig:network}};
+    
+    \pic[shift={(0.6,0,0)}] at (dqn.east) 
+    {Box={
+        name=q_particle,
+        caption=$Q_\mathrm{particle}$,
+        xlabel={{2, }},
+        ylabel= ,
+        zlabel=\BeliefSize,
+        fill=\SoftmaxColor,
+        opacity=0.8,
+        height=4,
+        width=1.5,
+        depth=\BeliefDepth
+        }
+    };
+    
+    % \node (space) at (13,0) {};
+    \draw [connection]  (obs)  -- node {\midarrow} (pf);
+    \draw [connection]  (obs)  -- node {\midarrow} (input_ego-west);
+    \draw [connection]  (pf)  -- node {\midarrow} (input_target1-southwest);
+    \draw [connection]  (dqn.east)  -- node {\midarrow} (q_particle-west);
+    \draw [connection]  (input_ego-east)  -- node {\midarrow} ($(input_ego-east)+(1.1,0)$);
+    \draw [connection]  (input_target1-southeast)  -- node {\midarrow} ($(input_target1-southeast)+(1.1,0)$);
+    % \draw [connection]  (input_target1-southeast)  -- node {\midarrow} (dqn.west);
+
+    \def\dx{.6}
+    \def\dy{.2}
+    \draw [dashed, thick] (\pfx-\dx,\dy) -- (\pfx-\dx,\pfy-\radius) -- (\pfx+\dx,\pfy-\radius) -- (\pfx+\dx,\dy) -- cycle;
+    \node[](belief_state) at (\pfx,\pfy-\radius-.3) {\textbf{$b_m$}};
+    
+
+    
+\end{tikzpicture}

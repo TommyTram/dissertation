@@ -1,0 +1,107 @@
+% \begin{tikzpicture}
+    
+%     % Crossing
+%     \def\crossverticalx{0}
+%     \def\crosstopy{6}
+%     \def\crossboty{-2.0}
+%     \def\crossleftx{-6}
+%     \def\crossrightx{2.0}
+%     \def\roadwidth{1.5}
+    
+%     \draw[thick] (\crossleftx, \roadwidth/2) -- (-\roadwidth/2, \roadwidth/2) -- (-\roadwidth/2, \crosstopy);
+%     \draw[thick] (\crossleftx, -\roadwidth/2) -- (-\roadwidth/2, -\roadwidth/2) -- (-\roadwidth/2, \crossboty);
+%     \draw[thick] (\roadwidth/2, \crosstopy) -- (\roadwidth/2, \roadwidth/2) -- (\crossrightx, \roadwidth/2);
+%     \draw[thick] (\roadwidth/2, \crossboty) -- (\roadwidth/2, -\roadwidth/2) -- (\crossrightx, -\roadwidth/2);
+    
+%     % cars
+%     \node[inner sep=0pt] (ego_car) at (\crossleftx+1,0)
+%     {\includegraphics[width=0.10\textwidth, angle=0]{tikz/ego_car_top_down.png}};
+%     % \draw (-5, -0.5) rectangle ++(2, 1);
+%     \draw[->] ([yshift=0.2cm]ego_car.east) -- node[above] {$v^{ego}$} ($ (ego_car) + (2,0.2)$ );
+%     \draw[|-|] ([yshift=-0.2cm]ego_car.east) -- node[below] {$p^{ego}_{0}=v^{ego}*\tau_{int}$} (-\roadwidth/2,-0.2);
+%     % \draw (\x, \y) -- node[below] {$p_\mathrm{int}^\mathrm{ego}$} (\xend, \y);
+    
+%     \node[inner sep=0pt] (target_car_3) at (0,\crosstopy-1)
+%     {\includegraphics[width=.10\textwidth, angle=-90]{tikz/target_car_top_down.png}};
+%     \node (tc_text3a) [right=of target_car_3, align=center, xshift=-0.5cm] {Car 3};
+%     \node (tc_text3b) [left=of target_car_3, align=center, xshift=0.5cm] {Conflict Car};
+%     \draw[->] ([xshift=0.2cm]target_car_3.south) -- node[right] {$v^{3}_0$} ($ (target_car_3) + (.2,-2)$ );
+%     \draw[|-|] ([xshift=-0.5cm]target_car_3.south) -- (-0.5,\roadwidth/2);
+%     \node (tc_tti) [below left= 0.2cm and -0.7cm of target_car_3, align=center] {$p^3_{0}$  \\ $\tau_{int}$};
+    
+%     % \draw (-0.5, 3) rectangle ++(1, 2);
+%     \node[inner sep=0pt] (target_car_2) at (0,\roadwidth+0.5)
+%     {\includegraphics[width=.10\textwidth, angle=-90]{tikz/target_car_top_down.png}};
+%     \node (tc_text2) [right=of target_car_2, xshift=-0.5cm] {Car 2};
+    
+%     \node[inner sep=0pt] (target_car_1) at (0,-\roadwidth+0.5)
+%     {\includegraphics[width=.10\textwidth, angle=-90]{tikz/target_car_top_down.png}};
+%     \node (tc_text1) [right=of target_car_1, xshift=-0.5cm] {Car 1};
+    
+% \end{tikzpicture}
+
+\begin{tikzpicture}
+
+% Crossing
+\def\addjust{-1}
+\draw[thick] (-5-\addjust, .5) -- (-0.6, 0.6) -- (-.6, 4.2+\addjust);
+\draw[thick] (-5-\addjust, -.6) -- (-.6, -.6) -- (-.6, -2.2);
+\draw[thick] (.6, 4.2+\addjust) -- (.6, .6) -- (2, .6);
+\draw[thick] (.6, -2.2) -- (.6, -.6) -- (2, -.6);
+
+\draw (-3, 0) -- (2, 0);
+\draw (0, 3) -- (0, -2);
+
+% cars
+\node[inner sep=0pt] (ego_car) at (-4-\addjust,0)
+{\includegraphics[width=.08\textwidth, angle=0]{tikz/ego_car_top_down.png}};
+%		\draw (-5, -0.5) rectangle ++(2, 1);
+\node[inner sep=0pt] (target_car1) at (0,3.6+\addjust) {\includegraphics[width=.08\textwidth, angle=-90]{tikz/target_car_top_down.png}};
+%		\draw (-0.5, 3) rectangle ++(1, 2);
+\node[inner sep=0pt] (target_car2) at (0,\addjust-.3) {\includegraphics[width=.08\textwidth, angle=-90]{tikz/target_car_top_down.png}};
+
+
+\draw[->] (-3.3-\addjust, 0.1) -- node[above] {$v_{ego}$} (-1.9-\addjust, 0.1);
+\def\x{0.1}
+\draw[->] (\x, 3+\addjust) -- (\x, 1.0);
+
+\draw (\x, 2.8+\addjust) node[right] {$v_{n}$} (\x, 2.5+\addjust) 
+    -- node[right] {$\zeta_{n}$} (\x, 2+\addjust);
+    % -- node[right] {$i^{j}$} (\x, 1.5);
+%		\draw[->] (-3, -0.3) -- node[below] {$a_{ego}$} (-2, -0.3);
+
+% Disatance
+\draw (0,0) circle (5pt);
+% \node at (1.2, -0.3) {crossing point};
+
+% \def\x{-1}
+% \def\y{-2}
+% \draw (\x, \y) -- node[below] {$\delta^e$} (0, \y); 
+% \draw (\x, \y+0.1) -- (\x, \y-0.1);
+\def\x{-3}
+\def\xend{-.6}
+\def\y{-0.08}
+\draw (\x, \y) -- node[below] {$p^\mathrm{int}_\mathrm{ego}$} (\xend, \y);
+\draw (\x, \y+0.1) -- (\x, \y-0.1);
+\draw (\xend, \y+0.1) -- (\xend, \y-0.1);
+
+\def\x{-3}
+\def\xend{1.5}
+\def\y{-.9}
+\draw (\x, \y) -- node[below] {$p^\mathrm{goal}_\mathrm{ego}$} (-1, \y) -- (\xend, \y);
+% \draw (-1, \y)-- (\xend, \y);
+\draw (\x, \y+0.1) -- (\x, \y-0.1);
+\draw (\xend, \y+0.1) -- (\xend, \y-0.1);
+
+\def\x{-0.1}
+\def\y{3+\addjust}
+\def\yend{.6}
+\draw (\x, \y) -- node[left] {$p_{n}$} (\x, \yend);
+\draw (\x-0.1, \y) -- (\x+0.1, \y);
+\draw (\x-0.1, \yend) -- (\x+0.1, \yend);
+%	\def\x{2}
+%	\def\y{0}
+%	\draw (\x, \y) -- node[right] {$\delta^j$} (\x, 1);
+%	\draw (\x-0.1, \y) -- (\x+0.1, \y);
+
+\end{tikzpicture}\\

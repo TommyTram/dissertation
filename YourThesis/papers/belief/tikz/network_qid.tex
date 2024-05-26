@@ -1,0 +1,97 @@
+\begin{tikzpicture}
+    %\node[](obs_eq) at (-2.5,2) {$o = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop}, \{\hat{p}^{j}_\mathrm{int}, \hat{v}^j\}_{j=1}^N).$};
+    %\node (ego_state) at (-0.7, 0.8) {$\hat{s}_e = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop})$};
+
+    % \node (target_state) at (-2.9, -7) {$\hat{s}_j = \{p^{j}_\mathrm{int}, v^j, i^j\}_{j=1}^N$};
+    % \node (intent_state) at (-3, -7.5) {Intent from eq.$(20)$};
+
+    %\node (target_state) at (-0.7, -2.5) {$\hat{s}_j = \{p^{j}_\mathrm{int}, v^j\}_{j=1}^N$};
+    %\node (intent_state) at (-1, -5.2) {$\hat{i}^j (19)$};
+
+    \def\pfx{-2.2}
+    \def\pfy{-1.8}
+    \def\radius{.95}
+
+    % \node[](obs) at (\pfx,0) {$o$};
+    \node[](ego_state) at (-0.5,0.3) {$s_\mathrm{ego}$};
+    % \node[](target_state) at (0.1,-.8) {$\{\hat p_n, \hat v_n \}^N_{n=1}$};
+    \node[](target_state) at (-.3,-.8) {$o_{1:N}$};
+    \node[](target_observation) at (-1.7,-.8) {$o_{1:N}$};
+    \node[](target_state) at (-.5,\pfy+.3) {$\zeta_{n}$};
+    \node[](target_state) at (.5,\pfy+.3) {$s_{1:N}$};
+
+        \node[](obs) at (\pfx-.9,0) {$o$};
+    \node[circle, draw=black, minimum size=2.2] (split) at (\pfx, 0) {}; 
+    % \node[](ego_state) at (.3,0.4) {$\{s_\mathrm{ego} \}_{m=1}^M$};
+    % \node[](target_state) at (0.2,\pfy+.3) {$\{x_{m} \}_{m=1}^M$};
+    % \node[](target_observation) at (-1,-.5) {$o_{1:N}$};
+    
+    \makepointcloud
+
+    \def\BeliefSize{1}
+    \def\BeliefDepth{1}
+    % \baseinput{1};
+
+    \node[draw,fill=blue!5,thick,inner sep=3pt,minimum width=1mm, minimum height=38mm, dashed, align=center] (dqn) at (2,\pfy/2-.3,0){DQN \\ Z=1 \\ See \\ Figure \ref{fig:network}};
+
+    
+    \pic[shift={(0.5,0,0)}] at (dqn.east) 
+    {Box={
+        name=q_particle,
+        caption=,
+        xlabel={{2, }},
+        ylabel= ,
+        zlabel=\BeliefSize,
+        fill=\SoftmaxColor,
+        opacity=0.8,
+        height=4,
+        width=1.5,
+        depth=\BeliefDepth
+        }
+    };
+
+    \pic[shift={(1.1,0,0)}] at (pf) 
+    {Box={
+        name=approx,
+        caption=$ $,
+        xlabel={{ , }},
+        ylabel= ,
+        zlabel= ,
+        fill=\SoftmaxColor,
+        opacity=0.8,
+        height=4,
+        width=1,
+        depth=\BeliefDepth
+        }
+    };
+
+    \draw [connection]  (dqn.east)  -- node {\midarrow} (q_particle-west);
+    % \draw [connection]  (input_ego-east)  -- node {\midarrow} ($(input_ego-east)+(1.1,0)$);
+    % \draw [connection]  (input_target1-southeast)  -- node {\midarrow} ($(input_target1-southeast)+(1.1,0)$);
+    %\node (space) at (,0) {};		
+    \draw [connection]  (split)  -- node {\midarrow} (pf);
+    \draw [connection]  (obs)  -- node {\midarrow} (split);
+    % \draw [connection]  (obs)  -- node {\midarrow} (input_ego-west);
+    % \draw [connection]  (obs)  -- node {\midarrow} (input_target1-southwest);
+    \draw [connection]  (split)  -- node {\midarrow} ($(split)+(3.35,0)$);
+    \draw [connection]  (split)  -- node {\midarrow} ($(approx-east)+(1.2,0)$);
+    \draw [connection]  (pf)  -- node {\midarrow} (approx-west);
+    \draw [connection]  (approx-east)  -- node {\midarrow} ($(approx-east)+(1.2,0)$);
+    \draw [connection]  ($(approx-east)+(1.2,0)$)  -- node {\midarrow} ($(approx-east)+(2.35,0)$);
+    \draw [connection]  (q_particle-east) -- node {\midarrow} ($(q_particle-east)+(.5,0)$);
+    \node[](q_pf) at ($(q_particle-east)+(.8,0)$) {$Q$};
+    
+    % \def\dx{.55}
+    % \def\dy{.2}
+    % % \draw [dashed, thick] (\pfx-\dx,\dy) -- (\pfx-\dx,\pfy-\radius) -- (\pfx+\dx+.6,\pfy-\radius) -- (\pfx+\dx+.6,\dy) -- cycle;
+    % \draw [dashed, thick] (\pfx-\dx,\dy) -- (\pfx-\dx,\pfy-\radius) -- (\pfx+\dx,\pfy-\radius) -- (\pfx+\dx,\dy) -- cycle;
+    % \node[](belief_state) at (\pfx,\pfy-\radius-.3) {\textbf{$b$}};
+    % \node[](belief_state) at (\pfx+.3,\pfy-\radius-.3) {\textbf{$D(b)$}};
+    \def\dx{.6}
+    \def\dy{.4}
+    % \def\dy{-1}
+    \draw [dashed, thick] (\pfx-\dx,\dy) -- (\pfx-\dx,\pfy-\radius) -- (\pfx+\dx+.3,\pfy-\radius) -- (\pfx+\dx+.3,\dy) -- cycle;
+    % \draw [dashed, thick] (\pfx-\dx,\dy) -- (\pfx-\dx,\pfy-\radius) -- (\pfx+\dx,\pfy-\radius) -- (\pfx+\dx,\dy) -- cycle;
+    \node[](belief_state) at (\pfx,\pfy-\radius-.3) {\textbf{$b$}};
+    \node[](belief_state) at (\pfx+1.3,\pfy-\radius+0.2) {\textbf{$D(b)$}};
+\end{tikzpicture}
