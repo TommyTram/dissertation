@@ -2,20 +2,23 @@
 \chapter{Introduction} \label{ch:intro}
 The way we transport ourselves is currently evolving, and \gls{ad} technology is expected to have a big impact on this transformation~\cite{traffic21, McKinsey2023}. With \gls{av} the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. Number of parking spots in cities can be reduced if the vehicles can autonomously drive itself to a less crowded area when not in use and drive back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
 
-Thanks to the rapid success of \gls{ml} during the last decades, major progress towards deploying \gls{av}s in the real world was made. One clear benefactor of these new \gls{ml} technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
+The rapid success of \gls{ml} during the last decades has lead to major progress towards deploying \gls{av}s in the real world. One clear benefactor of these new \gls{ml} technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
 % The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
 However, navigating complex scenarios such as urban intersections and roundabouts with dense traffic remain challenging for \gls{av}s because it requires a higher level of interaction between road users, as summarized in a review paper~\cite{Schwarting2018}. 
 When a human driver approach an intersection, they observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation to determine \textit{who has the right of way?} Before deciding weather to drive or yield. 
-If all drivers could perfectly assess the situation and follow the right of way, there would be no accidents or collisions between cars. However, each year over one million people are killed in traffic-related accidents, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. According to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light and \num{928} of them were killed. 
-While these accidents were mainly caused by driver inattention or reckless driving, it motivates the development of control algorithms for \gls{av}s which not only follow the traffic rules but can also take into account other drivers intentions or future actions.
+% If all drivers could perfectly assess the situation and follow the right of way, there would be no accidents or collisions between cars. 
+% Despite, each year over one million people are killed in traffic-related accidents, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. 
+But human drivers are not perfect, according to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light, whereas \num{928} of them were killed. 
+While these accidents were mainly caused by driver inattention or reckless driving, it motivates the development of decision-making algorithms for \gls{av}s which not only follow the traffic rules but can also take into account other drivers future actions and inattention, which is the main focus in this thesis. 
 %\todo{Level 2: Volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
+% That is why this thesis will focus on intersection scenarios that includes interactions of other vehicles and propose a \gls{rl} approach using deep Q-learning while considering the uncertainty of . 
 
-This thesis presents a deep Q-learning approach for generating efficient and scalable decision strategies for \gls{av}s driving in environments with other drivers without explicitly knowing their intentions. 
-Starting with introducing the different \gls{ad} levels in Section~\ref{sec:intro_ad}.
-Section~\ref{sec:intro_intersections} defines the terms' scenario, intersection and intention used in this thesis.
-\Citet{Shalev2016} raises two concerns when using \gls{ml}, especially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the driving policy and solving the \gls{mdp} model is problematic, because of unpredictable behavior of other drivers. 
-Ensuring functional safety is not the main focus of this work, but because of its importance, it is briefly addressed in Section~\ref{sec:system_architecture} together with a proposed system architecture that can utilize the work presented in this thesis in a ''safe'' way. 
-The handling of the unpredictable behavior of other drivers is the main topic in this thesis and the research questions are presented in Section~\ref{sec:research_questions}. The scope and limitations are listed in Section~\ref{sec:scope}. Finally, the contributions of this thesis is presented in Section~\ref{sec:contributions}. 
+% This thesis presents a deep Q-learning approach for creating decision-making strategies for \gls{av}s driving in environments with other drivers without explicitly knowing their intentions. 
+% Starting with introducing the different \gls{ad} levels in Section~\ref{sec:intro_ad}.
+% Section~\ref{sec:intro_intersections} defines the terms' scenario, intersection and intention used in this thesis.
+% \Citet{Shalev2016} raises two concerns when using \gls{ml}, especially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the driving policy and solving the \gls{mdp} model is problematic, because of unpredictable behavior of other drivers. 
+% Ensuring functional safety is not the main focus of this work, but because of its importance, it is briefly addressed in Section~\ref{sec:system_architecture} together with a proposed system architecture that can utilize the work presented in this thesis in a ''safe'' way. 
+% The handling of the unpredictable behavior of other drivers is the main topic in this thesis and the research questions are presented in Section~\ref{sec:research_questions}. The scope and limitations are listed in Section~\ref{sec:scope}. Finally, the contributions of this thesis is presented in Section~\ref{sec:contributions}. 
 
 \section{Autonomous Driving Levels}
 \label{sec:intro_ad}
@@ -267,19 +270,20 @@ Instead, I proposed that the decision making algorithms presented in this paper 
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for driving through intersections?
+	\item[\textbf{Q1.}] How can \gls{lr} be used to create a decision-making agent for driving through intersections? (PAPER A and B)
+	\item[\textbf{Q2.}] In what way can an \gls{rl} agent utilize the uncertainty of its predictions and actions? (PAPER C and D)
+	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
+	
+	% \item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
 	% \item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
 	% (specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
-	\item[\textbf{Q2.}] Can a good driving policy be found without explicitly predicting other drivers intentions?
+	% \item[\textbf{Q2.}] Can a good driving policy be found without explicitly predicting other drivers intentions?
 	% \item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
 	% LSTM or other netowrk structures can find the hidden state that is intention. 
 	% \item[\textbf{Q3.}] How can MPC be used to improve the action and state space for a RL agent? 
-	\item[\textbf{Q3.}] How do we model the actions to drive through an intersection as discreet? (PAPER A and B)
+	% \item[\textbf{Q3.}] How do we model the actions to drive through an intersection as discreet? (PAPER A and B)
 	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
-	\item[\textbf{Q4.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
-	\item[\textbf{Q4.}] Is there a way to reuse trained policies? (PAPER D)
 	% (How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
-
 	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
 	% (PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
 \end{enumerate}
