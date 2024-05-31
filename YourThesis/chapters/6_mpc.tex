@@ -18,9 +18,13 @@
 
 \section{MPC}
 \todo{rewrite}
-MPC is an optimization-based control technique where an Optimal Control Problem~(OCP) is repeatedly solved over a receding limited time horizon, starting from the current system state. In particular, for every time instance, a mathematical model of the controlled system is used to simulate the future states over a finite horizon, while a sequence of control inputs are selected and optimized given an objective cost function. The first element in the sequence of control inputs is then applied to the real system, and a new OCP with an updated state is solved at the next time instance.
+\gls{mpc} is an optimization-based control technique where an Optimal Control Problem~(OCP) is repeatedly solved over a receding limited time horizon, starting from the current system state. In particular, for every time instance, a mathematical model of the controlled system is used to simulate the future states over a finite horizon, while a sequence of control inputs are selected and optimized given an objective cost function. The first element in the sequence of control inputs is then applied to the real system, and a new OCP with an updated state is solved at the next time instance.
 
 \section{Approach, (Action space, options. MPC)}
+\tommy{Mixed-Integer Programming (MIP) Problems
+A mixed-integer programming (MIP) problem is one where some of the decision variables are constrained to be integer values (i.e. whole numbers such as -1, 0, 1, 2, etc.) at the optimal solution.  
+However, integer variables make an optimization problem non-convex, and therefore far more difficult to solve.  Memory and solution time may rise exponentially as you add more integer variables.}
+
 MPC has a mixed integer problem, calculating the optimal path for all possible action is very computationally heavy. 
 RL DQN. Only has discrete actions. Can not guarantee safety but is good at choosing actions with the best utility (value). 
 The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. 
@@ -39,7 +43,7 @@ The reward function takes in the predicted outcome of the model in the MPC and c
 \todo{reward function}
 added Q masking.
 Q-masking reduce the search space, in this work we showed it for unavailable actions but could be extended to actions limited by the precautionary safety module. 
-By combining the having the mpc cost as a negative rewward the \gls{dqn} can balance the control cost with the high level goal of reaching the goal and even choose an action that is on average good on a high level but may not seem that way to the \gls{mpc}.
+By combining the having the \gls{mpc} cost as a negative reward the \gls{dqn} can balance the control cost with the high level goal of reaching the goal and even choose an action that is on average good on a high level but may not seem that way to the \gls{mpc}.
 
 Given the state representation, the dynamics of the vehicle is then modeled using a  triple integrator with jerk as control input.
 

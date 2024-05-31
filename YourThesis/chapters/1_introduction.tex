@@ -1,37 +1,35 @@
 % !TEX root=../../Thesis.tex
 \chapter{Introduction} \label{ch:intro}
-The way of transportation is currently evolving, and autonomous driving technology is expected to have a big impact on this transformation~\cite{traffic21}. Over one million people are killed in traffic-related accidents each year, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. By helping humans with perception, prediction and decision making autonomous driving could significantly improve traffic safety and make way for new innovative road infrastructure. Without the requirement of a present human for each transportation vehicle, the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. Number of parking spots in cities can be reduced if the vehicle can autonomously drive itself to a less crowded area when not in use and drive itself back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
+The way we transport ourselves is currently evolving, and \gls{ad} technology is expected to have a big impact on this transformation~\cite{traffic21, McKinsey2023}. With \gls{av} the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. Number of parking spots in cities can be reduced if the vehicles can autonomously drive itself to a less crowded area when not in use and drive back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
 
+Thanks to the rapid success of \gls{ml} during the last decades, major progress towards deploying \gls{av}s in the real world was made. One clear benefactor of these new \gls{ml} technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
+% The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
+However, navigating complex scenarios such as urban intersections and roundabouts with dense traffic remain challenging for \gls{av}s because it requires a higher level of interaction between road users, as summarized in a review paper~\cite{Schwarting2018}. 
+When a human driver approach an intersection, they observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation to determine \textit{who has the right of way?} Before deciding weather to drive or yield. 
+If all drivers could perfectly assess the situation and follow the right of way, there would be no accidents or collisions between cars. However, each year over one million people are killed in traffic-related accidents, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. According to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light and \num{928} of them were killed. 
+While these accidents were mainly caused by driver inattention or reckless driving, it motivates the development of control algorithms for \gls{av}s which not only follow the traffic rules but can also take into account other drivers intentions or future actions.
 %\todo{Level 2: Volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
 
-Thanks to the rapid success of machine learning during the last decades, major progress towards deploying autonomous vehicles in the real world. One clear benefactor of the new machine learning technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
-% The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
-However, for complex scenarios such as urban intersections and roundabouts with dense traffic remain challenging for autonomous vehicles because it requires a higher level of interaction between road users. 
-When a human driver approach an intersection, it is natural to observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation to find out \textit{who has the right of way?} Before deciding weather to  drive or yield. 
-If all drivers could perfectly assess the situation and follow the right of way, there would be no accidents or collisions. However, according to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light and \num{928} of them were killed. 
-This motivates the development of control algorithms for autonomous vehicles which can take into account other drivers intention and at the same time behave in a ``human-like'' way. 
-
-
-This thesis presents \gls{rl} methods for generating efficient and scalable decision strategies for autonomous vehicles driving in environments with other drivers and their intentions are not observable. Starting with introducing the different \gls{ad} levels in Section~\ref{sec:intro_ad}.
+This thesis presents a deep Q-learning approach for generating efficient and scalable decision strategies for \gls{av}s driving in environments with other drivers without explicitly knowing their intentions. 
+Starting with introducing the different \gls{ad} levels in Section~\ref{sec:intro_ad}.
 Section~\ref{sec:intro_intersections} defines the terms' scenario, intersection and intention used in this thesis.
-\Citet{Shalev2016} raises two concerns when using Machine learning, specially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the driving policy and that the \gls{mdp} model is problematic, because of unpredictable behavior of other drivers. 
-Ensuring functional safety is not the main focus of this work, but because of its importance, it is briefly addressed in Section~\ref{sec:system_architecture} together with a proposed system architecture that can utilize the work presented in this thesis in a safe way. 
+\Citet{Shalev2016} raises two concerns when using \gls{ml}, especially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the driving policy and solving the \gls{mdp} model is problematic, because of unpredictable behavior of other drivers. 
+Ensuring functional safety is not the main focus of this work, but because of its importance, it is briefly addressed in Section~\ref{sec:system_architecture} together with a proposed system architecture that can utilize the work presented in this thesis in a ''safe'' way. 
 The handling of the unpredictable behavior of other drivers is the main topic in this thesis and the research questions are presented in Section~\ref{sec:research_questions}. The scope and limitations are listed in Section~\ref{sec:scope}. Finally, the contributions of this thesis is presented in Section~\ref{sec:contributions}. 
 
-\section{Autonomous Driving}
+\section{Autonomous Driving Levels}
 \label{sec:intro_ad}
-When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. L0 is a vehicle with no autonomy, whereas a fully autonomous vehicle that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like Tesla autopilot and the Volvo Pilot Assist, are classified as level 2, with the main criteria being that the driver is in control and is supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to maintain safety. For L3 and higher the responsibility of driving is on the system. At L3 the driver still has to take control over the vehicle but at the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. 
+When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. The first level L0 is a vehicle with no autonomy, whereas a fully \gls{av} that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like lane centering or adaptive cruise control are classified as L1, while the Volvo Pilot Assist and Tesla Autopilot that provide both steering and acceleration/breaking are classified as level 2. The main criteria for L2 systems is that the driver is in control and only supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to ensure safety. For L3 and higher the responsibility of driving is shifted to the system. At L3, the driver still has to take control over the vehicle but at only the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. Examples of L4 are robot taxis developed by Waymo, Zoox, cruise and Toyota which only operate in a specified area or city. 
 
 % Another way to categorize these autonomy levels is: supervised and unsupervised driving. Supervised driving include L0-L3 where the driver has to supervise the system and take control when necessary, while unsupervised 
 % \tommy{Level 2: You are diving, provide steering and breaking support to the driver, lane centering and adaptive cruise control}
-The methods presented in this thesis are aimed at an autonomy level between L3 and L5. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection. 
 
-In this thesis, the automated vehicle making the decisions are referred to as the ego vehicle.
-Other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other autonomous vehicles. 
+The \gls{av} making the decisions in this work are referred to as the ego vehicle, while other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other \gls{av}s. 
+The methods presented in this thesis are aimed at an autonomy level L5. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection. 
 
-
-\subsection{Scenarios and unsignalized intersections}
+\subsection{Intersections, intention and scenarios}
 \label{sec:intro_intersections}
+When it comes to the scenarios considered in this work. This section aims to clearify the use of the words' intersection, intention and scenario.
 % When a pedestrian approach a crossing they have been taught at a young age to look at both sides of the road before crossing. The same apply for a human driver approaching an intersection. 
 % When a human driver approach an intersection, it is natural to observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation, who has the right of way? 
 
@@ -51,7 +49,7 @@ Other traffic participants are assumed to be vehicles driven by other human driv
 			\def\roadwidth{0.5}
 
 			\draw (0,0) circle (2pt);
-			\node at (1.2, 0.2) {crossing point};
+			\node at (1.2, 0.2) {conflict point};
 			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth, \roadwidth) -- (-\roadwidth, \crosstopy);
 			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth, -\roadwidth) -- (-\roadwidth-\roadwidth, \crossboty);
 			\draw[thick] (\roadwidth, \crosstopy) -- (\roadwidth, \roadwidth) -- (\crossrightx, \roadwidth);
@@ -87,9 +85,12 @@ Other traffic participants are assumed to be vehicles driven by other human driv
 	\label{fig:example_intersections}
 
 \end{figure}
-In this thesis there is a separation between scenario and intersection. An intersection refers the geometrical shape of the intersection, like number of junctions, conflict points, turns and angle of incidence, as shown in Figure~\ref{fig:example_intersections}. While a scenario is defined as the combination of an intersection, its' traffic participants, their intentions, positions and velocities, as shown in Figure~\ref{fig:example_scenarios}. 
-An unsignalized intersection is defined as any junction of two or more roads where the right-of-way for a car, bicycle and pedestrian is not controlled by a regulatory (i.e., STOP or YIELD) sign or a traffic signal.
+An intersection refers the geometrical shape of the roads intersecting each other e.g., number of junctions, conflict points, turns and angle of incidence, as shown in Figure~\ref{fig:example_intersections}. 
+An intersection can either be signalized or unsignalized, a signalized intersection has something to define the right-of-way e.g., a regulatory (i.e., STOP or YIELD) sign or a traffic signal, while an unsignalized intersection does not. But as mentioned in the introduction, humans do not always follow these right-of-way rules and therefore end up in accidents. That is why this thesis defines the intentions as what other vehicle will do in the future: stop, slow down or drive through the intersection. If the intention is known, then all intersections can be treated as unsignalized since the right-of-way can be implied by the intention instead of the infrastructure. This way, even when another vehicle would break a traffic rule and run a red light, a good agent would still stop and be safe. 
+%  Intersections in the world often have something to decide the right of way like traffic rules, signs or lights. 
+% While there exists a large variation of intersections in the world, this work only focus on the decision to drive or yield, we can reduce the dimention to 1. 
 
+Finally, the combination of an intersection, its' traffic participants, their intentions, positions and velocities, is defined as a scenario shown in Figure~\ref{fig:example_scenarios}. 
 More detail on the specific intersections and scenarios considered in this work is presented in Chapter~\ref{ch:modeling_intersection}.
 
 \begin{figure}[h]
@@ -105,7 +106,7 @@ More detail on the specific intersections and scenarios considered in this work 
 			\def\roadwidth{0.5}
 
 			\draw (0,0) circle (2pt);
-			\node at (1.2, 0.2) {crossing point};
+			% \node at (1.2, 0.2) {crossing point};
 			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth, \roadwidth) -- (-\roadwidth, \crosstopy);
 			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth, -\roadwidth) -- (-\roadwidth, \crossboty);
 			\draw[thick] (\roadwidth, \crosstopy) -- (\roadwidth, \roadwidth) -- (\crossrightx, \roadwidth);
@@ -173,6 +174,7 @@ More detail on the specific intersections and scenarios considered in this work 
 
 \section{System architecture}
 \label{sec:system_architecture}
+Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety \cite{tbd} in the same way e.g., a \gls{mpc} can. That is why this section will clarify where the work in this paper would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
 The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018,Kortenkamp2008}.
 
 The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
@@ -226,7 +228,7 @@ In the industry today the main standard for functional safety in motorized vehic
 \end{figure}
 
 Although safety is the most important requirement for enabling autonomous driving, the work in this paper does not make any safety guaranties. 
-Instead, I proposed that the decision making algorithms presented in this paper are used in system architecture shown in Figure~\ref{fig:system_architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM. 
+Instead, I proposed that the decision making algorithms presented in this paper is used in system architecture shown in Figure~\ref{fig:system_architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM. 
 
 \tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
 
@@ -247,33 +249,35 @@ Instead, I proposed that the decision making algorithms presented in this paper 
 
 \section{Research questions}
 \label{sec:research_questions}
-This thesis defines human driving as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
-This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
-% A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
-In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
-Investigate how \gls{rl} methods can be used in practice to create a tactical decision making agent for \gls{ad}.
+% This thesis defines human driving as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
+% This section briefly introduce the intersection problem, why its hard and the research questions that are studied in this paper. 
+% % A simple unsignalized intersection is shown in Figure \ref{fig:zones}.
+% In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
+% Investigate how \gls{rl} methods can be used in practice to create a tactical decision making agent for \gls{ad}.
 
-\tommy{This paper focus on the DQN algorithm and investigate how far we can push it for decision making}
+% \tommy{This paper focus on the DQN algorithm and investigate how far we can push it for decision making}
 
-\begin{enumerate}
-	\item The goal for the ego vehicle is to drive through intersections without colliding. 
-	\item The intersection can be of different shapes. %We assume we have a map of the intersection. 
-	\item There will be other vehicles crossing the same intersection. 
-	\item The intention of other drivers are not known
+% \begin{enumerate}
+% 	\item The goal for the ego vehicle is to drive through intersections without colliding. 
+% 	\item The intersection can be of different shapes. %We assume we have a map of the intersection. 
+% 	\item There will be other vehicles crossing the same intersection. 
+% 	\item The intention of other drivers are not known
 	
-\end{enumerate}
+% \end{enumerate}
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving through an  intersection?
+	\item[\textbf{Q1.}] How can RL be used to create a decision-making agent for driving through intersections?
 	% \item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
 	% (specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
 	\item[\textbf{Q2.}] Can a good driving policy be found without explicitly predicting other drivers intentions?
 	% \item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
 	% LSTM or other netowrk structures can find the hidden state that is intention. 
-	\item[\textbf{Q3.}] How can MPC be used to improve the action and state space for a RL agent? 
+	% \item[\textbf{Q3.}] How can MPC be used to improve the action and state space for a RL agent? 
+	\item[\textbf{Q3.}] How do we model the actions to drive through an intersection as discreet? (PAPER A and B)
 	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
-	\item[\textbf{Q4.}] How can the quality of a RL agent be improved by accounting for uncertainty?
+	\item[\textbf{Q4.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
+	\item[\textbf{Q4.}] Is there a way to reuse trained policies? (PAPER D)
 	% (How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
 
 	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
