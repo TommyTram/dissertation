@@ -1,6 +1,11 @@
 % !TEX root=../../Thesis.tex
 \chapter{Generalizing over different scenarios} \label{ch:generalize}
 \tommy{Uncertainty in MDP which one are we in?}
+\begin{center}
+  \textit{\textbf{RQ 3: How can a \gls{rl} agent handle situations it has not been trained on?}}
+  \end{center}
+  \vspace{12pt}
+
 As mentioned in the Seciton \ref{sec:mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
 
 Application areas. A transition function is defined as the probability of transitioning from one state to another. This could be different for example when the ego vehicle properties are different, if the DQN is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the DQN is train in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The DQN/policy would probably not perform so well. 

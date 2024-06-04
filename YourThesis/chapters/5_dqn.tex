@@ -1,41 +1,7 @@
 % !TEX root=../../Thesis.tex
-\chapter{Intentions of other drivers}
+\chapter{Utilizing Uncertainty}
 \tommy{rebruiken ska vara som en tidningsrubrik}
 \begin{center} 
-\textit{\textbf{RQ 2: Can we find a good driving policy without explicitly predicting other drivers intentions?}}
+\textit{\textbf{RQ 2: In what way can an \gls{rl} agent utilize the uncertainty of its predictions and actions?}}
 \end{center}
 \vspace{12pt}
-\tommy{Deep Q-learning approach}
-We want to formulate the problem in such a way that abstracts the information of traffic lights, traffic signs and intention. This way the car is closer to L5 by not relying on the different traffic lights.
-
-One motivation example is in how traffic lights works. In Sweden, we have sensors that can sense if there are cars in an intersection and create a traffic light schedule accordingly, compared to the US where the traffic signals set up using timers. As a consequence, Drivers approaching a yellow light 
-
-The \gls{dqn} algorithm uses a \gls{nn} and has two disadvantages. One is that the size of the network is fixed, this forces the input space to be fixed. Our state space is defined by the physical state of the surrounding cars, and the number of cars we observe at each situation variate. %Therefor we need a way to invariate of 
-
-\section{Approach (State representation, observable and unobservable)}
-This paper explored the possibility of solving the problem with \gls{rl} by trying a verity of different methods from the rainbow paper with the addition to the LSTM layer and presented the results that had the highest impact on the conversion. 
-\todo{State representation}
-This section describes the general state representation used in this research that enables these methods to be generalizable for different type of intersection and crossings. 
-By describing the state space as a set of distances to intersection points, we can abstract the map layout of different intersections and the same algorithms would work for intersections variations that we haven't specifically trained on. 
-\todo{add image of intersection scenario with 90 degree entry point and 45 degree entry point.}
-\todo{Network model}
-Shared weights, DQN vs DRQN. 
-\todo{Learning tools}
-experience replay and dropout. 
-\todo{explain rewards}
-large negative reward for invalid actions.
-\section{Simulated experiments}
-\section{Results and discussion}
-\begin{itemize}
-  \item STG as actions
-  \item shared weights
-  \item effect of replay, dropout 
-  \item comparing a dqn and Drqn 
-\end{itemize}
-however sensitive to noise. 
-
-LSTM take into account the history, but when applied in the real world with noise the model did not perform as well. 
-The immidiate reward for jerk is 
-\tommy{finding time to intersection and position itself in a way that does not conflict with other cars.}
-
-\tommy{FIND A SECTION. Collisions in this thesis, may sound critical and extreme. But collisions in this content is for the purpose of the simulator and for the terminal state of the agent. Translated to a system perspective, it would mean that a backup collision avoidance algorithm had to interfere and in the worst case take over. }
