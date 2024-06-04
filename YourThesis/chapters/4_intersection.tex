@@ -3,11 +3,16 @@
 \label{ch:modeling_intersection}
 \tommy{modeling is the key to...}
 \begin{center}
-  \textit{\textbf{RQ 1: How can RL be used to create a decision-making agent for autonomous driving through an unsignalized intersection?}}
+  \textit{\textbf{RQ 1: How can \gls{rl} be used to create a decision-making agent for driving through intersections?}}
   \end{center}
   \vspace{12pt}
   
-Driving through an intersection is a sequential decision making problem and can be mathematically formulated using a \gls{mdp}, introduced in Section~\ref{sec:background_mdp}, but because the intention of other drivers is not observable with any existing sensors today, \gls{pomdp} is better suited to formulate the problem. 
+Driving through an intersection is a sequential decision-making problem and can be mathematically formulated using a \gls{mdp}, introduced in Section~\ref{sec:background_mdp}. As mentioned in the introduction, this thesis will focus on driving in intersections together with other drivers and not only follow the traffic rules but also be able to adapt to other drivers intentions. Since the intention of other drivers is not observable with any existing sensors today, \gls{pomdp} is better suited to formulate the problem. 
+
+Modeling the intersection problem in a good way is the key to finding a good decision-making policy. This chapter highlights the key points of the \gls{pomdp} for the intersection problem in this thesis. The state space, action space, 
+ 
+
+
 \Citet{Shalev2016} raises two concerns when using Machine learning, specially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the Driving Policy and that the Markov Decision Process model is problematic, because of unpredictable behavior of other drivers.
 In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
 They also noted that in the context of autonomous driving, the dynamics of vehicles is Markovian but the behavior of other road users may not necessarily be Markovian.

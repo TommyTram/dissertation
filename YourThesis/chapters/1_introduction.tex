@@ -175,79 +175,6 @@ More detail on the specific intersections and scenarios considered in this work 
 
 %  In light of the increased focus on and occurrence of these intersection types nationwide, it is expected that the application of nontraditional designs will continue to spread.
 
-\section{System architecture}
-\label{sec:system_architecture}
-Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety \cite{tbd} in the same way e.g., a \gls{mpc} can. That is why this section will clarify where the work in this paper would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
-The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018,Kortenkamp2008}.
-
-The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
-
-Tactical planning can be divided into three categories, the proactive, active and reactive. A proactive module would be something like a precautionary safety module that interprets the information about the environment and create constraints that is sent to the active planner, like  driveable area, allowed speeds and actions. These constraints are generated from a set of safety goals and rules, making this the first layer of protection that can ensure safety. 
-The role of the active planner is to take this sets of allowed actions and prescribe the behavior of the vehicle through decisions such as drive, yield or stop. The goal of these high level decisions is to optimize metrics such as comfort, fuel consumption and time to goal. These decisions are then sent to a motion planner that generates a safe dynamically feasible path for the vehicle for a shorter planning horizon of around $0.1$s. 
-At the same time, a reactive, collision avoidance, module make sure that the chosen decision and path does lead to any collisions. Unlike the decision maker, the collision avoidance module main goal is to identify imminent danger and therefore has access to more aggressive actions like emergency breaking to ensure safety. 
- 
-In the industry today the main standard for functional safety in motorized vehicles is the ISO 26262 standard, titled "Road vehicles – Functional safety"~\cite{ISO26262}. It uses a \gls{asil} to classify the inherent safety risk in an automotive system and the functions or modules of such a system. The \gls{asil} classification is used to express the level of risk reduction required to prevent a specific hazard, from \gls{asil} D to \gls{asil} A. \gls{asil} D represents the highest hazard level and \gls{asil} A the lowest. There is a level with no safety relevance and only standard Quality Management processes are required, this level is referred to as QM.
-
-\begin{figure}[h]
-	\centering
-	 \includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf}
-%	\begin{tikzpicture}[
-%		node distance=8mm and 30mm,
-%		node font= \Large,
-%		box/.style = {draw, thick, rectangle, rounded corners=0.1cm, fill=gray!10, minimum width=3.5cm, minimum height=2cm, align=center},
-%		sx+/.style = {xshift = 2mm},
-%		sx+/.style = {xshift = 2mm}
-%		]
-%
-%		% \node[draw,thick,rectangle,rounded corners =0.05cm,fill=gray!10,minimum width=2cm,minimum height = 2cm] (SF) at (2,0) {Sensor Fusion};
-%		
-%		% \draw[arrow,thick] (0,0) --(SF) node [midway,above] {Sensors: Lidar, Radar, Camera, Sonar};
-%
-%		% \node[draw,thick,rectangle,rounded corners =0.05cm,fill=gray!10,minimum width=2cm,minimum height = 2cm, shift={(2,0,0)}] (SF) at (2,0) {Sensor \\ Fusion};
-%		
-%		\node (start) at (0,0) {};
-%		\node (SF) [box, right=of start.east] {Sensor \\ Fusion};
-%		\node (PS) [box, right=of SF.east] {Precautionary \\ Safety};
-%		\node (DM) [box, right=of PS.east] {Decision \\ Maker};
-%		\node (Con) [box, right=of DM.east] {Controller};
-%		\node (CA) [box, below=of Con] {Collision \\ Avoidance};
-%		\node (Act) [box, right=of Con.east] {Actuator};
-%		\node (end) [right=of Act] {};
-%
-%		\draw[arrow,thick,align=left] (start) --+(SF) node [midway,above] {Lidar\\Camera\\etc.};
-%		\draw[arrow,thick,align=left] (SF) --+(PS) node [midway,above] {Position\\Velocity\\etc.};
-%		\draw[arrow,thick,align=left] (PS) --+(DM) node [midway,above] {Safe\\Actions};
-%		\draw[arrow,thick,align=left] (DM) --+(Con) node [midway,above] {Action\\Reference};
-%		\draw[arrow,thick,align=left] (DM) -| ($(DM.east) + (1.5,0mm)$) |- (CA) node [midway,above] {};
-%		\draw[arrow,thick,align=left] (CA) -| ($(CA.east) + (1.5,0mm)$) |- (Act) node [midway,above] {};
-%		\draw[arrow,thick,align=left] (Con) --+(Act) node [midway,above] {Acceleration\\Request};
-%		\draw[arrow,thick,align=left] (Act) --+(end) node [midway,above] {};
-%	% --> Sensor Fusion --> Precautionary Safety --> |Decision Maker --> Controller |--> Actuator -->
-%	% 																->Collision Avoidance |
-%
-%	\end{tikzpicture} 
-	\caption{Representation of the system architecture.}
-	\label{fig:system_architecture}
-\end{figure}
-
-Although safety is the most important requirement for enabling autonomous driving, the work in this paper does not make any safety guaranties. 
-Instead, I proposed that the decision making algorithms presented in this paper is used in system architecture shown in Figure~\ref{fig:system_architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM. 
-
-\tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
-
-% \tommy{To be able to use \gls{ml} and \gls{rl} safety is this stage of development it is important to separate the responsibility of safety to a more capable system like formal methods, reachability or MPC that can mathematically guarantee safety.}
- 
-% \tommy{depending on size of chapter consider moving it to its own chapter.}
- 
-% The ASIL assessed for a given hazard is then assigned to the safety goal set to address that hazard and is then inherited by the safety requirements derived from that goal.
-% These Severity, Exposure, and Control definitions are informative, not prescriptive, and effectively leave some room for subjective variation or discretion between various automakers and component suppliers.
-
-
-
-% This paper aims to sparate the task of ensuring safety to a precautionary safety or collision avoidance module. 
-
-% \todo{include a description of ISO26262, motivate a redundant system for Asil D, making it important to separate the scope of the tactical decision making agent to be comfortable and efficient. Efficiency can be measured in different ways, but in this paper we refer to change in acceleration, number of times the agent reaches an undesired terminal state and the time it takes to reach the goal.}
-
 
 
 \section{Research questions}
@@ -270,7 +197,7 @@ Instead, I proposed that the decision making algorithms presented in this paper 
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can \gls{lr} be used to create a decision-making agent for driving through intersections? (PAPER A and B)
+	\item[\textbf{Q1.}] How can \gls{rl} be used to create a decision-making agent for driving through intersections? (PAPER A and B)
 	\item[\textbf{Q2.}] In what way can an \gls{rl} agent utilize the uncertainty of its predictions and actions? (PAPER C and D)
 	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
 	
@@ -293,14 +220,15 @@ The work presented in this thesis investigate the following research questions:
 The following aspects of creating a tactical decision making agent for autonomous driving in uncertain environments are not considered in this thesis. 
 
 \begin{enumerate}
-	\item We have access to sensors on-board the ego vehicle. We do not have v2v, or v2x communication. 
-	\item We do not assume any knowledge of traffic signs or traffic lights. 
+	% \item We have access to sensors on-board the ego vehicle. We do not have v2v, or v2x communication. 
+	% \item We do not assume any knowledge of traffic signs or traffic lights. 
 	\item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
 	\item The work in this thesis is tested in simulation environments and not real world. 
 	\item This work considers the control of one vehicle and not multiple agents. 
-	\item A reward function is defined for each approach. 
+	% \item This work considers the control of one vehicle and not multiple agents. 
+	% \item A reward function is defined for each approach. 
 	
-	To compensate for not having v2v or v2x communication, we have to, directly or indirectly, predict what other driver will do. 
+	% To compensate for not having v2v or v2x communication, we have to, directly or indirectly, predict what other driver will do. 
 	
 \end{enumerate}
 
@@ -310,18 +238,19 @@ The following aspects of creating a tactical decision making agent for autonomou
 \todo{Rewrite once thesis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}
-	\item General approach to creating a decision making agent for driving in interactions. 
+	\item a \gls{pomdp} formulation for driving in intersections. 
 	\item A neural network architecture that is invariant to permutations of the order of which surrounding traffic participants are observed, which speeds up training and improves the quality of the trained agent. 
 	\item REWRITE: A belief state representation using a particle filter and a comparison and analysis of different algorithms that utilize the belief state. 
 	\item Two approached to solving a POMDP with hidden intention state. LSTM layer and belief state. 
-	\item General state space representation that is invariat to permutations of the intersection design. 
-	\item Extension of RL methods that provide an estimate of the epistemic uncertainty and use it to create a confidence criteria that can identify situations with high uncertainty. 
-	\item \todo{Transfer reinforcement learning, finding a policy for mdps }
+	% \item General state space representation that is invariat to permutations of the intersection design. 
+	\item Extension of \gls{rl} methods that provide an estimate of the epistemic uncertainty and use it to create a confidence criteria that can identify situations with high uncertainty. 
+	\item Method for choosing between a set of fully trained policies. 
 
 \end{enumerate}
 
 
 \section{Thesis outline}
+\todo{rewrite when thesis is more finished}
 The outline of the thesis is as follows: in Chapter \ref{ch:related_work} other research in the same field is presented. In Chapter \ref{ch:background} introduce the mathematical framework \gls{mdp} and \gls{pomdp} with a brief theory of \gls{rl}. 
 Chapter \ref{ch:modeling_intersection} is where the problem is formulated by defining the components of the \gls{pomdp}. In Chapter \ref{ch:mpc}, performance results from using deep Q-learning to solve the \gls{pomdp} is presented and later combined with a \gls{mpc} to improve the actions. Later in Chapter \ref{ch:uncertainty} two approaches to handle the uncertainty is presented. First the uncertainty in the decisions from the \gls{rl} algorithm and then an empirical study of how well a \gls{dqn} can handle uncertainty of others driving intentions. Chapter \ref{ch:generalize} present an approach to generalize over differnt \gls{mdp}s more specifically policies learned from different transfer functions. 
 
