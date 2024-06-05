@@ -1,10 +1,10 @@
 % !TEX root=../../Thesis.tex
 \chapter{Generalizing over different scenarios} \label{ch:generalize}
 \tommy{Uncertainty in MDP which one are we in?}
-\begin{center}
-  \textit{\textbf{RQ 3: How can a \gls{rl} agent handle situations it has not been trained on?}}
-  \end{center}
-  \vspace{12pt}
+% \begin{center}
+%   \textit{\textbf{RQ 3: How can a \gls{rl} agent handle situations it has not been trained on?}}
+%   \end{center}
+%   \vspace{12pt}
 
 As mentioned in the Seciton \ref{sec:mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
 
