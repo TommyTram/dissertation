@@ -121,8 +121,8 @@ While in \paperMPC the actions in instead sent to a \gls{mpc} to generate a velo
 \gls{mpc} is good at creating a plan within some given constraints but has a mixed integer problem and calculating the optimal path for all possible action is very computationally heavy. While Q-learning is good at estimating the value of an action given a state, but needs to explore many bad actions before converging to a good one. Combining \gls{rl} and \gls{mpc} enabled an agent efficiently choose a good action that the \gls{mpc} could use to create a safe and efficient velocity profile for. 
 
 \subsection{Transistion model}
-In this work the transision model is not known to the agent and \gls{rl} is used to learn this model through experience, by taking actions at different states in an environment and recording the reward and what state the agent transition into.
-the environment in this work is a simulator and the main thing the agent is traying to learn is the transision of the other vehicles which depends on their intentions. 
+The transition model is not known and \gls{rl} is used to learn this model by taking actions in the environment from different states and recording the reward and what state the agent transition into.
+The environment in this work is a simulator and the main thing the agent is trying to learn is the transition of the other vehicles which depends on their intentions $\zeta$. 
 The intentions are models as predetermined actions while folloing a \gls{idm} ontop of that. This makes the interaction between cars more complicated. 
 \tommy{IDM, and other agents behaviors/intentions.}
 \paperLSTM random parameters, speeds and spawn rates. 
@@ -130,19 +130,20 @@ The intentions are models as predetermined actions while folloing a \gls{idm} on
 
 
 \subsection{Observation model}
-The observation model can be interpeted as the noise from the sensors, \paperLSTM assumes perfect sensing while \paperBelief has some added noise to the observed states. 
-The observation space is usually the same as the state space without the intention state. Because there are no sensors that can detect other drivers intentions. 
+The observation model can be interpreted as the noise from the sensors, \paperLSTM assumes perfect sensing while \paperBelief has some added noise to the observed states. 
+The observation space is usually the same as the state space without the intention state $\zeta$. Because there are no sensors that can detect other drivers intentions. 
 \tommy{Everything in the state space except intention. Everything that is observable through the sensors in the car. }
 
 \subsection{Reward function}
-Designing the reward model from the objective the agent are trying to achieve. this is not the optimal values. Starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
+The design of the reward function is what determine the value of each state. A well crafted reward function will lead to a good driving policy. 
+Designing the reward model from the objective the agent are trying to achieve. Starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
 All papers formulated the reward based on the terminal states: goal, collision and timeout. 
 \paperLSTM and \paperMPC has a continious negative reward for change in acceleration to punish jerk that would come from changing between actions that would make it uncomfortable for the passengers. 
 \paperLSTM also gives a relative large negative reward for choosing to follow a car that does not exist. 
 
 \tommy{The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. }
 
-\section{Results and discussion}
+\section{Results from simulation}
 
 % \begin{figure}[t!]
 	% \mbox{\parbox{\textwidth}{
@@ -161,7 +162,7 @@ All papers formulated the reward based on the terminal states: goal, collision a
 % 	\label{fig:result2}
 % \end{figure}
 
-\begin{table}[t!]
+\begin{table}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
 	\begin{tabular}{ |p{1,6cm}||p{1,2cm}|p{1,2cm}|p{1,2cm}|p{1,2cm}|}

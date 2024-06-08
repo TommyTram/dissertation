@@ -30,7 +30,7 @@ Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat
 
 Algorithm~\ref{alg:training} outlines the complete ensemble RPF method, which was used in this work. An ensemble of $K$ trainable and prior neural networks are first initialized randomly. Each ensemble member is also assigned a separate experience replay memory buffer $m_k$ (although in a practical implementation, the replay memory can be designed in such a way that it uses negligible more memory than a shared buffer). For each new training episode, a uniformly sampled ensemble member, $\nu \sim \mathcal{U}\{1,K\}$, is used to greedily select the action with the highest $Q$-value. This procedure handles the exploration vs. exploitation trade-off and corresponds to a form of approximate Thompson sampling. Each new experience $e = (s_i, a_i, r_i, s_{i+1})$ is then added to the separate replay buffers $m_k$ with probability $p_\mathrm{add}$. Finally, the trainable weights of each ensemble member are updated by uniformly sample a mini-batch $M$ of experiences and using stochastic gradient descent (SGD) to backpropagate the loss of Eq.~\ref{eq:loss_boot}.
 
-\begin{algorithm}[!t]
+\begin{algorithm}[h]
 	\caption{Ensemble RPF training process}\label{alg:training}
 	\begin{algorithmic}[1]
 		\For{$k \gets 1$ to $K$}
@@ -88,28 +88,13 @@ When the agent is fully trained (i.e., not during the training phase), the polic
 %
 In a situation where no possible action fulfills the confidence criterion, a fallback action $a_\mathrm{safe}$ is chosen.
 
-
-
 \subsection{Simulated experiments}
 \todo{show the difference of having the uncertainty estimate not having the estimate}
 
 \subsection{Results and discussion}
 We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
 
-
-\section{Uncertainty of the intention}
-In paper A the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
-
-\subsection{Approach}
-
-
-Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
-
-\subsection{Simulated experiments}
-
-\subsection{Results and discussion}
-
-\begin{figure}[!t]
+\begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
 	\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
@@ -120,7 +105,7 @@ Because the state is no longer observable, the agent must reason about the histo
 
 % ZZZ Change left y-axis to percent, to make it more clear that it refers to a proportion
 
-\begin{figure}[!t]
+\begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
 		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
@@ -129,7 +114,7 @@ Because the state is no longer observable, the agent must reason about the histo
 	% \label{fig:cv}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
 		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_at_collision_wo_type_3_fonts.pdf}
@@ -138,7 +123,7 @@ Because the state is no longer observable, the agent must reason about the histo
 	% \label{fig:cvDuringCrash}
 \end{figure}
 
-\begin{figure}[!t]
+\begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 		\centering
 	\begin{subfigure}[]{0.99\columnwidth}
@@ -160,40 +145,52 @@ Because the state is no longer observable, the agent must reason about the histo
 	% \label{fig:performanceOutsideDistribution}
 \end{figure}
 
-\begin{figure}[!t]
-	\mbox{\parbox{\textwidth}{
-	\centering
-	\begin{subfigure}[t]{0.48\columnwidth}
-		\centering
-		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen1.pdf}
-		\caption{$t=0$, initial situation.}
-	\end{subfigure}%
-	~ 
-	\begin{subfigure}[t]{0.48\columnwidth}
-		\centering
-		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen2.pdf}
-		\caption{$t=1$, DQN and ensemble RPF without confidence criterion.}
-	\end{subfigure}
+% \begin{figure}[h]
+% 	\mbox{\parbox{\textwidth}{
+% 	\centering
+% 	\begin{subfigure}[t]{0.48\columnwidth}
+% 		\centering
+% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen1.pdf}
+% 		\caption{$t=0$, initial situation.}
+% 	\end{subfigure}%
+% 	~ 
+% 	\begin{subfigure}[t]{0.48\columnwidth}
+% 		\centering
+% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen2.pdf}
+% 		\caption{$t=1$, DQN and ensemble RPF without confidence criterion.}
+% 	\end{subfigure}
 	
-	\vspace{5pt}
+% 	\vspace{5pt}
 	
-	\begin{subfigure}[t]{0.48\columnwidth}
-		\centering
-		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen3.pdf}
-		\caption{$t=1$, ensemble RPF with confidence criterion.}
-	\end{subfigure}
-	~ 
-	\begin{subfigure}[t]{0.48\columnwidth}
-		\centering
-		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen4.pdf}
-		\caption{$t=1.5$, ensemble RPF with confidence criterion.}
-	\end{subfigure}
-	}}
-	\caption{Example of a situation outside of the training distribution,
-	where there would be a collision if the confidence criterion is not used. The vehicle at the top is here approaching the crossing at $20$ m/s.}
-	% \label{fig:collisionOutsideDistribution}
+% 	\begin{subfigure}[t]{0.48\columnwidth}
+% 		\centering
+% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen3.pdf}
+% 		\caption{$t=1$, ensemble RPF with confidence criterion.}
+% 	\end{subfigure}
+% 	~ 
+% 	\begin{subfigure}[t]{0.48\columnwidth}
+% 		\centering
+% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen4.pdf}
+% 		\caption{$t=1.5$, ensemble RPF with confidence criterion.}
+% 	\end{subfigure}
+% 	}}
+% 	\caption{Example of a situation outside of the training distribution,
+% 	where there would be a collision if the confidence criterion is not used. The vehicle at the top is here approaching the crossing at $20$ m/s.}
+% 	% \label{fig:collisionOutsideDistribution}
 
-\end{figure}
+% \end{figure}
 
 We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
 The other work show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 
+
+\section{Uncertainty of the intention}
+In paper A the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
+
+\subsection{Approach}
+
+
+Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
+
+\subsection{Simulated experiments}
+
+\subsection{Results and discussion}
