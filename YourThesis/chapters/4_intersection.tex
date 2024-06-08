@@ -18,7 +18,7 @@ Navigating an intersection is a sequential decision-making problem that can be m
 
 % Driving through an intersection is a sequential decision-making problem and can be mathematically formulated using a \gls{mdp}, introduced in Section~\ref{sec:background_mdp}. As mentioned in the introduction, this thesis will focus on driving in intersections together with other drivers and not only follow the traffic rules but also be able to adapt to other drivers intentions. Since the intention of other drivers is not observable with any existing sensors today, \gls{pomdp} is better suited to formulate the problem. 
 
-Effectively modeling the intersection problem is key for developing an optimal decision-making policy. This chapter outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
+Effectively modeling the intersection problem is key for developing an optimal decision-making policy. This chapter will define the of the words intersection, intention and scenario used in this thesis. Although the some details in the \gls{pomdp} may differe between the papers, the general description is the same. Section \ref{sec:pomdp_fomulation} outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
  
 % \Citet{Shalev2016} raises two concerns when using Machine learning, specially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the Driving Policy and that the Markov Decision Process model is problematic, because of unpredictable behavior of other drivers.
 % In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
@@ -26,46 +26,7 @@ Effectively modeling the intersection problem is key for developing an optimal d
 
 % \section{Intersection scenarios}
 
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
 
-% 	% Crossing
-% 	\def\crosstopy{8}
-% 	\def\crossboty{-2.5}
-% 	\def\crossleftx{-7}
-	
-% 	\draw[thick] (\crossleftx, 1) -- (-1, 1) -- (-1, \crosstopy);
-% 	\draw[thick] (\crossleftx, -1) -- (-1, -1) -- (-1, \crossboty);
-% 	\draw[thick] (1, \crosstopy) -- (1, 1) -- (3, 1);
-% 	\draw[thick] (1, \crossboty) -- (1, -1) -- (3, -1);
-	
-% 	cars
-% 	\node[inner sep=0pt] (ego_car) at (-6,0)
-% 	{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
-% 	\draw[->] ([yshift=0.2cm]ego_car.east) -- node[above] {$v^{ego}$} ($ (ego_car) + (2,0.2)$ );
-% 	\draw[|-|] ([yshift=-0.2cm]ego_car.east) -- node[below] {$p^{ego}_{0}=v^{ego}*\tau_{int}$} (-1,-0.2);
-
-% 	\node[inner sep=0pt] (target_car_3) at (0,7)
-% 	{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-% 	\node (tc_text3a) [right=of target_car_3, align=center] {Car 3};
-% 	\node (tc_text3b) [left=of target_car_3, align=center] {Conflict Car};
-% 	\draw[->] ([xshift=0.3cm]target_car_3.south) -- node[right] {$v^{3}_0$} ($ (target_car_3) + (.3,-2)$ );
-% 	\draw[|-|] ([xshift=-0.8cm]target_car_3.south) -- (-.8,1);
-% 	\node (tc_tti) [below left= 0.9cm and -0.7cm of target_car_3, align=center] {$p^3_{0}$  \\ $\tau_{int}$};
-
-% 	\node[inner sep=0pt] (target_car_2) at (0,2.5)
-% 	{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-% 	\node (tc_text2) [right=of target_car_2] {Car 2};
-	
-% 	\node[inner sep=0pt] (target_car_1) at (0,-1.5)
-% 	{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-% 	\node (tc_text1) [right=of target_car_1] {Car 1};
-
-% \end{tikzpicture}
-% \caption{Observations that makes the state}
-% \label{fig:intersection_scenario}
-% \end{figure}
 
 % \begin{figure}
 % \centering
@@ -96,89 +57,70 @@ Effectively modeling the intersection problem is key for developing an optimal d
 
 
 \include{YourThesis/chapters/intro_intersections.tex}
-
-\section{State space}
-From Section~\ref{sec:background_mdp}, the state space contains all the information necessary about the agent and environment to be able to transition to any given state. In the scenario from Figure~\ref{fig:intersection_scenario}, the red car on the horizontal lane represents the ego vehicle and the blue cars on the vertical lane are the other vehicels. 
-Let's start by defining the information needed. Starting with the terminal states: goal, to know if ego vehicles has crossed the intersection and reached the goal. The distance from ego to goal $p_{goal}$ is needed. For collision, the position of all surrounding traffic participants and a description of the intersection itself is necessary. Instead of using a Cartesian coordinate system, I propose using relative distance measures instead. This way, states describing the intersection and its participants are generalizable to different intersection designs, e.g., the angle of incidence and number of crossing points. 
-Then, the velocity and acceleration of all the traffic participants is necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants. This state is necessary to efficently navigate through an interdection. \paperBelief shows a comparision between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
-\paperLSTM proposed the first set of states. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
-\tommy{Coordinate system, distances to intersection, position, velocity and accelration of other vehicles. abstract away the information about traffic lights, traffic signs, as intention}
-
-\section{Action space}
-\tommy{options, take way, give way, follow car}
-One of the limitations of deep Q-learning is that the action space has to be discreet. In other work it is common to set the action space to diffecnt acceleration request. However, I propose using short term goals as actions. The short term goals are high level objectives like stop at the start of the intersection, follow car with id 1 or drive through the intersection at the reference speed. 
-This high level action is then sent to a sliding mode controller that generates an acceleration. 
-In \paperMPC the actions is sent to a \gls{mpc} to generate a velocity profile that considers consecutive intersection points.  
-
-\subsection{Short-term goals}
-\tommy{dqn apprioach}
-\subsection{MPC}
-\todo{rewrite}
-% \gls{mpc} is an optimization-based control technique where an Optimal Control Problem~(OCP) is repeatedly solved over a receding limited time horizon, starting from the current system state. In particular, for every time instance, a mathematical model of the controlled system is used to simulate the future states over a finite horizon, while a sequence of control inputs are selected and optimized given an objective cost function. The first element in the sequence of control inputs is then applied to the real system, and a new OCP with an updated state is solved at the next time instance.
-
-\tommy{Mixed-Integer Programming (MIP) Problems
-A mixed-integer programming (MIP) problem is one where some of the decision variables are constrained to be integer values (i.e. whole numbers such as -1, 0, 1, 2, etc.) at the optimal solution.  
-However, integer variables make an optimization problem non-convex, and therefore far more difficult to solve.  Memory and solution time may rise exponentially as you add more integer variables.}
-
-MPC has a mixed integer problem, calculating the optimal path for all possible action is very computationally heavy. 
-RL DQN. Only has discrete actions. Can not guarantee safety but is good at choosing actions with the best utility (value). 
-The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. 
-
-\tommy{in this work we simulate three different intention agents, take way, give way and cautious agent.}
-\begin{figure}[t!]
-	\mbox{\parbox{\textwidth}{
+\section{\gls{pomdp} formulation}
+\label{sec:pomdp_fomulation}
+\subsection{State space}
+\begin{figure}[h]
 	\centering
-	% \vspace{0.3cm}
-	\includegraphics[width=0.7\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
-	}}
-	\caption{Example of how velocity profile of the different intention agents can look like. All agents have the same starting velocity of $12$m/s and are approaching the same intersection}
-	% \label{fig:intention_profiles}
-	% \vspace{-0.3cm}
-\end{figure}\
-\todo{reward function}
-Q-masking reduce the search space, in this work we showed it for unavailable actions but could be extended to actions limited by the precautionary safety module. 
-By combining the having the \gls{mpc} cost as a negative reward the \gls{dqn} can balance the control cost with the high level goal of reaching the goal and even choose an action that is on average good on a high level but may not seem that way to the \gls{mpc}.
+	\begin{tikzpicture}
+	
+		% Crossing
+		\def\crosstopy{5}
+		\def\crossboty{-2.5}
+		\def\crossleftx{-5}
+		
+		\draw[thick] (\crossleftx, 1) -- (-1, 1) -- (-1, \crosstopy);
+		\draw[thick] (\crossleftx, -1) -- (-1, -1) -- (-1, \crossboty);
+		\draw[thick] (1, \crosstopy) -- (1, 1) -- (3, 1);
+		\draw[thick] (1, \crossboty) -- (1, -1) -- (3, -1);
+		
+		cars
+		\node[inner sep=0pt] (ego_car) at (-4,0)
+		{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+		\draw[->] ([yshift=0.2cm]ego_car.east) -- node[above] {$p_\mathrm{ego}, v_\mathrm{ego}$} ($ (ego_car) + (2.5,0.2)$ );
+		% \draw[|-|] ([yshift=-0.2cm]ego_car.east) -- node[below] {$p_{ego}$} (-1,-0.2);
+	
+		% \node[inner sep=0pt] (target_car_3) at (0,7)
+		% {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+		% \node (tc_text3a) [right=of target_car_3, align=center] {Car $n$};
+		% % \node (tc_text3b) [left=of target_car_3, align=center] {Conflict Car};
+		% \draw[->] ([xshift=-.3cm]target_car_3.south) -- node[right] {$p_{n} v_{n} \zeta_n$} ($ (target_car_3) + (-.3,-2)$ );
+		% \draw[|-|] ([xshift=-0.8cm]target_car_3.south) -- (-.8,1);
+		% \node (tc_tti) [below left= 0.9cm and -0.7cm of target_car_3, align=center] {$p_n$  \\ $\tau_{int}$};
+	
+		\node[inner sep=0pt] (target_car_2) at (0,3.5)
+		{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+		\node (tc_text2) [right=of target_car_2] {Car $n$};
+		\draw[->] ([xshift=-.3cm]target_car_2.south) -- node[right] {$p_{n} v_{n} \zeta_n$} ($ (target_car_2) + (-.3,-2)$ );
+		
+		\node[inner sep=0pt] (target_car_1) at (0,-1.5)
+		{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+		\node (tc_text1) [right=of target_car_1] {Car 1};
+	
+	\end{tikzpicture}
+	\caption{General description of the states in a simple intersection. The ego vehicle in red is controlled by the agent, while the blue vehicles are the other vehicles crossing the same intersection. Each blue vehicle is described by an index $n$, a position $p_n$, a velocity $v_n$  and hidden intention $\zeta_n$}.
+	\label{fig:intersection_scenario}
+	\end{figure}
 
-Given the state representation, the dynamics of the vehicle is then modeled using a  triple integrator with jerk as control input.
+From Section~\ref{sec:background_mdp}, the state space contains all the information necessary about the agent and environment to be able to transition to any given state. In the scenario shown in Figure~\ref{fig:intersection_scenario}, the red car on the horizontal lane represents the ego vehicle controlled by the agent while the blue cars on the vertical lane are the other vehicles which ego needs to interact with in order to cross the intersection. 
 
-\tommy{mpc cost function}
-The objective of the agent is to safely track a reference, e.g. follow a path with a target speed, acceleration, and jerk profile, while driving comfortably and satisfying constraints that arise from physical limitations and other road users, e.g. not colliding in intersections with crossing vehicles. Hence, we formulate  the  problem as a finite horizon, constrained optimal control problem
-\begin{subequations}
-	\label{eq:mpc2}
-	\begin{align}
-	J = \min_{\bar\x,\bar\u} & \sum_{k=0}^{N-1}% \varphi_n(x_n,u_n) + \varphi_N(x_N)\\
-	\matr{c}{\bar\x_k - \r_k^\x \\ \bar\u_k - \r_k^\u}^\top \matr{cc}{Q &S^\top\\S & R} \matr{c}{\bar\x_k - \r_k^\x \\ \bar\u_k - \r_k^\u} \\
-	&\qquad + \matr{c}{\bar\x_N - \r_N^\x}^\top P \matr{c}{\bar\x_N - \r_N^\x}\nonumber\\
-	&\text{s.t.}\ \ \, \bar\x_0 = \hat{\x}_0, \label{eq:mpcState2}\\
-	&\qquad{}\bar\x_{k+1} = A\bar\x_{k}+B\bar\u_{k},\label{eq:mpcDynamics2}\\
-	&\qquad{}h(\bar\x_k,\bar\u_k,\bar{\mathbf{o}}_k,a_k) \leq{} 0, \label{eq:mpcInequality2}
-	\end{align}
-\end{subequations}
-where $k$ is  the prediction time index, $N$ is the prediction horizon, $Q$, $R$, and $S$ are the stage costs, $P$ is the terminal cost, $\bar\x_k$ and $ \bar\u_k$ are the predicted state and control inputs, $\r^\x_k$ and $\r^\u_k$ are the state and control input references, $\bar{\mathbf{o}}_k$ denotes the predicted state of vehicles in the environment which need to be avoided, and $a$ is the action from the high-level decision maker. Constraint \eqref{eq:mpcState} enforces that the prediction starts  at the current state estimate $\hat\x_0$, \eqref{eq:mpcDynamics} enforces the system dynamics, and \eqref{eq:mpcInequality} enforces constraints on the states, control inputs, and obstacle avoidance.
+% Let's start by defining the information needed. 
+Instead of using a Cartesian coordinate system to describe the postiion $p_\mathrm{ego}$ and $p_n$, relative distance measures are proposed instead. This way, states describing the intersection and its participants are generalizable to different intersection designs, e.g., the angle of incidence and number of crossing points. 
 
-The reference points, $\r^\x_k$, $\r^\u_k$ are assumed to be set-points of a constant velocity trajectory, e.g. following the legal speed-limit on the road. Therefore, we set the velocity reference according to the driving limit, and the acceleration and jerk to zero.
+The velocity of ego $v_\mathrm{ego}$ and all other the traffic participants $v_n$ is necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants $\zeta_n$. As mentioned in Section \ref{sec:intro_intersections}, $\zeta_n$ encapsules information such as stop sign, traffic light or even inattention in to one state. 
+\paperBelief shows a comparison between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
+\paperLSTM used a \gls{lstm} network architecture to implicitly predict $\zeta$. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
+\todo{add results for with and without $\zeta$ and DRQN and DQN}
 
-% \tommy{Take way and give way constraint}
-% Since the constraints from the surrounding obstacles become non-convex, we rely on the high-level policy maker to decide through action $a$ how to construct the constraint \eqref{eq:mpcInequality} for Problem \eqref{eq:mpc}. The take-way action implies that the ego-vehicle drives first through the intersection, i.e., it needs to pass the intersection before all other obstacles. This implies that for any vehicle $j$ that reaches the intersection during prediction times $k\in[0,N]$, the generated constraint needs to lower bound the state $p_k$ according to
-% \begin{equation}
-% \max_{j}p^{\mathrm{cross},j}+\Delta \leq{}p_k^\mathrm{e}.
-% \end{equation}
-% Similarly, if the action is to give way, then the position needs to be upper bounded by the closest intersection point so that
-% \begin{equation}
-% p_k^\mathrm{e} \leq{} \min_{j}p^{\mathrm{cross},j}_\mathrm{ego}-\Delta,
-% \end{equation} 
-% for all times $k$ that the obstacle is predicted to be in the intersection.
+\subsection{Action space}
+\tommy{options, take way, give way, follow car}
+One of the limitations of deep Q-learning is that the action space has to be discreet. In other work it is common to set the action space to different acceleration request\cite{bouton2019}. \paperLSTM proposed using short-term goals as actions. The short term goals are high level objectives like stop at the start of the intersection, follow car with id $n$ or drive through the intersection following a reference speed. This high level action is then converted to a set pf parameters sent to a sliding mode controller that generates an acceleration, which controls the ego car. 
+% The sliding mode implementation in \paperLSTM could only follow one car at a time and relied on the Q-learning algorithm to switch between actions and control the velocity. 
+While in \paperMPC the actions in instead sent to a \gls{mpc} to generate a velocity profile. The \gls{mpc} could take consecutive intersection points into account and create a velocity profile for a short time horizon, where the action would instead be which gap between cars to drive through.
 
-% \tommy{Following an obstacle}
-% For any action $a$ that results in the following of an obstacle $j$, the ego-vehicle position is upper bounded by $p^\mathrm{e}_k \leq{} p^\mathrm{cross,j}_\mathrm{ego}$. We construct constraints for obstacles $i\neq{}j$ according to
-% \begin{itemize}
-% 	\item if $p^\mathrm{cross,i}<{}p^\mathrm{cross,j}$ then $p^\mathrm{cross,i}+\Delta\leq{}p_k^\mathrm{e}$, which implies that the ego-vehicle should drive ahead of all obstacles $i$ that are approaching the intersection;
-% 	\item if $p^\mathrm{cross,i}>{}p^\mathrm{cross,j}$ then $p_k^\mathrm{e}\leq{}p^\mathrm{cross,i}-\Delta$, which implies that the ego-vehicle should wait to pass obstacle $j$ and other obstacles $i$;
-% 	\item if $p^{\mathrm{cross,i}}=p^{\mathrm{cross},j}$ then the constraints generated for obstacle $i$ becomes an upper or lower  bound depending on if obstacle $i$ is ahead or behind the obstacle $j$ into the intersection.
-% \end{itemize}
+\gls{mpc} is good at creating a plan within some given constraints but has a mixed integer problem and calculating the optimal path for all possible action is very computationally heavy. While Q-learning is good at estimating the value of an action given a state, but needs to explore many bad actions before converging to a good one. Combining \gls{rl} and \gls{mpc} enabled an agent efficiently choose a good action that the \gls{mpc} could use to create a safe and efficient velocity profile for. 
 
-
-\section{Transistion model}
+\subsection{Transistion model}
 In this work the transision model is not known to the agent and \gls{rl} is used to learn this model through experience, by taking actions at different states in an environment and recording the reward and what state the agent transition into.
 the environment in this work is a simulator and the main thing the agent is traying to learn is the transision of the other vehicles which depends on their intentions. 
 The intentions are models as predetermined actions while folloing a \gls{idm} ontop of that. This makes the interaction between cars more complicated. 
@@ -187,28 +129,18 @@ The intentions are models as predetermined actions while folloing a \gls{idm} on
 \paperMPC cautious, give way, take way
 
 
-\section{Observation model}
+\subsection{Observation model}
 The observation model can be interpeted as the noise from the sensors, \paperLSTM assumes perfect sensing while \paperBelief has some added noise to the observed states. 
 The observation space is usually the same as the state space without the intention state. Because there are no sensors that can detect other drivers intentions. 
 \tommy{Everything in the state space except intention. Everything that is observable through the sensors in the car. }
 
-\section{Reward function}
+\subsection{Reward function}
 Designing the reward model from the objective the agent are trying to achieve. this is not the optimal values. Starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
 All papers formulated the reward based on the terminal states: goal, collision and timeout. 
 \paperLSTM and \paperMPC has a continious negative reward for change in acceleration to punish jerk that would come from changing between actions that would make it uncomfortable for the passengers. 
 \paperLSTM also gives a relative large negative reward for choosing to follow a car that does not exist. 
 
-\section{Simulated experiments}
-We show the difference in a multi crossing scenario where the MPC can plan a path for both intersections while our previous DQN only handles one at a time. 
-
-\begin{figure}[t]
-	\mbox{\parbox{\textwidth}{
-	\centering
-	\includegraphics[width=.95\columnwidth]{YourThesis/papers/mpc/figures/figures-scenarios.pdf}
-	}}
-	\caption{Illustration of a intersection scenario, where the solid line is a single crossing and together with the dashed line creates a double crossing.}
-	% \label{fig:scenario}
-\end{figure}
+\tommy{The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. }
 
 \section{Results and discussion}
 
