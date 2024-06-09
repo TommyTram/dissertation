@@ -97,7 +97,7 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
-	\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
+	\includegraphics[width=0.07\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
 	}}
 	\caption{Proportion of test episodes where the ego vehicle reached its goal (dashed), and episode return (solid), over training steps for the ensemble RPF and DQN methods. The shaded areas show the standard deviation for $5$ random seeds.}
 	% \label{fig:returnAndSuccess}
@@ -108,7 +108,7 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
-		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
 		}}
 		\caption{Mean coefficient of variation $c_\mathrm{v}$ for the chosen action during the test episodes. The dark shaded area shows percentiles $10$ to $90$, and the bright shaded area shows percentiles $1$ to $99$.}
 	% \label{fig:cv}
@@ -117,7 +117,7 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
-		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_at_collision_wo_type_3_fonts.pdf}
+		\includegraphics[width=0.8\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_at_collision_wo_type_3_fonts.pdf}
 		}}
 		\caption{Uncertainty $c_\mathrm{v}$ during the time steps before one of the collisions in the test episodes, within the training distribution. The collision occurs at $t=0$ s.}
 	% \label{fig:cvDuringCrash}
@@ -126,17 +126,17 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 		\centering
-	\begin{subfigure}[]{0.99\columnwidth}
+	\begin{subfigure}[]{0.9\columnwidth}
 	\centering
-		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/collisions_outside_distribution_2_wo_type_3_fonts.pdf}
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/collisions_outside_distribution_2_wo_type_3_fonts.pdf}
 		\caption{Proportion of collisions.}
 	\end{subfigure}
 	
 	\vspace{5pt}
 	
-	\begin{subfigure}[]{0.99\columnwidth}
+	\begin{subfigure}[]{0.9\columnwidth}
 	\centering
-		\includegraphics[width=0.99\columnwidth]{YourThesis/papers/ensamble/figures/activation_rate_2_wo_type_3_fonts.pdf}
+		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/activation_rate_2_wo_type_3_fonts.pdf}
 		\caption{Proportion of episodes where $a_\mathrm{safe}$ was used at least once.}
 	\end{subfigure}
 	\caption{Performance of the ensemble RPF agent, with and without the confidence criterion, and the DQN agent, in test episodes with different set speeds $v_\mathrm{d}^j$ for the surrounding vehicles. %The shaded areas show the standard deviation for $5$ random seeds.
