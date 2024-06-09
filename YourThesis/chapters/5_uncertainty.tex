@@ -6,14 +6,20 @@
 % 	\end{center}
 % 	\vspace{12pt}
 
-The motivation of handling uncertainty. In this chapter we present two approches to handling the uncertainty, one is the uncertainty in output of the \gls{dqn} and the other in the uncertainty of the intention estimation that is feed as an input to the \gls{dqn}.
+The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be used to create decision-making agents capable of navigating through intersections. An important advantage of \gls{rl} methods is their ability to scale to different types of scenarios simply by training on them. However, a drawback of deep Q-learning methods is the usage of neural networks \gls{nn}, which provide a black-box solution that does not indicate any confidence value for its decisions any hidden states it may estimate.
+
+The motivation for handling uncertainty is critical. In this chapter, we present two approaches to managing uncertainty: one addresses the uncertainty in the output of the DQN, and the other addresses the uncertainty in the intention estimation that is fed as an input to the DQN.
+
+The previous chapter formulated \gls{pomdp} and introduced how deep Q-learning methods can be used to create decision-making agents capable of navigating through intersections. 
+An important advantage of \gls{rl} methods is the ability to scale to different types of scenarios simply by training on them. However, a drawback of deep Q-learning methods is the usage of a \gls{nn} which provide a black-box solution that does not indicate any confidence value for its decisions any hidden states it may estimate.
+% As discussed in Chapter~\ref{ch:introduction}, an important advantage of learning-based approaches, compared to manually specified systems, is that they could scale to all types of driving situations. 
+
+The motivation of handling uncertainty. In this chapter we present two approaches to handling the uncertainty, \paperEnsamblen addresses the uncertainty of output from the \gls{dqn}, and \paperBelief addresses the uncertainty of the input to the \gls{dqn}, more specifically the estimation of the intention state $\zeta_n$.
 
 
-\section{Uncertainty of the decision}
-\tommy{NN is a black box. The utility value q that come from the DQN works great if it was trained on the }
+\section{Estimating the uncertainty of the Q-value}
 
-
-\subsection{Approach}
+% \subsection{Approach}
 One limitation of the DQN algorithm is that only the maximum likelihood estimate of the $Q$-values is returned. The risk of taking a particular action can be approximated as the variance in the estimated $Q$-value~\cite{Garcia2015}. One approach to obtain a variance estimation is through statistical bootstrapping~\cite{Efron1982}, which has been applied to the DQN algorithm~\cite{Osband2016}. The basic idea is to train an ensemble of neural network on different subsets of the available replay memory. The ensemble will then provide a distribution of $Q$-values, which can be used to estimate the variance. Osband et al. extended the ensemble method by adding a randomized prior function (RPF) to each ensemble member, which gives a better Bayesian posterior~\cite{Osband2018}. The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with equal architecture, i.e.,
 %
 \begin{align}
@@ -97,7 +103,7 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
-	\includegraphics[width=0.07\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
+	\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
 	}}
 	\caption{Proportion of test episodes where the ego vehicle reached its goal (dashed), and episode return (solid), over training steps for the ensemble RPF and DQN methods. The shaded areas show the standard deviation for $5$ random seeds.}
 	% \label{fig:returnAndSuccess}
@@ -180,11 +186,10 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 
 % \end{figure}
 
-We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
-The other work show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 
+\paperBelief show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 
 
 \section{Uncertainty of the intention}
-In paper A the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
+In \paperLSTM the policy put itself in a position that would not be in conflict with another cars time to intersection and could avoid a lot of the collisions. But the cases the cars collided was when in somehow ended up in a collision course and thats when it had trouble making its way out. 
 
 \subsection{Approach}
 

@@ -54,7 +54,7 @@ The methods presented in this thesis are aimed at an autonomy level L5. At this 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
 	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? (PAPER A and B)
-	\item[\textbf{Q2.}] How can an \gls{rl} agent effectively utilize uncertainty in its predictions and actions to enhance decision-making in complex environments? (PAPER C and D)
+	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? (PAPER C and D)
 	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
 	
 	% \item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
@@ -78,9 +78,11 @@ The following aspects of creating a tactical decision-making agent for autonomou
 \begin{enumerate}
 	% \item We have access to sensors on-board the ego vehicle. We do not have v2v, or v2x communication. 
 	% \item We do not assume any knowledge of traffic signs or traffic lights. 
-	\item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
+	% \item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
+	\item Guaranteeing safety in \gls{ad} systems is an important open question that is out of scope for this thesis. 
 	\item The work in this thesis is tested in simulation environments and not real world. 
 	\item This work considers the control of one vehicle and not multiple agents. 
+	% \item Although there are many interesting \gls{rl} algorithms out there, this work is only focused on deep Q-learning. 
 	% \item This work considers the control of one vehicle and not multiple agents. 
 	% \item A reward function is defined for each approach. 
 	
@@ -91,7 +93,7 @@ The following aspects of creating a tactical decision-making agent for autonomou
 
 \section{Contributions}
 \label{sec:contributions}
-\todo{Rewrite once thesis is in a better state}
+% \todo{Rewrite once thesis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}
 	\item a \gls{pomdp} formulation for driving in intersections. 

@@ -324,7 +324,7 @@ The graphs presented are only using evaluation episodes, with a deterministic po
 The improvement of using Dropout and Experience replay, from Section \ref{sec:method}, are clearly shown in Fig. \ref{fig:results_experience} and \ref{fig:results_dropout}. Studying the red curve in Fig. \ref{fig:results_experience}, with all methods included, the best policy had a success rate of $99\%$, average episodic reward $0.8$ and collision to timeout ratio at $40\%$. 
 
 \subsection{Effect of using Experience replay}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-experience.pdf}
 	\vspace{-0.5cm}
@@ -334,7 +334,7 @@ The improvement of using Dropout and Experience replay, from Section \ref{sec:me
 Without either method the success rate does not converge to a value higher than $60\%$. When experience replay was not used, the highest success rate was $53\%$, average episodic reward $-0.1$ and collision to timeout ratio at $90\%$. Compared to not using dropout, not using experience replay has a higher lower variation on the success rate. 
 
 \subsection{Effect of using Dropout}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-dropout.pdf}
 	\vspace{-0.5cm}
@@ -345,7 +345,7 @@ In the case of not using Dropout, the best policy had a success rate of $58\%$, 
 
 
 \subsection{Comparing DQN and DRQN}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-recurrent.pdf}
 	\vspace{-0.5cm}
@@ -357,7 +357,7 @@ The faded colored line show actual sampled values and the thick line acts as a t
 
 
 \subsection{Effect of sharing weights in the network}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{figures/results_shared.png}
 	\caption{The figure shows that the success rate for a network with shared weights (brown line) converge faster than the fully connected network structure which do not share weights (turquoise line).}

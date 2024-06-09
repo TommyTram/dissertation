@@ -24,38 +24,6 @@ Effectively modeling the intersection problem is key for developing an optimal d
 % In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
 % They also noted that in the context of autonomous driving, the dynamics of vehicles is Markovian but the behavior of other road users may not necessarily be Markovian.
 
-% \section{Intersection scenarios}
-
-
-
-% \begin{figure}
-% \centering
-% \begin{tikzpicture}
-% 	\def\xstart{-7};
-
-% 	% Crossing
-% 	\draw[line width=0.5mm] (\xstart, 1) -- (-1, 1) -- (-1, 5);
-% 	\draw[line width=0.5mm] (\xstart, -1) -- (-1, -1) -- (-1, -2);
-% 	\draw[line width=0.5mm] (1, 5) -- (1, 1) -- (3, 1);
-% 	\draw[line width=0.5mm] (1, -2) -- (1, -1) -- (3, -1);
-	
-% 	% cars
-% 	\node[inner sep=0pt] (ego_car) at (-6,0)
-% 	{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
-% 	\node[inner sep=0pt] (target_car) at (0,4)
-% 	{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-
-% \end{tikzpicture}
-% \caption{}
-% \label{fig:intersection_scenario}
-% \end{figure}
-
-
-% Figure \ref{fig:intersection_scenario} shows a simple intersection with one crossing point. 
-% \tommy{show examples of intersections.}
-% \tommy{zone 0 - after intersection, zone 1 - conflict zone, zone 2 - right before the intersection, zone 3 - first obsereved interstion to zone 2}
-
-
 \section{\gls{pomdp} formulation}
 \label{sec:pomdp_fomulation}
 \subsection{State space}
@@ -101,52 +69,76 @@ Effectively modeling the intersection problem is key for developing an optimal d
 	\label{fig:intersection_scenario}
 	\end{figure}
 
-From Section~\ref{sec:background_mdp}, the state space contains all the information necessary about the agent and environment to be able to transition to any given state. In the scenario shown in Figure~\ref{fig:intersection_scenario}, the red car on the horizontal lane represents the ego vehicle controlled by the agent while the blue cars on the vertical lane are the other vehicles which ego needs to interact with in order to cross the intersection. 
+From Section~\ref{sec:background_mdp}, the state space contains all the information necessary about the agent and environment to be able to transition from any given state $s$ to the next state $s'$. In the scenario shown in Figure~\ref{fig:intersection_scenario}, the red car on the horizontal lane represents the ego vehicle controlled by the agent while the blue cars on the vertical lane are the other vehicles which ego needs to interact with in order to cross the intersection. 
 
+A simplified description of the state, 
+\begin{align}
+	s = (p_\mathrm{ego}, v_\mathrm{ego}, \{p_{n}, v_n, \zeta_n\}_{n=1}^N), 
+	\label{eq:state}
+\end{align}
+consists of positions state $p_\mathrm{ego}$ and $p_n$, where subscript \textit(ego) and $n$ denotes ego vehicle and the index of the surrounding vehicle up to $N$ vehicles. 
 % Let's start by defining the information needed. 
-Instead of using a Cartesian coordinate system to describe the postiion $p_\mathrm{ego}$ and $p_n$, relative distance measures are proposed instead. This way, states describing the intersection and its participants are generalizable to different intersection designs, e.g., the angle of incidence and number of crossing points. 
-
-The velocity of ego $v_\mathrm{ego}$ and all other the traffic participants $v_n$ is necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants $\zeta_n$. As mentioned in Section \ref{sec:intro_intersections}, $\zeta_n$ encapsules information such as stop sign, traffic light or even inattention in to one state. 
+Instead of using a Cartesian coordinate system to describe the position $p_\mathrm{ego}$ and $p_n$, relative distance measures are proposed instead. This way, the state space are generalizable to different intersection designs, e.g., the angle of incidence and number of crossing points. 
+The velocity of ego $v_\mathrm{ego}$ and all other the traffic participants $v_n$ is also necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants $\zeta_n$. As mentioned in Section \ref{sec:intro_intersections}, $\zeta_n$ encapsules information such as stop sign, traffic light or even inattention in to one state. 
 \paperBelief shows a comparison between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
 \paperLSTM used a \gls{lstm} network architecture to implicitly predict $\zeta$. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
-\todo{add results for with and without $\zeta$ and DRQN and DQN}
+% \todo{add results for with and without $\zeta$ and DRQN and DQN}
 
 \subsection{Action space}
-One limitation of deep Q-learning is the requirement for a discrete action space. In various \gls{ad} studies \cite{bouton2019}, it is common practice to define the action space in terms of different acceleration requests. The approach in \paperLSTM proposes using short-term goals as actions. These short-term goals represent high-level objectives, such as stopping at the start of an intersection, drive behind a specific car (identified by ID $n$), or driving through an intersection. Each high-level action is translated into a set of parameters that are input into a sliding mode controller, which then generates the appropriate acceleration to control the ego car.
+\label{sec:pomdp_actionspace}
+One limitation of deep Q-learning is the requirement for a discrete action space. In various \gls{ad} studies \cite{bouton2019}, it is common practice to define the action space in terms of different acceleration requests. The approach in \paperLSTM proposes using short-term goals as actions: \{\textit{`take way', `yield', `follow car~$\{1, \dots , N\}$'}\}.
 
-In \paperMPC, actions are sent to a \gls{mpc} to generate a velocity profile for a short time horizon. Instead of specifying which car to drive behind, the action in this context determines which gap between cars the vehicle should drive through. This gap is then translated into constraints that the \gls{mpc} uses to create the velocity profile.
-
-\gls{mpc} excels at creating plans within given constraints but faces challenges with mixed integer problems, making the calculation of the optimal path for all possible actions computationally intensive. On the other hand, Q-learning is effective at estimating the value of an action given a state, but it requires exploring many suboptimal actions before converging on a good one. By combining \gls{rl} and \gls{mpc}, an agent can efficiently select a good action, which the \gls{mpc} can then use to generate a safe and efficient velocity profile.
+These short-term goals represent high-level objectives, such as driving through an intersection (take way), stopping at the start of an intersection (yield) or drive behind a specific car (follow car~$n$). Each high-level action is translated into a set of parameters that are input into a sliding mode controller in \paperLSTM and a \gls{mpc} in \paperMPC, which then generates the appropriate acceleration to control the ego car.
 
 \subsection{Transition model}
-% The transition model is not known and \gls{rl} is used to learn this model by taking actions in the environment from different states and recording the reward and what state the agent transition into.
-% The environment in this work is a simulator and the main thing the agent is trying to learn is the transition of the other vehicles which depends on their intentions $\zeta$. 
-% The intentions are models as predetermined actions while following a \gls{idm} on top of that. This makes the interaction between cars more complicated. 
-
-The transition model is initially unknown, and \gls{rl} is employed to learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process.
+The transition model is initially unknown, and \gls{rl} is employed to learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process. For more details on the simulation environment see \paperLSTM.
 
 
 \subsection{Observation model}
-The observation space typically mirrors the state space, excluding the intention state $\zeta$, as there are no sensors capable of directly detecting other drivers' intentions. This observation space encompasses all elements of the state space that are observable through the sensors in the car, except for the intention state $\zeta$.
-
-% The observation model can be interpreted as the noise from the sensors, \paperLSTM assumes perfect sensing while \paperBelief has some added noise to the observed states. 
-% The observation space is usually the same as the state space without the intention state $\zeta$. Because there are no sensors that can detect other drivers intentions. 
-% \tommy{Everything in the state space except intention. Everything that is observable through the sensors in the car. }
+The observation space typically mirrors the state space, excluding the intention state $\zeta$, as there are no sensors capable of directly detecting other drivers' intentions. This observation 
+\begin{align}
+	o = (p_\mathrm{ego}, v_\mathrm{ego}, \{p_{n}, v_n\}_{n=1}^N), 
+	\label{eq:observation}
+\end{align}
+encompasses all elements of the state space, from \eqref{eq:state}, that are observable through the sensors in the car, except for the intention state $\zeta$.
 
 \subsection{Reward function}
 The design of the reward function is pivotal as it determines the value associated with each state, ultimately shaping the driving policy of the agent. A well-crafted reward function is instrumental in guiding the agent towards achieving its objectives effectively.
-
 The reward model in this work is formulated based on terminal states, including reaching the goal, collision events, and timeouts. These terminal states play a critical role in defining the success or failure of the agent's driving behavior and are accordingly reflected in the reward structure.
 
-% The design of the reward function is what determine the value of each state. A well crafted reward function will lead to a good driving policy. 
-% Designing the reward model from the objective the agent are trying to achieve. Starting of a relative reward difference around 0 and 1. Then hand tune to get a performance close to the desired outcome. 
-% All papers formulated the reward based on the terminal states: goal, collision and timeout. 
-% \paperLSTM and \paperMPC has a continious negative reward for change in acceleration to punish jerk that would come from changing between actions that would make it uncomfortable for the passengers. 
-% \paperLSTM also gives a relative large negative reward for choosing to follow a car that does not exist. 
+\section{Deep Q-learning approach}
+To find a driving policy $\pi$ for the \gls{pomdp} detailed in the previous section, both \paperLSTM and \paperMPC used deep Q-learning, described Chapter~\ref{ch:q-learning}. \paperLSTM proposed a \gls{dqn} structure with shared weights and \gls{lstm} layer to approximate the Q-function. Because the scenarios has up to $N$ cars that with same type of states, the shared weight is an effective way to reduce the input space the agent need to explore. While the \gls{lstm} layer has the role of utilizing the previous states to implicitly estimate a hidden state that could possibly encapsulate the intention of other cars.
 
-% \tommy{The reward function takes in the predicted outcome of the model in the MPC and can penalize the choice of action. but if experience show that the outcome is better than the model, it can choose to take a bad action that would lead to a better total reward compared to only following a conservative model. }
+As mentioned in Chapter~\ref{sec:pomdp_actionspace}, the actions in \paperLSTM are controlled by a sliding mode controller while \paperMPC use a \gls{mpc} to generate a velocity profile for a short time horizon. Instead of specifying which car to drive behind, the action in this context determines which gap between cars the vehicle should drive through. This gap is then translated into constraints that the \gls{mpc} uses to create the velocity profile.
+
+\gls{mpc} excels at creating plans within given constraints but faces challenges with mixed integer problems, making the calculation of the optimal path for all possible actions computationally intensive. On the other hand, Q-learning is effective at estimating the value of an action given a state, but it requires exploring many suboptimal actions before converging on a good one. By combining \gls{rl} and \gls{mpc}, an agent can efficiently select a good action, which the \gls{mpc} can then use to generate a safe and efficient velocity profile.
+
+The agents from \paperLSTM and \paperMPC are evaluated on both a single intersection, shown in Figure~\ref{fig:example_intersections}\subref{fig:single_intersection}, and a double intersection with two crossing points, shown in Figure~\ref{fig:example_intersections}\subref{fig:double_intersection}. The results are summarized in Table~\ref{tab:results_single_double_crossing}.
 
 \section{Results from simulation}
+The results from Table~\ref{tab:results_single_double_crossing} showed that the proposed \gls{dqn} agent from \paperLSTM found a policy that successfully crossed a single intersection $96.1\%$ of the time, with $2.8\%$ resulting in collisions and $1.1\%$ resulting in timeouts. 
+When comparing agents trained with and without an \gls{lstm} layer, those with the \gls{lstm} succeeded in 3 out of 4 attempts where those without it would fail.
+This demonstrates that deep Q-learning has great potential for creating decision-making agents capable of navigating intersections. Additionally, the results from Figure~\ref{fig:results_shared} indicate that using a network structure with shared weights between cars significantly improved the convergence speed of the network. Shared weights, along with other enhancements like dropout and experience replay, are essential components for this improvement.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=0.7\columnwidth]{YourThesis/papers/lstm/figures/results_shared.png}
+	\caption{The figure shows that the success rate for a network with shared weights (brown line) converge faster than the fully connected network structure which do not share weights (turquoise line).}
+	\label{fig:results_shared}
+\end{figure}
+
+As mentioned previously, the controller from \paperLSTM could only consider one car at a time, which placed a heavy burden on the \gls{dqn} compensate by frequently switching actions. 
+In contrast, in \paperMPC, the \gls{mpc} showed significant improvement in handling more complex intersections.
+For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$ of the time with a collision rate of $3.6\%$, compared to the sliding mode controller, which only succeeded $90.9\%$ of the time with a collision rate of $8.3\%$.
+
+
+% \begin{figure}[!ht]
+% 	\centering
+% 	\includegraphics[width=0.7\columnwidth]{figures/figures-recurrent.pdf}
+% 	\vspace{-0.5cm}
+% 	\caption{Graphs presenting the performance of a DRQN (red) compared to a DQN with a single observation (green), running on scenarios with cars that have different behaviors. When compared a DRQN succeeds in 3 out of 4 attempts, where a DQN fails.}
+% 	\label{fig:results_recurremt}
+% \end{figure}
 
 % \begin{figure}[t!]
 	% \mbox{\parbox{\textwidth}{
@@ -168,28 +160,24 @@ The reward model in this work is formulated based on terminal states, including 
 \begin{table}[h]
 	\mbox{\parbox{\textwidth}{
 	\centering
-	\begin{tabular}{ |p{1,6cm}||p{1,2cm}|p{1,2cm}|p{1,2cm}|p{1,2cm}|}
+	\begin{tabular}{ |p{2,6cm}||p{1,2cm}|p{1,2cm}|p{1,2cm}|p{1,2cm}|}
 	\hline
-	Controller &\multicolumn{2}{|c|}{Success Rate}
-	&\multicolumn{2}{|c|}{Timeout Ratio}\\
+	Controller &\multicolumn{2}{|c|}{Success Rate}&\multicolumn{2}{|c|}{Collision Rate}\\
 	\hline
 	 & Single & Double & Single & Double\\
 	\hline
-	SM & $96.1\%$ & $90.9\%$ & $72\%$ & $93\%$\\
-	MPC & $97.3\%$ & $95.2\%$ & $45\%$ & $76\%$\\
+	SM (\paperLSTM) & $96.1\%$ & $90.9\%$ & $2.8\%$ & $8.3\%$\\
+	MPC (\paperMPC) & $97.3\%$ & $95.2\%$ & $1.2\%$ & $3.6\%$\\
 	\hline
 	\end{tabular}
 	}}
-	\caption{Average success rates and collision to timeout rates.}% across single and double crossings.}   
-
-% \label{tab:successrate}
+	\caption{Average success rates and collision rates for a fully trained \gls{dqn} agent driving though a single and double intersections.}% across single and double crossings.}   
+\label{tab:results_single_double_crossing}
 \end{table}
-
-synergies between mpc and dqn
 
 
 \section{Discussion}
-\section{The intersection problem}
+% \section{The intersection problem}
 \begin{figure}
 	\mbox{\parbox{\textwidth}{
 		\centering
@@ -228,10 +216,10 @@ synergies between mpc and dqn
 	\label{fig:zones}
 \end{figure}
 
-With the \gls{mdp} defined, the path of the ego vehicle can be segmented into four zones as shown in Figure~\ref{fig:zones}. Starting from the end, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
+Observing the behavior of a fully trained agent from \paperLSTM and \paperMPC provides the insight that the path of the ego vehicle can be segmented into four zones, as shown in Figure~\ref{fig:zones}. Starting from the end, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
 
 The goal is to reach Zone 0. To achieve this, the agent aims to minimize the time spent in Zone 1 if there is a chance of intersection with another car. Our actions are formulated as short-term goals, designed for comfortable use with lower acceleration rates. The size of Zone 2 depends on the vehicle's current speed, which is influenced by its behavior in Zone 3.
 
-Now, two conflicting strategies emerge: to minimize time in Zone 1, the agent desires a high speed entering the intersection. However, it also seeks a low speed to reduce the size of Zone 2 and the critical decision period. If the intentions of other vehicles are known, the stochasticity in Zone 1 would be eliminated, transforming the problem into a scheduling task aimed at creating a velocity profile that minimizes the time required to cross. However, since the intentions of other vehicles are stochastic, reinforcement learning offers a promising approach to address this uncertainty and optimize decision-making in dynamic traffic scenarios.
+Now, two conflicting strategies emerge: to minimize time in Zone 1, the agent desires a high speed entering the intersection. However, it also seeks a low speed to reduce the size of Zone 2 and the critical decision period. If the intentions of other vehicles are known, the stochasticity in Zone 1 would be eliminated, transforming the problem into a scheduling task aimed at creating a velocity profile that minimizes the time required to cross. However, since the intentions of other vehicles are inherently stochastic, the next chapter offers a promising approach by accounting for this uncertainty and optimizing decision-making in dynamic traffic scenarios.
 
 

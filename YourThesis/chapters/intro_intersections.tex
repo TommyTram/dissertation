@@ -39,6 +39,7 @@ When it comes to the scenarios considered in this work. This section aims to cla
 
 
 		\end{tikzpicture}
+		\label{fig:single_intersection}
 		\caption{Single intersection}
 \end{subfigure}%
 	~ 
@@ -71,6 +72,8 @@ When it comes to the scenarios considered in this work. This section aims to cla
 			\node[inner sep=0pt] (target_car_2) at (0.5,\crossboty+0.5) {\includegraphics[width=.18\textwidth, angle=90]{figures/target_car_top_down.png}};
 
 		\end{tikzpicture}
+		\label{fig:double_intersection}
+
 		\caption{Double intersection}
 	\end{subfigure}
 
@@ -79,7 +82,7 @@ When it comes to the scenarios considered in this work. This section aims to cla
 \end{figure}
 Let's begin by defining the terms \textit{intersection}, \textit{intention}, and \textit{scenario} within the context of this thesis.
 An intersection refers to the geometric layout of roads intersecting each other, encompassing elements such as the number of junctions, conflict points, turns, and angles of incidence, as illustrated in Figure~\ref{fig:example_intersections}. 
-Intersections can be categorized as signalized or unsignalized. A signalized intersection is equipped with infrastructure to designate the right-of-way, such as regulatory signs (e.g., STOP or YIELD) or traffic signals, while an unsignalized intersection lacks such features. However, as emphasized in the introduction, human drivers do not always adhere strictly to these right-of-way rules, which can result in accidents. Therefore, this thesis defines intentions as the anticipated actions of other vehicles in the future, such as stopping or proceeding through the intersection.
+Intersections can be categorized as signalized or unsignalized. A signalized intersection is equipped with infrastructure to designate the right-of-way, such as regulatory signs (e.g., STOP or YIELD) or traffic signals, while an unsignalized intersection lacks such features. However, as emphasized in the introduction, human drivers do not always follow these right-of-way rules, which can result in accidents. Therefore, this thesis defines intentions as the anticipated actions of other vehicles in the future, such as stopping or proceeding through the intersection.
 
 \begin{figure}[h]
 	% \mbox{\parbox{\textwidth}{
@@ -97,5 +100,5 @@ Intersections can be categorized as signalized or unsignalized. A signalized int
 
 Figure \ref{fig:intro_intention_profiles} illustrates how velocity profiles can differ for three different intentions. In this example, distinguishing between the 'give way' and 'take way' intentions is straightforward, as the velocity begins to decelerate at time $0$. However, identifying the 'cautious' intention poses a challenge, as the agent cannot be certain until the other vehicle comes to a complete stop.
 
-If intentions are known, intersections can be treated as unsignalized, as the right-of-way can be inferred from the intentions rather than relying solely on infrastructure. This approach ensures safety even in situations where another vehicle disregards traffic rules, such as running a red light, as a cautious agent will prioritize safety and stop accordingly.
+If intentions are known, intersections can be treated as unsignalized, as the right-of-way can be inferred from the intentions rather than relying solely on infrastructure. A \gls{rl} approach has the potential to ensures safety even in situations where another vehicle disregards traffic rules, such as running a red light, as a cautious agent will prioritize safety and stop accordingly.
 
