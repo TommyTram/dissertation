@@ -1,6 +1,6 @@
 % !TEX root=../../Thesis.tex
 % \chapter{Deep Q-learning}
-Q-learning~\cite{Watkins1992} is a model-free and value-based branch of reinforcement learning, where the objective of the agent is to learn the optimal state-action value function $Q^*(s,a)$. This function is defined as the expected return when taking action $a$ from state $s$ and then following the optimal policy $\pi^*$, i.e.,
+Q-learning~\cite{Watkins1992} is a model-free and value-based branch of \gls{rl}, where the objective of the agent is to learn the optimal state-action value function $Q^*(s,a)$. This function is defined as the expected return when taking action $a$ from state $s$ and then following the optimal policy $\pi^*$, i.e.,
 %
 \begin{align}
      Q^*(s,a) = \max_\pi \mathbb{E} \left[ \sum_{k=0}^\infty \gamma^k R(s_k, a_k) | s_0 = s, a_0 = a, \pi\right].
@@ -12,7 +12,7 @@ The optimal state-action value function follows the Bellman equation
 %
 which recursively defines the $Q$-values of the state-action pairs $(s,a)$. The equation can intuitively be understood by the fact that if $Q^*$ is known, the optimal policy is to select the action $a'$ that maximizes $Q^*(s',a')$.
 
-In the DQN algorithm, a neural network with weights $\theta$ is used as a function approximator of the optimal state-action value function, $Q(s,a;\theta) \approx Q^*(s,a)$~\cite{Mnih2015}. The weights of the network are adjusted to minimize the temporal difference (TD) error in the Bellman equation, typically with some kind of stochastic gradient descent (SGD) algorithm. Mini-batches with size $M$ of experiences, $e=(s,a,r,s')$, are drawn from an experience replay memory, and the loss is calculated as
+In the \gls{dqn} algorithm, a \gls{nn} with weights $\theta$ is used as a function approximator of the optimal state-action value function, $Q(s,a;\theta) \approx Q^*(s,a)$~\cite{Mnih2015}. The weights of the network are adjusted to minimize the temporal difference (TD) error in the Bellman equation, typically with some kind of \gls{sgd} algorithm. Mini-batches with size $M$ of experiences, $e=(s,a,r,s')$, are drawn from an experience replay memory, and the loss is calculated as
 %
 \begin{align}
     L(\theta) = \mathbb{E}_\mathrm{M} \Big[ (r + \gamma \max_{a'} Q(s',a';\theta^-)
@@ -20,6 +20,6 @@ In the DQN algorithm, a neural network with weights $\theta$ is used as a functi
     \label{eq:lossDQN}
 \end{align}
 %
-Here, $\theta^-$ represents the neural network parameters of a target network, which is kept fixed for a number of training steps, in order to stabilize the training process. 
+Here, $\theta^-$ represents the \gls{nn} parameters of a target network, which is kept fixed for a number of training steps, in order to stabilize the training process. 
 Several of improvements to this vanilla form of DQN have been proposed and are compared by Hessel et al.~\cite{Hessel2018}.
-See \paperEnsamble for the details of the DQN implementation in this study.
+See \paperLSTM for the details of the \gls{dqn} implementation in this study.

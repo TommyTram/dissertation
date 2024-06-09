@@ -30,6 +30,9 @@ When talking about autonomous driving, it is first important to specify which le
 The \gls{av} making the decisions in this work are referred to as the ego vehicle, while other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other \gls{av}s. 
 The methods presented in this thesis are aimed at an autonomy level L5. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection. 
 
+\include{YourThesis/chapters/intro_intersections.tex}
+
+
 \section{Research questions}
 \label{sec:research_questions}
 % This thesis defines human driving as sequential decision making under uncertainty. Decisions such as overtaking a slow driver or when to cross an intersection are often made with limited information and some prediction estimate based on previous experience. 
@@ -50,8 +53,8 @@ The methods presented in this thesis are aimed at an autonomy level L5. At this 
 
 The work presented in this thesis investigate the following research questions:
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can \gls{rl} be used to create a decision-making agent for driving through intersections? (PAPER A and B)
-	\item[\textbf{Q2.}] In what way can an \gls{rl} agent utilize the uncertainty of its predictions and actions? (PAPER C and D)
+	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? (PAPER A and B)
+	\item[\textbf{Q2.}] How can an \gls{rl} agent effectively utilize uncertainty in its predictions and actions to enhance decision-making in complex environments? (PAPER C and D)
 	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
 	
 	% \item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)

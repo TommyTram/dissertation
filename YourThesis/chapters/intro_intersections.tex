@@ -77,102 +77,69 @@ When it comes to the scenarios considered in this work. This section aims to cla
 	\caption{Examples of different intersections}
 	\label{fig:example_intersections}
 \end{figure}
+Let's begin by defining the terms 'intersection,' 'intention,' and 'scenario' within the context of this study.
+An intersection refers to the geometric layout of roads intersecting each other, encompassing elements such as the number of junctions, conflict points, turns, and angles of incidence, as illustrated in Figure~\ref{fig:example_intersections}. 
+Intersections can be categorized as signalized or unsignalized. A signalized intersection is equipped with mechanisms to designate the right-of-way, such as regulatory signs (e.g., STOP or YIELD) or traffic signals, while an unsignalized intersection lacks such features. However, as emphasized in the introduction, human drivers do not always adhere strictly to these right-of-way rules, which can result in accidents. Therefore, this thesis defines intentions as the anticipated actions of other vehicles in the future, such as stopping, cautiously slowing down, or proceeding through the intersection.
 
-An intersection refers the geometrical shape of the roads intersecting each other e.g., number of junctions, conflict points, turns and angle of incidence, as shown in Figure~\ref{fig:example_intersections}. 
-An intersection can either be signalized or unsignalized, a signalized intersection has something to define the right-of-way e.g., a regulatory (i.e., STOP or YIELD) sign or a traffic signal, while an unsignalized intersection does not. But as mentioned in the introduction, humans do not always follow these right-of-way rules and therefore end up in accidents. That is why this thesis defines the intentions as what other vehicle will do in the future: stop, slow down or drive through the intersection. Figure \ref{fig:intro_intention_profiles} shows an example of how the velocity profile can look like for three different intentions. 
-If the intention is known, then all intersections can be treated as unsignalized since the right-of-way can be implied by the intention instead of the infrastructure. This way, even when another vehicle would break a traffic rule and run a red light, a good agent would still stop and be safe. 
 \begin{figure}[h]
-	\mbox{\parbox{\textwidth}{
+	% \mbox{\parbox{\textwidth}{
+	% \centering
+	% % \vspace{0.3cm}
+	% \includegraphics[width=0.6\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
+	% }}
 	\centering
-	% \vspace{0.3cm}
 	\includegraphics[width=0.6\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
-	}}
-	\caption{Example of how velocity profile of the different intention agents can look like. All agents have the same starting velocity of $12$m/s and are approaching the same intersection}
+
+	\caption{An illustration showing velocity profiles for agents with three distinct intentions. Each agent shares the same initial position and velocity while approaching a common intersection.}
 	\label{fig:intro_intention_profiles}
 	% \vspace{-0.3cm}
-\end{figure}\
+\end{figure}
 
-%  Intersections in the world often have something to decide the right of way like traffic rules, signs or lights. 
-% While there exists a large variation of intersections in the world, this work only focus on the decision to drive or yield, we can reduce the dimention to 1. 
+Figure \ref{fig:intro_intention_profiles} illustrates how velocity profiles can differ for three different intentions. In this example, distinguishing between the 'give way' and 'take way' intentions is straightforward, as the velocity begins to decelerate at time $0$. However, identifying the 'cautious' intention poses a challenge, as the agent cannot be certain until the other vehicle comes to a complete stop.
 
-Finally, the combination of an intersection, its traffic participants, their intentions, positions and velocities. 
-More detail on the specific intersections and scenarios considered in this work is presented in Chapter~\ref{ch:modeling_intersection}.
+If intentions are known, intersections can be treated as unsignalized, as the right-of-way can be inferred from the intentions rather than relying solely on infrastructure. This approach ensures safety even in situations where another vehicle disregards traffic rules, such as running a red light, as a cautious agent will prioritize safety and stop accordingly.
 
-% \begin{figure}[h]
-% 	\centering
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\begin{tikzpicture}
-% 			% Crossing
-% 			\def\crossleftx{-2}
-% 			\def\crossrightx{2}
-% 			\def\crosstopy{2}
-% 			\def\crossboty{-2}
-% 			\def\roadwidth{0.5}
+\section{The intersection problem}
+\begin{figure}
+	\mbox{\parbox{\textwidth}{
+		\centering
+		\begin{tikzpicture}
+			\def\xstart{-7};
 
-% 			\draw (0,0) circle (2pt);
-% 			% \node at (1.2, 0.2) {crossing point};
-% 			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth, \roadwidth) -- (-\roadwidth, \crosstopy);
-% 			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth, -\roadwidth) -- (-\roadwidth, \crossboty);
-% 			\draw[thick] (\roadwidth, \crosstopy) -- (\roadwidth, \roadwidth) -- (\crossrightx, \roadwidth);
-% 			\draw[thick] (\roadwidth, \crossboty) -- (\roadwidth, -\roadwidth) -- (\crossrightx, -\roadwidth);
+			\coordinate (p) at (3,0);
+			\foreach \n/\w/\c in {z0/2/green,z1/2/red,z2/2.5/orange,z3/3.5/blue}{
+				\node[rectangle,
+				draw=none,
+				anchor=east,
+				text = black,
+				fill = \c!60,
+				minimum width = \w cm, 
+				minimum height = 2cm] 
+				(n) at (p) {\Huge \n};
+				
+				\coordinate (p) at (n.west);
+			}
 
-% 			% 	cars
-% 			\node[inner sep=0pt] (ego_car) at (\crossleftx+0.5,0)
-% 			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
-
-% 			\node[inner sep=0pt] (target_car) at (0,\crosstopy-0.5)
-% 			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-
-% 			%  \node[inner sep=0pt] (targetcar2) at (0,2.5)
-% 			%  {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-% 			%  \node (tctext2) [right=of targetcar2] {Car 2};
+			% Crossing
+			\draw[line width=0.5mm] (\xstart, 1) -- (-1, 1) -- (-1, 5);
+			\draw[line width=0.5mm] (\xstart, -1) -- (-1, -1) -- (-1, -2);
+			\draw[line width=0.5mm] (1, 5) -- (1, 1) -- (3, 1);
+			\draw[line width=0.5mm] (1, -2) -- (1, -1) -- (3, -1);
 			
-% 			% \node[inner sep=0pt] (target_car_1) at (0,-1.5)
-% 			% {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
-% 			% \node (tc_text1) [right=of target_car_1] {Car 1};
-% 		\end{tikzpicture}
-% 		\caption{Single intersection scenario}
-% \end{subfigure}%
-% 	~ 
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\begin{tikzpicture}
-% 			% Crossing
-% 			\def\crossleftx{-2.5}
-% 			\def\crossrightx{2.5}
-% 			\def\crosstopy{2}
-% 			\def\crossboty{-2}
-% 			\def\roadwidth{0.5}
+			% cars
+			\node[inner sep=0pt] (ego_car) at (-7,0)
+			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+			\node[inner sep=0pt] (target_car) at (0,4)
+			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
 
-% 			\draw (-0.5,0) circle (2pt);
-% 			\draw (0.5,0) circle (2pt);
-% 			% \node at (0.7, 0.2) {crossing point$^1$};
-% 			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth-0.5, \roadwidth) -- (-\roadwidth-0.5, \crosstopy);
-% 			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth-0.5, -\roadwidth) -- (-\roadwidth-0.5, \crossboty);
-% 			\draw[thick] (0, \crosstopy) -- (0, \roadwidth);
-% 			\draw[thick] (0, -\roadwidth) -- (0, \crossboty);
-% 			\draw[thick] (\roadwidth+0.5, \crosstopy) -- (\roadwidth+0.5, \roadwidth) -- (\crossrightx, \roadwidth);
-% 			\draw[thick] (\roadwidth+0.5, \crossboty) -- (\roadwidth+0.5, -\roadwidth) -- (\crossrightx, -\roadwidth);
+	\end{tikzpicture}
+	}}
+	\caption{Intersection scenario divided into zones describing what is required of the decision maker in different zones}
+	\label{fig:zones}
+\end{figure}
 
-% 			% 	cars
-% 			\node[inner sep=0pt] (ego_car) at (\crossleftx+0.5,0)
-% 			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+With the \gls{mdp} defined, the path of the ego vehicle can be segmented into four zones as shown in Figure~\ref{fig:zones}. Starting from the end, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
 
-% 			\node[inner sep=0pt] (target_car) at (-0.5,\crosstopy-0.5)
-% 			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+The goal is to reach Zone 0. To achieve this, the agent aims to minimize the time spent in Zone 1 if there is a chance of intersection with another car. Our actions are formulated as short-term goals, designed for comfortable use with lower acceleration rates. The size of Zone 2 depends on the vehicle's current speed, which is influenced by its behavior in Zone 3.
 
-% 			\node[inner sep=0pt] (target_car_2) at (0.5,\crossboty+0.5)
-% 			{\includegraphics[width=.18\textwidth, angle=90]{figures/target_car_top_down.png}};
-% 		\end{tikzpicture}
-% 		\caption{Double intersection scenario}
-% 	\end{subfigure}
-
-% 	\caption{Examples of different scenarios}
-% 	\label{fig:example_scenarios}
-
-% \end{figure}
-
-% \tommy{what I want to say here is: define an unsignalized intersection. There are many variations. Roundabouts are defined as unsignalized intersection. To satisfy the requirement of being able to drive anywhere for level 5 it is necessary to find a method that can scale to these different scenarios}
-
-%  In light of the increased focus on and occurrence of these intersection types nationwide, it is expected that the application of nontraditional designs will continue to spread.
+Now, two conflicting strategies emerge: to minimize time in Zone 1, the agent desires a high speed entering the intersection. However, it also seeks a low speed to reduce the size of Zone 2 and the critical decision period. If the intentions of other vehicles are known, the stochasticity in Zone 1 would be eliminated, transforming the problem into a scheduling task aimed at creating a velocity profile that minimizes the time required to cross. However, since the intentions of other vehicles are stochastic, reinforcement learning offers a promising approach to address this uncertainty and optimize decision-making in dynamic traffic scenarios.
