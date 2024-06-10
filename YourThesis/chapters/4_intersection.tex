@@ -18,7 +18,7 @@ Navigating an intersection is a sequential decision-making problem that can be m
 
 % Driving through an intersection is a sequential decision-making problem and can be mathematically formulated using a \gls{mdp}, introduced in Section~\ref{sec:background_mdp}. As mentioned in the introduction, this thesis will focus on driving in intersections together with other drivers and not only follow the traffic rules but also be able to adapt to other drivers intentions. Since the intention of other drivers is not observable with any existing sensors today, \gls{pomdp} is better suited to formulate the problem. 
 
-Effectively modeling the intersection problem is key for developing an optimal decision-making policy. This chapter will define the of the words intersection, intention and scenario used in this thesis. Although the some details in the \gls{pomdp} may differe between the papers, the general description is the same. Section \ref{sec:pomdp_fomulation} outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
+% Effectively modeling the intersection problem is key for developing an optimal decision-making policy. Although the some details in the \gls{pomdp} may differ between the papers, the general description is the same. Section \ref{sec:pomdp_fomulation} outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
  
 % \Citet{Shalev2016} raises two concerns when using Machine learning, specially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the Driving Policy and that the Markov Decision Process model is problematic, because of unpredictable behavior of other drivers.
 % In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
@@ -26,6 +26,8 @@ Effectively modeling the intersection problem is key for developing an optimal d
 
 \section{\gls{pomdp} formulation}
 \label{sec:pomdp_fomulation}
+Effectively modeling the intersection problem is key for developing an optimal decision-making policy. While specific details of the \gls{pomdp} may vary between different studies, the general description remains consistent. This section outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
+
 \subsection{State space}
 \begin{figure}[h]
 	\centering

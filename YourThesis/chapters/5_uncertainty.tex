@@ -6,27 +6,20 @@
 % 	\end{center}
 % 	\vspace{12pt}
 
-The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be used to create decision-making agents capable of navigating through intersections. An important advantage of \gls{rl} methods is their ability to scale to different types of scenarios simply by training on them. However, a drawback of deep Q-learning methods is the usage of neural networks \gls{nn}, which provide a black-box solution that does not indicate any confidence value for its decisions any hidden states it may estimate.
+The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be used to create decision-making agents capable of navigating through intersections. An important advantage of \gls{rl} methods is their ability to scale to different types of scenarios simply by training on them. However, a drawback of deep Q-learning methods is the usage of \gls{nn}, which provide a black-box solution that does not indicate any confidence (or uncertainty) for its decisions. 
 
-The motivation for handling uncertainty is critical. In this chapter, we present two approaches to managing uncertainty: one addresses the uncertainty in the output of the DQN, and the other addresses the uncertainty in the intention estimation that is fed as an input to the DQN.
-
-The previous chapter formulated \gls{pomdp} and introduced how deep Q-learning methods can be used to create decision-making agents capable of navigating through intersections. 
-An important advantage of \gls{rl} methods is the ability to scale to different types of scenarios simply by training on them. However, a drawback of deep Q-learning methods is the usage of a \gls{nn} which provide a black-box solution that does not indicate any confidence value for its decisions any hidden states it may estimate.
-% As discussed in Chapter~\ref{ch:introduction}, an important advantage of learning-based approaches, compared to manually specified systems, is that they could scale to all types of driving situations. 
-
-The motivation of handling uncertainty. In this chapter we present two approaches to handling the uncertainty, \paperEnsamblen addresses the uncertainty of output from the \gls{dqn}, and \paperBelief addresses the uncertainty of the input to the \gls{dqn}, more specifically the estimation of the intention state $\zeta_n$.
-
+This chapter presents two approaches to managing uncertainty: one addresses the uncertainty in the output of the \gls{dqn}, and the other addresses the uncertainty in the intention estimation that is fed as an input to the \gls{dqn}.
 
 \section{Estimating the uncertainty of the Q-value}
 
 % \subsection{Approach}
-One limitation of the DQN algorithm is that only the maximum likelihood estimate of the $Q$-values is returned. The risk of taking a particular action can be approximated as the variance in the estimated $Q$-value~\cite{Garcia2015}. One approach to obtain a variance estimation is through statistical bootstrapping~\cite{Efron1982}, which has been applied to the DQN algorithm~\cite{Osband2016}. The basic idea is to train an ensemble of neural network on different subsets of the available replay memory. The ensemble will then provide a distribution of $Q$-values, which can be used to estimate the variance. Osband et al. extended the ensemble method by adding a randomized prior function (RPF) to each ensemble member, which gives a better Bayesian posterior~\cite{Osband2018}. The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with equal architecture, i.e.,
+One limitation of the DQN algorithm is that only the maximum likelihood estimate of the $Q$-values is returned. The risk of taking a particular action can be approximated as the variance in the estimated $Q$-value~\cite{Garcia2015}. One approach to obtain a variance estimation is through statistical bootstrapping~\cite{Efron1982}, which has been applied to the DQN algorithm~\cite{Osband2016}. The basic idea is to train an ensemble of neural network on different subsets of the available replay memory. The ensemble will then provide a distribution of $Q$-values, which can be used to estimate the variance. Osband et al. extended the ensemble method by adding a \gls{rpf} to each ensemble member, which gives a better Bayesian posterior~\cite{Osband2018}. The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with equal architecture, i.e.,
 %
 \begin{align}
 	Q_k(s,a) = f(s,a;\theta_k) + \beta p(s,a;\hat{\theta}_k).
 \end{align}
 %
-Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat{\theta}_k$ of the prior network $p$ are fixed to the randomly initialized values. A parameter $\beta$ scales the importance of the networks. With the two networks, the loss function in Eq.~\ref{eq:loss} becomes
+Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat{\theta}_k$ of the prior network $p$ are fixed to the randomly initialized values. A parameter $\beta$ scales the importance of the networks. With the two networks, the loss function in Eq.~\ref{eq:lossDQN} becomes
 %
 \begin{align}
 	\label{eq:loss_boot}
@@ -78,7 +71,7 @@ r_t = &\begin{cases}
 
 The agent's uncertainty in choosing different actions can be defined as the coefficient of variation\footnote{Ratio of the standard deviation to the mean.} $c_\mathrm{v}(s,a)$ of the $Q$-values of the ensemble members.  
 In previous work, we introduced a confidence criterion that disqualifies actions with $c_\mathrm{v}(s,a) > c_\mathrm{v}^\mathrm{safe}$, where $c_\mathrm{safe}$ is a hard threshold~\cite{Hoel2020}. 
-The value of the threshold should be set so that $(s,a)$ combinations that are contained in the training distribution are accepted, and those which are not will be rejected. This value can be determined by observing values of $c_\mathrm{v}$ in testing episodes within the training distribution, see Sect.~\ref{sec:resultsWithinDistribution} for further details. 
+The value of the threshold should be set so that $(s,a)$ combinations that are contained in the training distribution are accepted, and those which are not will be rejected. This value can be determined by observing values of $c_\mathrm{v}$ in testing episodes within the training distribution, see \paperEnsamble for further details. 
 
 
 % A high uncertainty, where $c_\mathrm{v}(s,a) > c_\mathrm{v}^\mathrm{safe}$, indicates that $(s,a)$ is outside the training distribution. The parameter value $c_\mathrm{safe}$ can be set just above the observed values of $c_\mathrm{v}$ in testing episodes within the training distribution, see Sect.~\ref{sec:resultsWithinDistribution} for further details.
@@ -94,8 +87,8 @@ When the agent is fully trained (i.e., not during the training phase), the polic
 %
 In a situation where no possible action fulfills the confidence criterion, a fallback action $a_\mathrm{safe}$ is chosen.
 
-\subsection{Simulated experiments}
-\todo{show the difference of having the uncertainty estimate not having the estimate}
+% \subsection{Simulated experiments}
+% \todo{show the difference of having the uncertainty estimate not having the estimate}
 
 \subsection{Results and discussion}
 We show two approaches of handing uncertainty. with an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
@@ -111,14 +104,14 @@ We show two approaches of handing uncertainty. with an estimate of the uncertain
 
 % ZZZ Change left y-axis to percent, to make it more clear that it refers to a proportion
 
-\begin{figure}[h]
-	\mbox{\parbox{\textwidth}{
-	\centering
-		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
-		}}
-		\caption{Mean coefficient of variation $c_\mathrm{v}$ for the chosen action during the test episodes. The dark shaded area shows percentiles $10$ to $90$, and the bright shaded area shows percentiles $1$ to $99$.}
-	% \label{fig:cv}
-\end{figure}
+% \begin{figure}[h]
+% 	\mbox{\parbox{\textwidth}{
+% 	\centering
+% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
+% 		}}
+% 		\caption{Mean coefficient of variation $c_\mathrm{v}$ for the chosen action during the test episodes. The dark shaded area shows percentiles $10$ to $90$, and the bright shaded area shows percentiles $1$ to $99$.}
+% 	% \label{fig:cv}
+% \end{figure}
 
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
