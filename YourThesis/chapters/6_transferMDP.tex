@@ -1,14 +1,14 @@
 % !TEX root=../../Thesis.tex
 \chapter{Generalizing over different scenarios} \label{ch:generalize}
-\tommy{Uncertainty in MDP which one are we in?}
+% \tommy{Uncertainty in MDP which one are we in?}
 % \begin{center}
 %   \textit{\textbf{RQ 3: How can a \gls{rl} agent handle situations it has not been trained on?}}
 %   \end{center}
 %   \vspace{12pt}
 
-As mentioned in the Seciton \ref{sec:mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
+As mentioned in the Seciton \ref{sec:background_mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
 
-Application areas. A transition function is defined as the probability of transitioning from one state to another. This could be different for example when the ego vehicle properties are different, if the DQN is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the DQN is train in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The DQN/policy would probably not perform so well. 
+A transition function T is defined as the probability of transitioning from one state to another. The transition function could be different for example when the ego vehicle properties are different, if the \gls{dqn} is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the \gls{dqn} is trained in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The \gls{dqn} would probably not perform so well. 
 This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
 An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
 
@@ -18,10 +18,16 @@ Given at set of MDPs, a convex hull is created using the MDPs as the boudries. T
 This does require some number of MDPs to span out the convex hull of models. 
 This can find a policy between MDPs. 
 Identify which MDP is closest. For example Downtown driving in one country may be similar to the driving stile to another. 
-\todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
-\todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
+% \todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
+% \todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
 
 
-\section{Simulated experiments}
 \section{Results and discussion}
-FILL
+How can we accurately construct a model using a set of source models
+for an RL agent deployed in the wild?
+Our answer to the first question is by adopting the Model Transfer Reinforcement Learning framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage.
+
+Does the constructed model allow us to perform efficient planning and yield improvements over learning from scratch? 
+the model allows generalising to novel tasks, given that the tasks are similar enough to the existing task(s).
+We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains.
+% We verify the quick, near-optimal performance of the algorithm in the case where the new domain is similar and we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 

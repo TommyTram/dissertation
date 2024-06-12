@@ -1,8 +1,21 @@
 % !TEX root=../../Thesis.tex
 \chapter{Concluding remarks and future work}
 \section{Conclusions}\label{sec:conclusion}
+Looking at the reserach questions we posted in the beginning: 
+\begin{enumerate}
+	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? 
+	\item[\textbf{A1.}]By formulating the problem as a \gls{pomdp} with an unobservable intention state. Deep Q-learning showed some potential of finding a good policy when using a combination of techniques e.g., shared weights, experience replay and a \gls{lstm} layer.
+	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? 
+	\item[\textbf{A2.}] By creating estimate of the uncertainty of the Q-value from a \gls{dqn} a threshold value was able to reduce the number of simulated collisions. Another threshold value can also be put on the on estimate of the intention state which directly affected how much disrk the driving policy took. 
+	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? 
+	\item[\textbf{A3.}] If we have a set of pretrained \gls{dqn}, transfer learning can be used to switch models whenever it is identified that the agent is in an environment it has not been trained on.
+\end{enumerate}
 
-1. RL by itself still has a long way to guarantee safety, but the methods presented in this paper. the unncertainty can be reduced. safety is better suited for contrl or formal methods. RL is a great tool for creating policy that can adapt to different driver interntions. 
-2. Even with todays advancements in \gls{nn} DQN still has a hard time handling 
+
+
+% 1. RL by itself still has a long way to guarantee safety, but the methods presented in this paper. The uncertainty can be reduced. Safety is better suited for control or formal methods. RL is a great tool for creating policy that can adapt to different driver intentions. 
+% 2. Even with todays advancements in \gls{nn} DQN still has a hard time handling 
 \section{Future work}
-FILL
+Implementation in the real world. 
+using transofrmarer and attention to estimate the intention state. 
+Other network structures like DVRL to replace lstm.

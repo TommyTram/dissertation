@@ -24,11 +24,13 @@ Navigating an intersection is a sequential decision-making problem that can be m
 % In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
 % They also noted that in the context of autonomous driving, the dynamics of vehicles is Markovian but the behavior of other road users may not necessarily be Markovian.
 
-\section{\gls{pomdp} formulation}
+\section{POMDP formulation}
 \label{sec:pomdp_fomulation}
 Effectively modeling the intersection problem is key for developing an optimal decision-making policy. While specific details of the \gls{pomdp} may vary between different studies, the general description remains consistent. This section outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
 
 \subsection{State space}
+\label{sec:pomdp_statespace}
+
 \begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
@@ -218,7 +220,7 @@ For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$
 	\label{fig:zones}
 \end{figure}
 
-Observing the behavior of a fully trained agent from \paperLSTM and \paperMPC provides the insight that the path of the ego vehicle can be segmented into four zones, as shown in Figure~\ref{fig:zones}. Starting from the end, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
+Observing the behavior of a fully trained agent from \paperLSTM and \paperMPC provides the insight that the path of the ego vehicle can be segmented into four zones, illuatrated in Figure~\ref{fig:zones}. Starting from the right, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
 
 The goal is to reach Zone 0. To achieve this, the agent aims to minimize the time spent in Zone 1 if there is a chance of intersection with another car. Our actions are formulated as short-term goals, designed for comfortable use with lower acceleration rates. The size of Zone 2 depends on the vehicle's current speed, which is influenced by its behavior in Zone 3.
 

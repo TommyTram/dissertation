@@ -42,7 +42,7 @@ The observable states in this work are information that sensors on the ego vehic
 % Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
 
 \section{Reinforcement learning}
-\todo{rewrite}
+% \todo{rewrite}
 In some problems, the state transition probabilities or the reward function are unknown. These problems can be addressed using reinforcement learning, where the agent learns how to behave by interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. The data available to an RL agent depends on its current policy, necessitating a balance between exploring the environment and exploiting existing knowledge. Moreover, the reward an agent receives might hinge on a crucial decision made earlier, making it essential to attribute rewards to the correct decisions.
 
 RL algorithms are categorized into model-based and model-free approaches~\cite[Ch. 5]{Kochenderfer2015}. In model-based methods, the agent first estimates a representation of the state transition function $T$ and then uses a planning algorithm to find a policy. Conversely, model-free RL algorithms, as the name suggests, do not explicitly construct a model of the environment to determine actions.
