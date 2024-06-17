@@ -120,6 +120,7 @@ As mentioned in Chapter~\ref{sec:pomdp_actionspace}, the actions in \paperLSTM a
 The agents from \paperLSTM and \paperMPC are evaluated on both a single intersection, shown in Figure~\ref{fig:example_intersections}\subref{fig:single_intersection}, and a double intersection with two crossing points, shown in Figure~\ref{fig:example_intersections}\subref{fig:double_intersection}. The results are summarized in Table~\ref{tab:results_single_double_crossing}.
 
 \section{Results from simulation}
+\label{sec:results_dqn}
 The results from Table~\ref{tab:results_single_double_crossing} showed that the proposed \gls{dqn} agent from \paperLSTM found a policy that successfully crossed a single intersection $96.1\%$ of the time, with $2.8\%$ resulting in collisions and $1.1\%$ resulting in timeouts. 
 When comparing agents trained with and without an \gls{lstm} layer, those with the \gls{lstm} succeeded in 3 out of 4 attempts where those without it would fail.
 This demonstrates that deep Q-learning has great potential for creating decision-making agents capable of navigating intersections. Additionally, the results from Figure~\ref{fig:results_shared} indicate that using a network structure with shared weights between cars significantly improved the convergence speed of the network. Shared weights, along with other enhancements like dropout and experience replay, are essential components for this improvement.

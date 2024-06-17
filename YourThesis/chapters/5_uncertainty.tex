@@ -9,9 +9,10 @@
 The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be utilized to create decision-making agents capable of navigating intersections. A significant advantage of RL methods is their scalability to different scenarios through appropriate training. However, a drawback of deep Q-learning methods, is the use of neural networks, which provide a black-box solution without indicating any confidence or uncertainty in their decisions.
 
 This chapter presents two approaches to estimating the uncertainty: \paperEnsamble addresses the uncertainty in the output of the \gls{dqn}, and \paperBelief addresses the uncertainty in the intention estimation that is fed as an input to the \gls{dqn}.
+To demonstrate the effect of accounting for uncertainty, the results include two types of experiments. In the first type, the trained agent is evaluated on scenarios within the training set. In the second type, the agent is evaluated on scenarios outside the training set.
 
 \section{Estimating the uncertainty of the Q-value}
-
+\label{ch:ensamble}
 To estimate the uncertainty of $Q$-estimate from the \gls{dqn}, \paperEnsamble employed statistical bootstrapping to train an ensemble of neural networks on different subsets of the available experience. This ensemble provides a distribution over the estimated $Q$-values. A better Bayesian posterior is obtained by adding different \gls{rpf} to each ensemble member~\cite{Osband2018}.
 The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with the same architecture, i.e.,
 %
@@ -73,6 +74,8 @@ When the agent is fully trained, the policy $\pi$ chooses actions by maximizing 
 		\textrm{s.t.} \quad c_\mathrm{v}(s,a) < c_\mathrm{v}^\mathrm{safe}.
 	\end{aligned}
 \end{equation}
+
+If no action within the action space satisfy the restriction, a safe action $a_\mathrm{safe}$ is chosen instead. This $a_\mathrm{safe}$ can be something like a collision avoidance measure, such as emergency braking.
 %
 % In a situation where no possible action fulfills the confidence criterion, a fallback action $a_\mathrm{safe}$ is chosen.
 
@@ -85,31 +88,10 @@ When the agent is fully trained, the policy $\pi$ chooses actions by maximizing 
 %     \end{cases}
 % \end{align}
 
+\subsection{Results for scenarios within the training set}
 
-
-
-
-
-\section{Estimating the uncertainty of the input}
-
-As previously mentioned in Section~\ref{sec:pomdp_statespace}, the state space of the intersection problem considered in this thesis consists of position, velocity and the intention of the surrounding driver. While the position and velocity are observable states, the intention state is not directly observable. The hypothesis in \paperLSTM was that the hidden state in the \gls{lstm} layer would incorporate some estimation of intentions. 
-
-Upon analyzing the scenarios that led to collisions, it was observed that the agent often quickly entered a state where a collision could occur if both parties maintained the same velocity. However, due to the black-box nature of the system, it is impossible to determine when this state incorrectly estimated the intention. The policy generally positioned the agent in a way that avoided conflicts with other cars' time to intersection, preventing many collisions. Nonetheless, in cases where the cars did collide, the agent somehow ended up on a collision course and struggled to navigate out of it.
-
-% Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
-
-In \paperBelief,  two methods are proposed for representing belief over drivers' intentions using a particle-based approach and a compact parametric representation, which can manifest as a probability distribution (QID) or a point estimate (QMDP-IE).
-
-Our proposed particle filter exhibited promising results in estimating intention probabilities.
-% , although improvements potentially could be made through enhanced prediction models and increased computational resources. 
-We leveraged these intention probability estimates in QMDP-IE and QID algorithms, which demonstrated superior performance compared to respective baseline approaches QMDP and QPF. QMDP-IE, in particular, offered adjustable aggressiveness post-training, yielding a collision rate close to the Oracle DQN with an optimal threshold value $\zeta_\mathrm{threshold}$.
-Furthermore, QID policies collision rate was comparable to QMDP-IE for conflict scenarios. 
-
-
-
-\section{Using the uncertainty estimate}
-
-With an estimate of the uncertainty in actions we showed that it can be used to reduce collisions and risk by choosing another policy than the one trained on data it is not confident in. 
+This section shows the results of ensemble RPF method compared to the DQN method used in \paperLSTM, but without the \gls{lstm} layer.
+The ensemble RPF method outperforms the DQN method, both in terms of training speed and final performance, when the resulting agents are tested on scenarios that are similar to the training scenarios. When the fully trained ensemble RPF agent is exposed to situations that are outside the training distribution, the agent indicates a high uncertainty and chooses safe actions, whereas the DQN agent collides with other vehicles.
 
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
@@ -117,17 +99,11 @@ With an estimate of the uncertainty in actions we showed that it can be used to 
 	\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/return_success_rate_2_wo_type_3_fonts.pdf}
 	}}
 	\caption{Proportion of test episodes where the ego vehicle reached its goal (dashed), and episode return (solid), over training steps for the ensemble RPF and DQN methods. The shaded areas show the standard deviation for $5$ random seeds.}
-	% \label{fig:returnAndSuccess}
+	\label{fig:RPFreturnAndSuccess}
 \end{figure}
 
-% \begin{figure}[h]
-% 	\mbox{\parbox{\textwidth}{
-% 	\centering
-% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_3_wo_type_3_fonts.pdf}
-% 		}}
-% 		\caption{Mean coefficient of variation $c_\mathrm{v}$ for the chosen action during the test episodes. The dark shaded area shows percentiles $10$ to $90$, and the bright shaded area shows percentiles $1$ to $99$.}
-% 	% \label{fig:cv}
-% \end{figure}
+The average return and the average proportion of episodes where the ego vehicle reached the goal, as a function of number of training steps, is shown in Figure~\ref{fig:RPFreturnAndSuccess}, for the test episodes. The figure also shows the standard deviation for $5$ random seeds, which generates different sets of initial parameters of the networks and different training episodes, whereas the test episodes are kept fixed. The results show that the ensemble RPF method both learns faster, yields a higher return, and causes less collisions than the \gls{dqn} method. %A few collisions still remain, but how they can be mitigated is shown below.
+%
 
 \begin{figure}[h]
 	\mbox{\parbox{\textwidth}{
@@ -135,13 +111,20 @@ With an estimate of the uncertainty in actions we showed that it can be used to 
 		\includegraphics[width=0.8\columnwidth]{YourThesis/papers/ensamble/figures/uncertainty_at_collision_wo_type_3_fonts.pdf}
 		}}
 		\caption{Uncertainty $c_\mathrm{v}$ during the time steps before one of the collisions in the test episodes, within the training distribution. The collision occurs at $t=0$ s.}
-	% \label{fig:cvDuringCrash}
+	\label{fig:RPFcvDuringCrash}
 \end{figure}
 
+As shown in Figure~\ref{fig:RPFreturnAndSuccess}, occasional collisions still occur during the test episodes when deploying the fully trained ensemble RPF agent. 
+In one particular example of a collision, using the zones from Figure~\ref{fig:zones}, the agent fails to brake enough in zone 3 and take an incorrect action in zone 2, which leads to a collision in zone 1. 
+However, Figure~\ref{fig:RPFcvDuringCrash} show that the estimated uncertainty increases significantly during the time before the collision (zone 2), when the incorrect actions are taken. 
+When applying the confidence criterion, the agent, aware of high uncertainty, brakes early enough in zone 2, thus avoiding collisions. The confidence criterion was applied to all test episodes, effectively eliminating all collisions for scenarios within the training set.
+
+\subsection{Results for scenarios outside the training set}
 \begin{figure}[h]
+	
 	\mbox{\parbox{\textwidth}{
 		\centering
-	\begin{subfigure}[]{0.9\columnwidth}
+	\begin{subfigure}[]{0.99\columnwidth}
 	\centering
 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/collisions_outside_distribution_2_wo_type_3_fonts.pdf}
 		\caption{Proportion of collisions.}
@@ -149,56 +132,48 @@ With an estimate of the uncertainty in actions we showed that it can be used to 
 	
 	\vspace{5pt}
 	
-	\begin{subfigure}[]{0.9\columnwidth}
+	\begin{subfigure}[]{0.99\columnwidth}
 	\centering
 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/activation_rate_2_wo_type_3_fonts.pdf}
 		\caption{Proportion of episodes where $a_\mathrm{safe}$ was used at least once.}
 	\end{subfigure}
 	\caption{Performance of the ensemble RPF agent, with and without the confidence criterion, and the DQN agent, in test episodes with different set speeds $v_\mathrm{d}^j$ for the surrounding vehicles. %The shaded areas show the standard deviation for $5$ random seeds.
 	}
+	\label{fig:RPFperformanceOutsideDistribution}
 	}}
-	% \label{fig:performanceOutsideDistribution}
 \end{figure}
 
-% \begin{figure}[h]
-% 	\mbox{\parbox{\textwidth}{
-% 	\centering
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen1.pdf}
-% 		\caption{$t=0$, initial situation.}
-% 	\end{subfigure}%
-% 	~ 
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen2.pdf}
-% 		\caption{$t=1$, DQN and ensemble RPF without confidence criterion.}
-% 	\end{subfigure}
-	
-% 	\vspace{5pt}
-	
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen3.pdf}
-% 		\caption{$t=1$, ensemble RPF with confidence criterion.}
-% 	\end{subfigure}
-% 	~ 
-% 	\begin{subfigure}[t]{0.48\columnwidth}
-% 		\centering
-% 		\includegraphics[width=0.7\columnwidth]{YourThesis/papers/ensamble/figures/figures-scen4.pdf}
-% 		\caption{$t=1.5$, ensemble RPF with confidence criterion.}
-% 	\end{subfigure}
-% 	}}
-% 	\caption{Example of a situation outside of the training distribution,
-% 	where there would be a collision if the confidence criterion is not used. The vehicle at the top is here approaching the crossing at $20$ m/s.}
-% 	% \label{fig:collisionOutsideDistribution}
+To evaluate the agents' ability to detect unseen situations, a fully trained ensemble RPF agent was tested in scenarios outside the training distribution. The same testing scenarios as in the previous section were used, with the exception that the speed of the surrounding vehicles was set to a single deterministic value, which was varied during different runs in the range $v_n=[10,20]$ m/s. 
+The proportion of collisions as a function of set speed of the surrounding vehicles is shown in Figure~\ref{fig:RPFperformanceOutsideDistribution}, along with the proportion of episodes where the confidence criterion was violated at least once. The figure demonstrates that by accounting for the uncertainty of the $Q$-value and the use of the confidence criterion some collisions can be avoided.
+% Additionally, violations of the criterion increase as the speed of the surrounding vehicles increases, indicating that the scenarios are moving further from the training distribution.
 
-% \end{figure}
-\paperBelief show how bad \gls{dqn} is at handing uncertainty in the input space. The results from the experiments show that the algorithms trained with an estimate from the probability distribution outperformed the algorithm trained with the probability distribution as inputs. 
+
+\section{Estimating the uncertainty of the input}
+The ensemble RPF agent avoided collisions by not taking a bad action in zone 2, by accounting for the uncertainty of the Q-value estimate. However, is it possible reduce the number of collisions by accounting for the uncertainty of the input when in zone 3? 
+In \paperBelief, the uncertainty about the intention state $\zeta_n$ is represented by a belief state, which is a probability distribution over possible true states. A particle-filter was used to give the probability distribution, henceforth referred to as intention distributions. 
+
+Using the intention distributions, two methods were proposed: QMDP-IE and QID. 
+QID trained the intention distributions as the intention state $\zeta_n$, while QMDP-IE is derived from the QMDP algorithm~\cite{Littman1995}. By assuming that the intention state $\zeta_n$ can be derived by looking at the history after crossing the intersection, allows the QMDP algorithm to combine elements of both \gls{pomdp}s and \gls{mdp}s. In QMDP-IE and QMDP the \gls{nn} is trained using true intention state and the QMDP calculates the Q-value for each belief state (potential true state). QMDP then computes the expected Q-value for each action by taking the weighted average of the Q-values, while QMDP-IE chooses one intention state using a threshold $\zeta_\mathrm{threshold}$ on the intention distribution.
+
+\begin{figure}[h]
+	\centering
+			% \includegraphics[width=0.99\columnwidth]{figures/figures-intention-t.pdf}
+			% \include{tikz/results Intention threshold}
+			\include{YourThesis/papers/belief/tikz/results Intention threshold all}
+			\vspace{-0.8cm}
+			\caption{QMDP-IE success time for different $\zeta_\text{threshold}$ values. Increasing $\zeta_\text{threshold}$ lowers the collision rate while at the same time increasing the safe stop rate and the time it takes to reach a success state.}
+	\label{fig:thesis_intent_threshold}
+\end{figure}
+
+QMDP-IE, in particular, offered adjustable aggressiveness post-training, yielding a collision rate close to the Oracle DQN with an optimal threshold value $\zeta_\mathrm{threshold}$.
+Furthermore, QID policies collision rate was comparable to QMDP-IE for scenarios outside the training set. 
+
+\subsection{Results within the training set}
+The results from the experiments show that QMDP-IE outperformed QID. 
 
 \begin{table}
-	\caption{Result summary for 4 cars scenario}
-	\label{tab:results_summary}
+	\caption{Result summary for scenarios within the training set}
+	\label{tab:belief_results_summary}
 	\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
 	\toprule
 	Experiments     & Goal reached & Safe stop & Collision & Deadlock & Success time \\ 
@@ -218,17 +193,16 @@ With an estimate of the uncertainty in actions we showed that it can be used to 
 	\end{tabularx}
 \end{table}
 
-Starting with QMDP-IE, we first demonstrate how the $\zeta_\text{threshold}$ is chosen and then compare its results with QMDP. Both algorithms use the same network weights as the Oracle DQN, but QMPD-IE is less computational than QMDP since the threshold $\zeta_\text{threshold}$ transforms the set of particles into a point estimate of the intention state, as described in \ref{sec:belief_rl_algo}. Therefore, the choice of $\zeta_\text{threshold}$ is an important hyperparameter that directly correlates with the aggressiveness of the agent.
+Starting with QMDP-IE, we first demonstrate how the $\zeta_\text{threshold}$ is chosen and then compare its results with QMDP. Both algorithms use the same network weights as the Oracle DQN, but QMPD-IE is less computational than QMDP since the threshold $\zeta_\text{threshold}$ transforms the set of particles into a point estimate of the intention state. Therefore, the choice of $\zeta_\text{threshold}$ is an important hyperparameter that directly correlates with the aggressiveness of the agent.
 
 As opposed to QMDP-IE and QMDP, QID and QPF algorithms do not require access to the true intent during training time. While QPF trains a network using all particles, QID only uses the intention distribution from the particles, which reduces the size of the network while keeping information about the uncertainty of the intention state. 
-Looking at \ref{tab:results_summary}, QPF has the highest collision rate at \SI{12.15}{\percent} and the second lowest success time out of all considered algorithms, making it the most aggressive policy out of all four algorithms. 
+Looking at \ref{tab:belief_results_summary}, QPF has the highest collision rate at \SI{12.15}{\percent} and the second lowest success time out of all considered algorithms, making it the most aggressive policy out of all four algorithms. 
 QID collided more than QMDP-IE but still less than QMDP. This shows that training on ground truth is preferred, but QID is a good algorithm to use when ground truth data is not available. 
-One downside is that QID and QPF took much longer time to train than the Oracle DQN, with up to 5 days of training. Since QID and QPF have comparable training times, this hints that the particle filter used by both algorithms is the main explanation for the computational time and that the large state space of QPF is of minor importance.
 
-\subsection{Overtake agent}
+\subsection{Results for scenarios outside the training set}
 \begin{table}
 \caption{Results with an overtake agent}
-\label{tab:results_overtake}
+\label{tab:theis_results_overtake}
 \begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
 \toprule
 Experiments & Goal reached & Safe stop & Collision & Deadlock & Success time \\ 
@@ -243,6 +217,27 @@ QPF & $96.15$ & $0.10$ & $3.70$ & $0.05$ & $17.62$ \\
 \end{tabularx}
 \end{table}
 
-In the overtake scenario, both QID and QPF have relatively low collision rates at \SI{2.53}{\percent} and \SI{3.7}{\percent} respectively, which is lower when compared to the trained scenarios in \ref{tab:results_summary}. 
+In the overtake scenario, both QID and QPF have relatively low collision rates at \SI{2.53}{\percent} and \SI{3.7}{\percent} respectively, which is lower when compared to the trained scenarios in \ref{tab:belief_results_summary}. 
 While the collision rate for QMDP-IE and QMDP is \SI{4.6}{\percent} and \SI{5.95}{\percent} respectively, which is higher than what they got on the trained scenario but it is also higher than QID and QPF. This indicates that QID and QPF are better at handling some scenarios outside the training set than QMDP-IE and QMDP.
 QMDP also has the highest safe stop and deadlock rate at \SI{10.2}{\percent} and \SI{4.15}{\percent}, making it the most passive policy. 
+
+
+% \begin{figure}[!h]
+% 	\centering
+% 			% \includegraphics[width=0.99\columnwidth]{figures/results Scenarios 1-5 Take way Cars wo intent.png}
+% 			\include{tikz/results Scenarios 1-5 Take way Cars wo intent}
+% 			\vspace{-0.8cm}
+% 			\caption{Performance results for DQN without intention state $\zeta$, showing success time and outcome percentage for scenarios with increasing numbers of other cars.}
+% 	\label{fig:number_cars}
+% \end{figure}
+
+
+% \begin{figure}[h]
+% 	\centering
+% 			% \includegraphics[width=0.99\columnwidth]{figures/figures-intention-t.pdf}
+% 			% \include{tikz/results Intention threshold}
+% 			\include{YourThesis/papers/ensamble/tikz/results Intention threshold all}
+% 			\vspace{-0.8cm}
+% 			\caption{QMDP-IE performance (aggressiveness) for different $\zeta_\text{threshold}$ values. Increasing $\zeta_\text{threshold}$ lowers the collision rate while at the same time increasing the safe stop rate and the time it takes to reach a success state.}
+% 	\label{fig:intent_threshold}
+% \end{figure}

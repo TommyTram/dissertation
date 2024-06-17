@@ -6,14 +6,18 @@
 %   \end{center}
 %   \vspace{12pt}
 
-As mentioned in the Seciton \ref{sec:background_mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
+% As mentioned in the Seciton \ref{sec:background_mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. 
+% So what happens when you take a policy trained on one \gls{mdp} defined by one transition function T1 and put it in another simulation with transition funciton T2? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
 
-A transition function T is defined as the probability of transitioning from one state to another. The transition function could be different for example when the ego vehicle properties are different, if the \gls{dqn} is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the \gls{dqn} is trained in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The \gls{dqn} would probably not perform so well. 
-This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
-An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
+% A transition function T is defined as the probability of transitioning from one state to another. The transition function could be different for example when the ego vehicle properties are different, if the \gls{dqn} is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the \gls{dqn} is trained in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The \gls{dqn} would probably not perform so well. 
+% This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
+% An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
+
+Now lets us consider that a company designing Level 5 \gls{ad} agents, as mentioned in Section~\ref{sec:intro_ad} L5 requires the \gls{av} to be able to drive anywhere. The company has designed two RL agents that have learned to drive at L4 in the USA and UK. Now, the company wants to deploy a new \gls{rl} agent in India. 
+Though all the \gls{rl} agents are concerned with the same task, i.e. driving, the models encompassing driver behaviors, traffic rules, signs, etc., can differ for each. For example, UK and India have left-handed traffic, while the USA has right-handed traffic. However, learning a new controller specifically for every new geographic location is computationally expensive and time-consuming, as both data collection and learning take time. Thus, the company might use the models learned for UK and USA, to estimate the model for India, and use it further to build a new \gls{ad} agent (RL agent). Hence, being able to transfer the source models to the target environment allows the company to use existing knowledge to build an efficient agent faster and resource efficiently. This problem of model transfer from source models to a target environment to plan efficiently is address in \paperTransfer.
 
 \section{Approach}
-Some easy solutions would to be have some geo identifier that can choose which policy to use given the country. That may work for an L4 system but could show to be difficult for an L5 system. Our approach is to use transfer RL to identify where we are in the convex hull of MDPs and then choose the policy for MDP we are closest too. 
+Our approach is to use transfer RL to identify where we are in the convex hull of MDPs and then choose the policy for MDP we are closest too. 
 Given at set of MDPs, a convex hull is created using the MDPs as the boudries. The goal is then to identity where in the convex hull of MPDs the agent is existing or which MDP is the closest. 
 This does require some number of MDPs to span out the convex hull of models. 
 This can find a policy between MDPs. 
@@ -23,8 +27,7 @@ Identify which MDP is closest. For example Downtown driving in one country may b
 
 
 \section{Results and discussion}
-How can we accurately construct a model using a set of source models
-for an RL agent deployed in the wild?
+How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?
 Our answer to the first question is by adopting the Model Transfer Reinforcement Learning framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage.
 
 Does the constructed model allow us to perform efficient planning and yield improvements over learning from scratch? 
