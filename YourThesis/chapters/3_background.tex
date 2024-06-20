@@ -78,3 +78,31 @@ RL algorithms typically assume that the environment is modeled as a \gls{mdp}, w
 \subsection{Deep Q-learning}
 \label{ch:q-learning}
 \include{YourThesis/chapters/dqn}
+
+\subsection{Intelligent Driver Model}
+\label{ch:idm}
+The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
+The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
+\begin{align}
+    \dot p_n & = v_n\\
+    \dot v_n & = a_{\mathrm{max}}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta-\Big( \frac{d^*(v_n,\Delta v_n)}{d_n}\Big)^2\Big) \label{eq:idm} \\
+    & \mathrm{with ~} d^*(v_n, \Delta v_n) = d_0 + v_n T_{\mathrm{gap}} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b}} \nonumber
+\end{align}
+where $v^\mathrm{desired}_n$ is the desired velocity, $d_0$ is the minimum distance between cars, $T_{\mathrm{gap}}$ is the desired time gap to the vehicle in front, $a_\mathrm{max}$ is the maximum vehicle acceleration, $d_n$ is the distance to the vehicle in front, $\Delta v_n = v_n - v_{n-1}$ is the velocity difference between vehicle $n$ and the vehicle directly in front $n-1$, and $\alpha_b$ and $\delta$ are model parameters for comfortable deceleration or acceleration.
+
+The acceleration can be simplified into two terms: an interaction term for when there is a vehicle in front 
+\begin{align}
+     a^\text{int}_n &=  -a_{max} \Big(\frac{d^*(v_n,\Delta v_n)}{d_n} \Big) ^2  \nonumber \\
+     &= -a_{max} \Big(\frac{d_0 + v_n T_{\mathrm{gap}}}{d_n} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b} d_n} \Big) ^2
+     \label{eq:idm_int}
+\end{align}
+
+and free road term, when there is no leading vehicle
+\begin{equation}
+    a^\text{free}_n= a_\mathrm{max}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta\Big).
+    \label{eq:idm_free}
+\end{equation}
+
+
+%This is used to both model behaviors of other drivers and generate the acceleration for the ego vehicle. 
+%The yield action for ego, or yield intent for the other cars, would calculate two accelerations. A normal acceleration $a_{normal}$ and intersection acceleration $a_{intersection}$ with $s_\alpha = p_{int}$ and $v_{\alpha-1} = 0$ for stopping before the intersection. The final acceleration would then be $a=\min (a_{normal},a_{intersection})$.

@@ -26,6 +26,30 @@ Identify which MDP is closest. For example Downtown driving in one country may b
 % \todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
 
 
+\begin{algorithm}[t!]
+  \caption{Maximum Likelihood Estimation for Model-based Transfer RL (MLEMTRL)}\label{alg:thesis_mlemtrl}
+  \begin{algorithmic}[1]
+  %\STATE ${\textsc{MLEMTRL}(\bm{w}^0,\mathcal{M}_s, D_0, \lambda, \gamma, T}) $
+  \State \textbf{Input:} weights $\bm{w}^0$, $m$ source MDPs $\mathcal{M}_s$, data $D_0$, discount factor $\gamma$, iterations $T$.
+  \For{$t=0, \hdots, T$}
+  \State\textsc{// Stage 1: Model Estimation //}
+  %\State \hspace{1.0cm} $\bm{w}^{t+1}\leftarrow  \bm{w}^t -\lambda\nabla_{\bm{w}}\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), D_t \sim \mu^{*}, \mu_i\in\mathcal{M}_s$
+  \State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), \bm{w}^t)$\label{lin:optimiser}
+  %\State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{\mu_i \in \mathcal{M}_s} w_i \mu_i), \bm{w}^t) , D_t \sim \mu^{*}$\label{lin:optimiser}
+  \State Estimate the MDP: $\mu^{t+1} = \sum_{i=1}^m w_i \mu_i$
+  \State\textsc{// Stage 2: Model-based Planning //}
+  \State Compute the policy: $\pi^{t+1} \in \underset{\pi}{\arg\max} \, V_{\mu^{t+1}}^\pi$
+  \State\textsc{// Control //}
+  \State Observe $s_{t+1}, r_{t+1} \sim \mu^{*}(s_t, a_t), a_t\sim \pi^{t+1}(s_t)$
+  \State Update the dataset $D_{t+1} = D_t \cup \{s_t, a_t, s_{t+1}, r_{t+1}\}$
+  \EndFor
+  %\RETURN An estimated MDP model $\mu^T$ and a policy $\pi^T$
+  \State \textbf{return} An estimated MDP model $\mu^T$ and a policy $\pi^T$
+  \end{algorithmic}
+\end{algorithm}
+
+% Now, we present the proposed algorithm, MLEMTRL. The algorithm consists of two stages, a \emph{model estimation} stage, and a \emph{planning} stage. After having obtained a plan, then the agent will carry out its decision-making in the environment to acquire new experiences. We sketch an overview of MLEMTRL in Algorithm~\ref{alg:mlemtrl}. For completeness, we also provide an extension to MLEMTRL called Meta-MLEMLTRL. This extension combines the MLEMTRL estimated model with the empirical model of the target task. This allows us to identify the true model even in the non-realisable setting. The details of this algorithm are available in Section~\ref{sec:meta_mlemtrl}.
+
 \section{Results and discussion}
 How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?
 Our answer to the first question is by adopting the Model Transfer Reinforcement Learning framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage.
@@ -34,3 +58,22 @@ Does the constructed model allow us to perform efficient planning and yield impr
 the model allows generalising to novel tasks, given that the tasks are similar enough to the existing task(s).
 We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains.
 % We verify the quick, near-optimal performance of the algorithm in the case where the new domain is similar and we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 
+
+% \tommy{Summarize}
+% To benchmark the performance of MLEMTRL, we compare ourselves to a posterior sampling method (\textbf{PSRL})~\citep{osband2013more}, equipped with a combination of product-Dirichlet and product-Normal Inverse Gamma priors for the tabular setting, and Bayesian Multivariate Regression prior~\citep{minka2000bayesian} for the continuous setting. In PSRL, at every round, a new model is sampled from the prior, and it learns in the target MDP from scratch. Finally, for model-based planning, we use \textsc{RiccatiIterations} to obtain the optimal linear controller for the sampled model. In the continuous action setting, we compare the performance to the baseline algorithm multi-task soft-actor critic (\textbf{MT-SAC})~\citep{haarnoja2018soft, yu2020meta} and a modified \textbf{MT-SAC-TRL} using data from the novel task during learning. In the tabular MDP setting, we compare against multi-task proximal policy optimisation (\textbf{MT-PPO)}~\citep{schulman2017proximal, yu2020meta} and similarly \textbf{MT-PPO-TRL}.%\\ 
+
+% We conduct two kinds of experiments to verify our hypotheses. Firstly, in the upper row of Figure~\ref{fig:full_results}, we consider the realisable setting, where the novel task $\mu^*$ is part of the convex hull $\mathcal{C}(\mathcal{M}_s)$. In this case, we are looking to identify an improvement in some or all of the aforementioned qualities compared to the baselines.
+% Further, in the bottom row of Figure~\ref{fig:full_results}, we investigate whether the algorithm can generalise to the case beyond what is supported by the theory in Section~\ref{subsec:realisable}. We begin by recalling the goals of the transfer learning problem~\citep{langley2006transfer}.
+
+% \textbf{RL Environments.} We test the algorithms in a tabular MDP, i.e. Chain~\citep{dearden1998bayesian}, CartPole~\citep{barto1983neuronlike}, and two LQR tasks in \emph{Deepmind Control Suite}~\citep{tassa2018deepmind}: \emph{dm\_LQR\_2\_1} and \emph{dm\_LQR\_6\_2}. %Further details on experimental setups are deferred to Appendix~\ref{sec:rl_env}.
+% Further details on experimental setups are deferred to Appendix C.1.
+
+% \textbf{(1) Impacts of Model Transfer with MLEMTRL.}\label{sec:impacts} We begin by evaluating the proposed algorithm in the Chain environment. The results of the said experiment are available in the leftmost column of Figure~\ref{fig:full_results}. In it, we evaluate the performance of MLEMTRL against PSRL, MT-PPO, MT-PPO-TRL. The experiments are done by varying the slippage parameter $p \in [0.00, 0.50]$ and the results are computed for each different setup of Chain from scratch. In this experiment, we can see the baseline algorithms MT-PPO and MT-PPO-TRL perform very well. This could partially be explained by PSRL and MLEMTRL not only having to learn the transition distribution but also the reward function. The value function transfer in the PPO-based baselines implicitly transfers not only the empirical transition model but also the reward function. We can see that MLEMTRL has improved learning speed compared to PSRL in both realisable and non-realisable settings. 
+% An additional experiment with a known reward function across tasks is shown in %Figure~\ref{fig:known_reward_results}. 
+% Figure 7 in Appendix.
+% %An additional experiment with known reward function across tasks is shown in Figure~\ref{fig:known_reward_results}. 
+
+% In the centre and rightmost columns of Figure~\ref{fig:full_results}, we can see the results of running the algorithms in the LQR settings with the baseline algorithms PSRL, MT-SAC and MT-SAC-TRL. The variation over tasks is given by the randomness over the stiffness of the joints in the problem. In these experiments, we can see a clear advantage of MLEMTRL compared to all baselines in terms of learning speed improvements, and in some cases, asymptotic performance.
+
+% In Figure~\ref{fig:full_results}, the performance metric is the average cumulative reward at every time step, for $10^5$ time steps and the shaded region represents the standard deviation, where the statistics are computed over $10$ independent tasks.
+

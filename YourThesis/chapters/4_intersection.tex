@@ -95,7 +95,7 @@ One limitation of deep Q-learning is the requirement for a discrete action space
 These short-term goals represent high-level objectives, such as driving through an intersection (take way), stopping at the start of an intersection (yield) or drive behind a specific car (follow car~$n$). Each high-level action is translated into a set of parameters that are input into a sliding mode controller in \paperLSTM and a \gls{mpc} in \paperMPC, which then generates the appropriate acceleration to control the ego car.
 
 \subsection{Transition model}
-The transition model is initially unknown, and \gls{rl} is employed to learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process. For more details on the simulation environment see \paperLSTM.
+The transition model is initially unknown, and \gls{rl} is employed to learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process. For more details on the simulation environment see Chapter~\ref{ch:simulation_env}.
 
 
 \subsection{Observation model}
@@ -109,6 +109,17 @@ encompasses all elements of the state space, from \eqref{eq:state}, that are obs
 \subsection{Reward function}
 The design of the reward function is pivotal as it determines the value associated with each state, ultimately shaping the driving policy of the agent. A well-crafted reward function is instrumental in guiding the agent towards achieving its objectives effectively.
 The reward model in this work is formulated based on terminal states, including reaching the goal, collision events, and timeouts. These terminal states play a critical role in defining the success or failure of the agent's driving behavior and are accordingly reflected in the reward structure.
+
+\section{Simulation environment}
+\label{ch:simulation_env}
+The simulation environment in this thesis, first introduced in \paperLSTM, places an agent at an intersection tasked with reaching the goal across the intersection while interacting with up to $N$ other cars on the intersecting lane. At the beginning of each episode, up to $N$ vehicles are initialized with initial positions $p_n^0$ distributed along the intersecting lane, starting velocities $v_n^0$ and a deterministic policy that defines their intention $\zeta_n$. 
+Each vehicle, including the ego vehicle, adheres to the \gls{idm} (Section~\ref{ch:idm}) aimed at maintaining specific speeds and safe distances, with the maximum acceleration is capped at $5 m/s^2$ to ensure comfort and safety under normal driving conditions.
+For example, if a vehicle's intention $\zeta_n$ is yield, it would set the \gls{idm} for the distance to the object in front  $d_n$ to the distance to the start of the intersection, and its velocity $v_{n-1}$ would be set to $0$. Alternatively, a vehicle with a take way intention would follow the IDM only considering the vehicle directly in front of it.
+
+During the simulation, whenever a vehicle in the perpendicular lane crosses the intersection, it is removed from the environment. Subsequently, a new vehicle is spawned at the start of that lane at a random time, with new initial values for position $p_n^0$, velocity $v_n^0$, desired velocity $v^\mathrm{desired}_n$ and intention $\zeta_n$. 
+This dynamic spawning process ensures that the traffic scenario continually evolves, presenting varying challenges and interactions for the agent navigating the intersection.
+Each episode continues until a terminal state is reached, which can be a reaching the goal, collision, safe stop, or deadlock. Rewards are assigned based on a predefined reward function designed to reinforce desired behaviors.
+
 
 \section{Deep Q-learning approach}
 To find a driving policy $\pi$ for the \gls{pomdp} detailed in the previous section, both \paperLSTM and \paperMPC used deep Q-learning, described Chapter~\ref{ch:q-learning}. \paperLSTM proposed a \gls{dqn} structure with shared weights and \gls{lstm} layer to approximate the Q-function. Because the scenarios has up to $N$ cars that with same type of states, the shared weight is an effective way to reduce the input space the agent need to explore. While the \gls{lstm} layer has the role of utilizing the previous states to implicitly estimate a hidden state that could possibly encapsulate the intention of other cars.
@@ -176,7 +187,7 @@ For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$
 	\hline
 	\end{tabular}
 	}}
-	\caption{Average success rates and collision rates for a fully trained \gls{dqn} agent driving though a single and double intersections.}% across single and double crossings.}   
+	\caption{Average success rates and collision rates for a fully trained \gls{dqn} agent driving through a single and double intersections. If the agent failed to reach the goal or collide within a given time, the terminal state was classified as a timeout.}% across single and double crossings.}   
 \label{tab:results_single_double_crossing}
 \end{table}
 
