@@ -13,15 +13,17 @@
 % This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
 % An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
 
-Now lets us consider that a company designing Level 5 \gls{ad} agents, as mentioned in Section~\ref{sec:intro_ad} L5 requires the \gls{av} to be able to drive anywhere. The company has designed two RL agents that have learned to drive at L4 in the USA and UK. Now, the company wants to deploy a new \gls{rl} agent in India. 
-Though all the \gls{rl} agents are concerned with the same task, i.e. driving, the models encompassing driver behaviors, traffic rules, signs, etc., can differ for each. For example, UK and India have left-handed traffic, while the USA has right-handed traffic. However, learning a new controller specifically for every new geographic location is computationally expensive and time-consuming, as both data collection and learning take time. Thus, the company might use the models learned for UK and USA, to estimate the model for India, and use it further to build a new \gls{ad} agent (RL agent). Hence, being able to transfer the source models to the target environment allows the company to use existing knowledge to build an efficient agent faster and resource efficiently. This problem of model transfer from source models to a target environment to plan efficiently is address in \paperTransfer.
+In the previous chapter, the experiments demonstrated how an agent can utilize the uncertainty measurement to reduce the number of collisions. This chapter explores how to identify when an agent is acting in a scenario outside its training set.
+
+Let's consider that a company is designing Level 5 \gls{ad} agents. As mentioned in Section~\ref{sec:intro_ad}, L5 requires the \gls{av} to be able to drive anywhere. The company has already designed two RL agents that have learned to drive at L4 in the USA and UK. Now, the company wants to deploy a new \gls{rl} agent in India. 
+Though all the \gls{rl} agents are concerned with the same task, i.e. driving, the models encompassing driver behaviors, traffic rules, signs, etc., can differ for each. For example, UK and India have left-handed traffic, while the USA has right-handed traffic. However, learning a new controller specifically for every new geographic location is computationally expensive and time-consuming, as both data collection and learning take time. Thus, the company might use the models learned for UK and USA, to estimate the model for India, and use it further to build a new \gls{ad} agent (RL agent). Hence, being able to transfer the source models to the target environment allows the company to use existing knowledge to build an efficient agent faster and resource efficiently. 
+This problem of model transfer from source models to a target environment to plan efficiently is address in \paperTransfer. 
 
 \section{Approach}
-Our approach is to use transfer RL to identify where we are in the convex hull of MDPs and then choose the policy for MDP we are closest too. 
-Given at set of MDPs, a convex hull is created using the MDPs as the boudries. The goal is then to identity where in the convex hull of MPDs the agent is existing or which MDP is the closest. 
-This does require some number of MDPs to span out the convex hull of models. 
-This can find a policy between MDPs. 
-Identify which MDP is closest. For example Downtown driving in one country may be similar to the driving stile to another. 
+In this example, the driving model for each country is defined by its own \gls{mdp}. A set of \gls{mdp}s is used to create a convex hull, where each \gls{mdp} acts as a boundary. 
+The proposed approach, Maximum Likelihood Estimation for Model-based Transfer RL (MLEMTRL), involves using model transfer \gls{rl} to determine the agent's position within this convex hull of \gls{mdp}s and selecting the policy from the nearest \gls{mdp}. 
+This method relies on having a diverse set of \gls{mdp}s to effectively span the convex hull of models, thereby facilitating the discovery of optimal policies between \gls{mdp}s. For example, downtown driving behavior in one country may closely resemble that in another.
+
 % \todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
 % \todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
 
@@ -29,13 +31,10 @@ Identify which MDP is closest. For example Downtown driving in one country may b
 \begin{algorithm}[t!]
   \caption{Maximum Likelihood Estimation for Model-based Transfer RL (MLEMTRL)}\label{alg:thesis_mlemtrl}
   \begin{algorithmic}[1]
-  %\STATE ${\textsc{MLEMTRL}(\bm{w}^0,\mathcal{M}_s, D_0, \lambda, \gamma, T}) $
   \State \textbf{Input:} weights $\bm{w}^0$, $m$ source MDPs $\mathcal{M}_s$, data $D_0$, discount factor $\gamma$, iterations $T$.
   \For{$t=0, \hdots, T$}
   \State\textsc{// Stage 1: Model Estimation //}
-  %\State \hspace{1.0cm} $\bm{w}^{t+1}\leftarrow  \bm{w}^t -\lambda\nabla_{\bm{w}}\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), D_t \sim \mu^{*}, \mu_i\in\mathcal{M}_s$
-  \State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), \bm{w}^t)$\label{lin:optimiser}
-  %\State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{\mu_i \in \mathcal{M}_s} w_i \mu_i), \bm{w}^t) , D_t \sim \mu^{*}$\label{lin:optimiser}
+  \State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), \bm{w}^t)$
   \State Estimate the MDP: $\mu^{t+1} = \sum_{i=1}^m w_i \mu_i$
   \State\textsc{// Stage 2: Model-based Planning //}
   \State Compute the policy: $\pi^{t+1} \in \underset{\pi}{\arg\max} \, V_{\mu^{t+1}}^\pi$
@@ -43,19 +42,21 @@ Identify which MDP is closest. For example Downtown driving in one country may b
   \State Observe $s_{t+1}, r_{t+1} \sim \mu^{*}(s_t, a_t), a_t\sim \pi^{t+1}(s_t)$
   \State Update the dataset $D_{t+1} = D_t \cup \{s_t, a_t, s_{t+1}, r_{t+1}\}$
   \EndFor
-  %\RETURN An estimated MDP model $\mu^T$ and a policy $\pi^T$
   \State \textbf{return} An estimated MDP model $\mu^T$ and a policy $\pi^T$
   \end{algorithmic}
 \end{algorithm}
 
-% Now, we present the proposed algorithm, MLEMTRL. The algorithm consists of two stages, a \emph{model estimation} stage, and a \emph{planning} stage. After having obtained a plan, then the agent will carry out its decision-making in the environment to acquire new experiences. We sketch an overview of MLEMTRL in Algorithm~\ref{alg:mlemtrl}. For completeness, we also provide an extension to MLEMTRL called Meta-MLEMLTRL. This extension combines the MLEMTRL estimated model with the empirical model of the target task. This allows us to identify the true model even in the non-realisable setting. The details of this algorithm are available in Section~\ref{sec:meta_mlemtrl}.
+The MLEMTRL algorithm, outlined in Algorithm~\ref{alg:thesis_mlemtrl}, consists of two stages: First, a \textit{model estimation} stage which estimates a \gls{mdp} $\mu^{t+1}$ from a set of $m$ source \gls{mdp}s, $\mu_i \in \mathcal{M}_s$, utilizing data from experience $D_0$.
+Second, a \textit{planning} stage computes the policy $\pi^{t+1}$ that maximizes the expected reward given the value function $V_{\mu^{t+1}}^\pi$ based on $\mu^{t+1}$. 
+After computing $\pi^{t+1}$, the agent executes actions in the environment to acquire new experiences $D_{t+1}$. These steps are repeated $T$ times before producing a final estimated \gls{mdp} model $\mu^T$ and a policy $\pi^T$ is given.
+% For completeness, an extension to MLEMTRL called Meta-MLEMLTRL is also provided in \paperTransfer. This extension combines the MLEMTRL estimated model with the empirical model of the target task. This allows us to identify the true model even in the non-realisable setting. The details of this algorithm are available in Section~\ref{sec:meta_mlemtrl}.
 
 \section{Results and discussion}
 How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?
 Our answer to the first question is by adopting the Model Transfer Reinforcement Learning framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage.
 
 Does the constructed model allow us to perform efficient planning and yield improvements over learning from scratch? 
-the model allows generalising to novel tasks, given that the tasks are similar enough to the existing task(s).
+The model allows generalizing to novel tasks, given that the tasks are similar enough to the existing task(s).
 We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains.
 % We verify the quick, near-optimal performance of the algorithm in the case where the new domain is similar and we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 
 
