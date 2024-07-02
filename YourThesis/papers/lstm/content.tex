@@ -136,7 +136,7 @@ Assuming the states are not known, we want a model-free method of finding a poli
 %TODO: add epislon greedy
 The standard assumption is made that the future reward is discounted by a factor $\gamma$ per time step, making the discounted future reward $\mathcal{R}_t = \sum_{t}^{\tau} \gamma^{t-1} r_t$, where $\tau$ is the time step where the simulation ends, e.g. when the agent crosses an intersection safely. 
 
-Similar to \cite{MnihPlayingLearning}, the optimal action-value function $Q^*(s_t, a_t)$ is defined as the maximum expected reward achievable by following a policy $\pi$ given the state $s_t$ and taking an action $a_t$:
+Similar to \cite{Mnih2015}, the optimal action-value function $Q^*(s_t, a_t)$ is defined as the maximum expected reward achievable by following a policy $\pi$ given the state $s_t$ and taking an action $a_t$:
 
 \begin{equation}
 Q^*(s_t,a_t)= \max_{\pi} \mathbb{E}[\mathcal{R}_t | s_t, a_t, \pi]
@@ -159,7 +159,7 @@ The optimal policy $\pi^*$ is then given by taking actions according to an optim
 
 \section{Method}
 \label{sec:method}
-From eq. \ref{eq:optimal_policy}, the optimal policy is defined by taking an action that has the highest expected Q-value. Because the Q-value is not known, a non linear function approximation, such as a neural network, is used to estimate the Q-function. The method is known as Deep Q-Learning \cite{MnihPlayingLearning} and in this section we will briefly describe Q-learning and methods used to improve the learning such as, Experience replay, dropout and Long-, Short- Term Memory (LSTM).
+From eq. \ref{eq:optimal_policy}, the optimal policy is defined by taking an action that has the highest expected Q-value. Because the Q-value is not known, a non linear function approximation, such as a neural network, is used to estimate the Q-function. The method is known as Deep Q-Learning \cite{Mnih2015} and in this section we will briefly describe Q-learning and methods used to improve the learning such as, Experience replay, dropout and Long-, Short- Term Memory (LSTM).
 
 \subsection{Deep Q-learning}
 \label{sec:dqn}
@@ -168,7 +168,7 @@ Deep Q-Learning uses a neural network to approximate the $Q$-function. This neur
 \subsection{Experience Replay}
 A problem with Deep Q-Learning, looking at eq. \ref{eq:optimal_policy}, is that with a small change in the $Q$-function, can effect the policy drastically. The distribution of future training samples will be greatly influenced by the updated policy. If the network only trains on recent experiences, a biased distribution of samples is used. Such behavior can cause unwanted feedback loops which can lead to divergence of the trained network \cite{Tsitsiklis1997AnApproximation}.
 
-Proposed by \cite{MnihPlayingLearning} in order to make DQN more robust, all observations $o$, together with taken actions $a$ and their rewards $r$, are stored in an experience memory $E$ and the agent can sample experiences $E'$ from the experience memory. The sampled experiences are fed to the gradient descent algorithm as a mini-batch. Thus, the agent learns on an average of the experiences in $E$ and is likely to train on the same experiences multiple times, which can speed up the network's convergence and reduce oscillations \cite{Lin1992Self-ImprovingTeaching}.
+Proposed by \cite{Mnih2015} in order to make DQN more robust, all observations $o$, together with taken actions $a$ and their rewards $r$, are stored in an experience memory $E$ and the agent can sample experiences $E'$ from the experience memory. The sampled experiences are fed to the gradient descent algorithm as a mini-batch. Thus, the agent learns on an average of the experiences in $E$ and is likely to train on the same experiences multiple times, which can speed up the network's convergence and reduce oscillations \cite{Lin1992Self-ImprovingTeaching}.
 
 \subsection{Dropout}
 Overfitted neural networks have bad generalization performance \cite{Hinton2012ImprovingDetectors} and to help reduce overfitting a technique called dropout was used. The idea with dropout is to temporarily remove random hidden neurons with their connections from the network, before each training iteration. This is done by, independently, for each neuron, setting its value to 0 with a probability $p$. For more details, see \cite{Srivastava2014Dropout:Overfitting}. 
@@ -324,7 +324,7 @@ The graphs presented are only using evaluation episodes, with a deterministic po
 The improvement of using Dropout and Experience replay, from Section \ref{sec:method}, are clearly shown in Fig. \ref{fig:results_experience} and \ref{fig:results_dropout}. Studying the red curve in Fig. \ref{fig:results_experience}, with all methods included, the best policy had a success rate of $99\%$, average episodic reward $0.8$ and collision to timeout ratio at $40\%$. 
 
 \subsection{Effect of using Experience replay}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-experience.pdf}
 	\vspace{-0.5cm}
@@ -334,7 +334,7 @@ The improvement of using Dropout and Experience replay, from Section \ref{sec:me
 Without either method the success rate does not converge to a value higher than $60\%$. When experience replay was not used, the highest success rate was $53\%$, average episodic reward $-0.1$ and collision to timeout ratio at $90\%$. Compared to not using dropout, not using experience replay has a higher lower variation on the success rate. 
 
 \subsection{Effect of using Dropout}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-dropout.pdf}
 	\vspace{-0.5cm}
@@ -345,7 +345,7 @@ In the case of not using Dropout, the best policy had a success rate of $58\%$, 
 
 
 \subsection{Comparing DQN and DRQN}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.7\columnwidth]{figures/figures-recurrent.pdf}
 	\vspace{-0.5cm}
@@ -357,7 +357,7 @@ The faded colored line show actual sampled values and the thick line acts as a t
 
 
 \subsection{Effect of sharing weights in the network}
-\begin{figure}[!ht]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{figures/results_shared.png}
 	\caption{The figure shows that the success rate for a network with shared weights (brown line) converge faster than the fully connected network structure which do not share weights (turquoise line).}

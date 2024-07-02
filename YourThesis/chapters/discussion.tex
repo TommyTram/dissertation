@@ -2,11 +2,11 @@
 \label{sec:discussion}
 
 
-\section{System architecture}
+\section{Guaranteeing safety}
 \label{sec:system_architecture}
-Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety \cite{tbd} in the same way e.g., a \gls{mpc} can. That is why this section will clarify where the work in this paper would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
-The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018,Kortenkamp2008}.
+Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety \cite{tbd} in the same way e.g., a \gls{mpc} can. That is why this section will clarify where the work in this thesis would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
 
+The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018,Kortenkamp2008}.
 The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
 
 Tactical planning can be divided into three categories, the proactive, active and reactive. A proactive module would be something like a precautionary safety module that interprets the information about the environment and create constraints that is sent to the active planner, like  driveable area, allowed speeds and actions. These constraints are generated from a set of safety goals and rules, making this the first layer of protection that can ensure safety. 
@@ -57,10 +57,9 @@ In the industry today the main standard for functional safety in motorized vehic
 	\label{fig:system_architecture}
 \end{figure}
 
-Although safety is the most important requirement for enabling autonomous driving, the work in this paper does not make any safety guaranties. 
-Instead, I proposed that the decision making algorithms presented in this paper is used in system architecture shown in Figure~\ref{fig:system_architecture}. This way, the higher \gls{asil} classifications are on the precautionary safety and collision avoidance modules while the decision makers mainly focus on comfort and the \gls{asil} classification could be on the lower levels and in the best case even be classified as QM. 
+Although safety is the most important requirement for enabling autonomous driving, the work in this paper does not make any safety guarantees. Instead, it is proposed that the decision-making algorithms presented in this paper be used in the system architecture shown in Figure~\ref{fig:system_architecture}. This approach allows higher \gls{asil} to be applied to the precautionary safety and collision avoidance modules, while the decision-making algorithms focus primarily on comfort. As a result, the \gls{asil} classification for the decision-making components could be at lower levels, potentially even classified as QM in the best case.
 
-\tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
+% \tommy{To explore different ways to make the driving policy safe and increase the capability of handling uncertainty in the environment. But even so the state of machine learning and neural networks today is still very limited when its comes to guaranteeing safety. Therefore, it is important to have a system architecture that can separate safety guarantees to another module so that the main benefits of using machine learning can be fully utilized.}
 
 % \tommy{To be able to use \gls{ml} and \gls{rl} safety is this stage of development it is important to separate the responsibility of safety to a more capable system like formal methods, reachability or MPC that can mathematically guarantee safety.}
  

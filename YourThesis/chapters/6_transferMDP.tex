@@ -1,27 +1,80 @@
 % !TEX root=../../Thesis.tex
 \chapter{Generalizing over different scenarios} \label{ch:generalize}
-\tommy{Uncertainty in MDP which one are we in?}
+% \tommy{Uncertainty in MDP which one are we in?}
 % \begin{center}
 %   \textit{\textbf{RQ 3: How can a \gls{rl} agent handle situations it has not been trained on?}}
 %   \end{center}
 %   \vspace{12pt}
 
-As mentioned in the Seciton \ref{sec:mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. So what happens when you take a policy trained on one \gls{mdp} defined by one transition function? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
+% As mentioned in the Seciton \ref{sec:background_mdp}. The \gls{mdp} is defined by the tuple (S,A,R,T,$\gamma$). The work until now has solved the \gls{mdp} or \gls{pomdp} without defining the transition function T by using \gls{rl}. 
+% So what happens when you take a policy trained on one \gls{mdp} defined by one transition function T1 and put it in another simulation with transition funciton T2? Well the short answer is that because \gls{dqn} uses a \gls{nn} to approximate the utility Q for taking an action in each state. 
 
-Application areas. A transition function is defined as the probability of transitioning from one state to another. This could be different for example when the ego vehicle properties are different, if the DQN is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the DQN is train in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The DQN/policy would probably not perform so well. 
-This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
-An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
+% A transition function T is defined as the probability of transitioning from one state to another. The transition function could be different for example when the ego vehicle properties are different, if the \gls{dqn} is trained on a sports car and then applied on a truck, the difference in acceleration capability would result in a different transition function. Another example would be on the other traffic participants, if the \gls{dqn} is trained in an environment where the driving culture is on the passive side and that is later put in an environment that has a more aggressive driving culture. The \gls{dqn} would probably not perform so well. 
+% This is especially important when you have an intention state directly correlated with the transition. For example in \paperD were the intentions are described on a high level such as take way or give way. 
+% An example is lane changes in Sweden, it is normal to signal first, wait for the other vehicle to slow down before initiating a lane change. While in a high density traffic jam in Paris, it is more normal to show intention by starting a lane change and observe if the other vehicle yields. 
+
+In the previous chapter, the experiments demonstrated how an agent can utilize the uncertainty measurement to reduce the number of collisions. This chapter explores how to identify when an agent is acting in a scenario outside its training set.
+
+Let's consider that a company is designing Level 5 \gls{ad} agents. As mentioned in Section~\ref{sec:intro_ad}, L5 requires the \gls{av} to be able to drive anywhere. The company has already designed two RL agents that have learned to drive at L4 in the USA and UK. Now, the company wants to deploy a new \gls{rl} agent in India. 
+Though all the \gls{rl} agents are concerned with the same task, i.e. driving, the models encompassing driver behaviors, traffic rules, signs, etc., can differ for each. For example, UK and India have left-handed traffic, while the USA has right-handed traffic. However, learning a new controller specifically for every new geographic location is computationally expensive and time-consuming, as both data collection and learning take time. Thus, the company might use the models learned for UK and USA, to estimate the model for India, and use it further to build a new \gls{ad} agent (RL agent). Hence, being able to transfer the source models to the target environment allows the company to use existing knowledge to build an efficient agent faster and resource efficiently. 
+This problem of model transfer from source models to a target environment to plan efficiently is address in \paperTransfer. 
 
 \section{Approach}
-Some easy solutions would to be have some geo identifier that can choose which policy to use given the country. That may work for an L4 system but could show to be difficult for an L5 system. Our approach is to use transfer RL to identify where we are in the convex hull of MDPs and then choose the policy for MDP we are closest too. 
-Given at set of MDPs, a convex hull is created using the MDPs as the boudries. The goal is then to identity where in the convex hull of MPDs the agent is existing or which MDP is the closest. 
-This does require some number of MDPs to span out the convex hull of models. 
-This can find a policy between MDPs. 
-Identify which MDP is closest. For example Downtown driving in one country may be similar to the driving stile to another. 
-\todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
-\todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
+In this example, the driving model for each country is defined by its own \gls{mdp}. A set of \gls{mdp}s is used to create a convex hull, where each \gls{mdp} acts as a boundary. 
+The proposed approach, Maximum Likelihood Estimation for Model-based Transfer RL (MLEMTRL), involves using model transfer \gls{rl} to determine the agent's position within this convex hull of \gls{mdp}s and selecting the policy from the nearest \gls{mdp}. 
+This method relies on having a diverse set of \gls{mdp}s to effectively span the convex hull of models, thereby facilitating the discovery of optimal policies between \gls{mdp}s. For example, downtown driving behavior in one country may closely resemble that in another.
+
+% \todo{cons: computationally heavy. Have to create the complex hull of MDPs from e set of MDPs.}
+% \todo{Pros: able to identify which policy to use and scale better by generalizing MDPs instead of countries.}
 
 
-\section{Simulated experiments}
+\begin{algorithm}[t!]
+  \caption{Maximum Likelihood Estimation for Model-based Transfer RL (MLEMTRL)}\label{alg:thesis_mlemtrl}
+  \begin{algorithmic}[1]
+  \State \textbf{Input:} weights $\bm{w}^0$, $m$ source MDPs $\mathcal{M}_s$, data $D_0$, discount factor $\gamma$, iterations $T$.
+  \For{$t=0, \hdots, T$}
+  \State\textsc{// Stage 1: Model Estimation //}
+  \State $\bm{w}^{t+1}\leftarrow  \textsc{Optimiser}(\log\mathbb{P}(D_t \, | \, \Sigma_{i=1}^m w_i \mu_i), \bm{w}^t)$
+  \State Estimate the MDP: $\mu^{t+1} = \sum_{i=1}^m w_i \mu_i$
+  \State\textsc{// Stage 2: Model-based Planning //}
+  \State Compute the policy: $\pi^{t+1} \in \underset{\pi}{\arg\max} \, V_{\mu^{t+1}}^\pi$
+  \State\textsc{// Control //}
+  \State Observe $s_{t+1}, r_{t+1} \sim \mu^{*}(s_t, a_t), a_t\sim \pi^{t+1}(s_t)$
+  \State Update the dataset $D_{t+1} = D_t \cup \{s_t, a_t, s_{t+1}, r_{t+1}\}$
+  \EndFor
+  \State \textbf{return} An estimated MDP model $\mu^T$ and a policy $\pi^T$
+  \end{algorithmic}
+\end{algorithm}
+
+The MLEMTRL algorithm, outlined in Algorithm~\ref{alg:thesis_mlemtrl}, consists of two stages: First, a \textit{model estimation} stage which estimates a \gls{mdp} $\mu^{t+1}$ from a set of $m$ source \gls{mdp}s, $\mu_i \in \mathcal{M}_s$, utilizing data from experience $D_0$.
+Second, a \textit{planning} stage computes the policy $\pi^{t+1}$ that maximizes the expected reward given the value function $V_{\mu^{t+1}}^\pi$ based on $\mu^{t+1}$. 
+After computing $\pi^{t+1}$, the agent executes actions in the environment to acquire new experiences $D_{t+1}$. These steps are repeated $T$ times before producing a final estimated \gls{mdp} model $\mu^T$ and a policy $\pi^T$ is given.
+% For completeness, an extension to MLEMTRL called Meta-MLEMLTRL is also provided in \paperTransfer. This extension combines the MLEMTRL estimated model with the empirical model of the target task. This allows us to identify the true model even in the non-realisable setting. The details of this algorithm are available in Section~\ref{sec:meta_mlemtrl}.
+
 \section{Results and discussion}
-FILL
+How can we accurately construct a model using a set of source models for an RL agent deployed in the wild?
+Our answer to the first question is by adopting the Model Transfer Reinforcement Learning framework and weighting existing knowledge together with data from the novel task. We accomplished this by following a maximum likelihood-based approach. This has led to a novel algorithm, MLEMTRL, consisting of a model identification stage and a model-based planning stage.
+
+Does the constructed model allow us to perform efficient planning and yield improvements over learning from scratch? 
+The model allows generalizing to novel tasks, given that the tasks are similar enough to the existing task(s).
+We motivate the use of our framework in settings where an agent is to be deployed in a new domain that is similar to existing, known, domains.
+% We verify the quick, near-optimal performance of the algorithm in the case where the new domain is similar and we prove worst-case performance bounds of the algorithm in both the realisable and non-realisable settings. 
+
+% \tommy{Summarize}
+% To benchmark the performance of MLEMTRL, we compare ourselves to a posterior sampling method (\textbf{PSRL})~\citep{osband2013more}, equipped with a combination of product-Dirichlet and product-Normal Inverse Gamma priors for the tabular setting, and Bayesian Multivariate Regression prior~\citep{minka2000bayesian} for the continuous setting. In PSRL, at every round, a new model is sampled from the prior, and it learns in the target MDP from scratch. Finally, for model-based planning, we use \textsc{RiccatiIterations} to obtain the optimal linear controller for the sampled model. In the continuous action setting, we compare the performance to the baseline algorithm multi-task soft-actor critic (\textbf{MT-SAC})~\citep{haarnoja2018soft, yu2020meta} and a modified \textbf{MT-SAC-TRL} using data from the novel task during learning. In the tabular MDP setting, we compare against multi-task proximal policy optimisation (\textbf{MT-PPO)}~\citep{schulman2017proximal, yu2020meta} and similarly \textbf{MT-PPO-TRL}.%\\ 
+
+% We conduct two kinds of experiments to verify our hypotheses. Firstly, in the upper row of Figure~\ref{fig:full_results}, we consider the realisable setting, where the novel task $\mu^*$ is part of the convex hull $\mathcal{C}(\mathcal{M}_s)$. In this case, we are looking to identify an improvement in some or all of the aforementioned qualities compared to the baselines.
+% Further, in the bottom row of Figure~\ref{fig:full_results}, we investigate whether the algorithm can generalise to the case beyond what is supported by the theory in Section~\ref{subsec:realisable}. We begin by recalling the goals of the transfer learning problem~\citep{langley2006transfer}.
+
+% \textbf{RL Environments.} We test the algorithms in a tabular MDP, i.e. Chain~\citep{dearden1998bayesian}, CartPole~\citep{barto1983neuronlike}, and two LQR tasks in \emph{Deepmind Control Suite}~\citep{tassa2018deepmind}: \emph{dm\_LQR\_2\_1} and \emph{dm\_LQR\_6\_2}. %Further details on experimental setups are deferred to Appendix~\ref{sec:rl_env}.
+% Further details on experimental setups are deferred to Appendix C.1.
+
+% \textbf{(1) Impacts of Model Transfer with MLEMTRL.}\label{sec:impacts} We begin by evaluating the proposed algorithm in the Chain environment. The results of the said experiment are available in the leftmost column of Figure~\ref{fig:full_results}. In it, we evaluate the performance of MLEMTRL against PSRL, MT-PPO, MT-PPO-TRL. The experiments are done by varying the slippage parameter $p \in [0.00, 0.50]$ and the results are computed for each different setup of Chain from scratch. In this experiment, we can see the baseline algorithms MT-PPO and MT-PPO-TRL perform very well. This could partially be explained by PSRL and MLEMTRL not only having to learn the transition distribution but also the reward function. The value function transfer in the PPO-based baselines implicitly transfers not only the empirical transition model but also the reward function. We can see that MLEMTRL has improved learning speed compared to PSRL in both realisable and non-realisable settings. 
+% An additional experiment with a known reward function across tasks is shown in %Figure~\ref{fig:known_reward_results}. 
+% Figure 7 in Appendix.
+% %An additional experiment with known reward function across tasks is shown in Figure~\ref{fig:known_reward_results}. 
+
+% In the centre and rightmost columns of Figure~\ref{fig:full_results}, we can see the results of running the algorithms in the LQR settings with the baseline algorithms PSRL, MT-SAC and MT-SAC-TRL. The variation over tasks is given by the randomness over the stiffness of the joints in the problem. In these experiments, we can see a clear advantage of MLEMTRL compared to all baselines in terms of learning speed improvements, and in some cases, asymptotic performance.
+
+% In Figure~\ref{fig:full_results}, the performance metric is the average cumulative reward at every time step, for $10^5$ time steps and the shaded region represents the standard deviation, where the statistics are computed over $10$ independent tasks.
+

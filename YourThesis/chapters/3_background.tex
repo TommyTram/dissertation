@@ -42,7 +42,7 @@ The observable states in this work are information that sensors on the ego vehic
 % Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
 
 \section{Reinforcement learning}
-\todo{rewrite}
+% \todo{rewrite}
 In some problems, the state transition probabilities or the reward function are unknown. These problems can be addressed using reinforcement learning, where the agent learns how to behave by interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. The data available to an RL agent depends on its current policy, necessitating a balance between exploring the environment and exploiting existing knowledge. Moreover, the reward an agent receives might hinge on a crucial decision made earlier, making it essential to attribute rewards to the correct decisions.
 
 RL algorithms are categorized into model-based and model-free approaches~\cite[Ch. 5]{Kochenderfer2015}. In model-based methods, the agent first estimates a representation of the state transition function $T$ and then uses a planning algorithm to find a policy. Conversely, model-free RL algorithms, as the name suggests, do not explicitly construct a model of the environment to determine actions.
@@ -74,3 +74,35 @@ RL algorithms typically assume that the environment is modeled as a \gls{mdp}, w
 % \end{align}
 % %
 % However, for many real-world problems with high dimensional state spaces, it is intractable to compute and store a policy offline. Contrarily to offline methods, online search methods perform planning from the current state up to some horizon, when the agent has been deployed. Thereby, the agent can limit the computation to states that are reachable from the current state, which is often significantly smaller than the full state space~\cite[Ch. 4]{Kochenderfer2015}.
+
+\subsection{Deep Q-learning}
+\label{ch:q-learning}
+\include{YourThesis/chapters/dqn}
+
+\subsection{Intelligent Driver Model}
+\label{ch:idm}
+The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
+The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
+\begin{align}
+    \dot p_n & = v_n\\
+    \dot v_n & = a_{\mathrm{max}}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta-\Big( \frac{d^*(v_n,\Delta v_n)}{d_n}\Big)^2\Big) \label{eq:idm} \\
+    & \mathrm{with ~} d^*(v_n, \Delta v_n) = d_0 + v_n T_{\mathrm{gap}} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b}} \nonumber
+\end{align}
+where $v^\mathrm{desired}_n$ is the desired velocity, $d_0$ is the minimum distance between cars, $T_{\mathrm{gap}}$ is the desired time gap to the vehicle in front, $a_\mathrm{max}$ is the maximum vehicle acceleration, $d_n$ is the distance to the vehicle in front, $\Delta v_n = v_n - v_{n-1}$ is the velocity difference between vehicle $n$ and the vehicle directly in front $n-1$, and $\alpha_b$ and $\delta$ are model parameters for comfortable deceleration or acceleration.
+
+The acceleration can be simplified into two terms: an interaction term for when there is a vehicle in front 
+\begin{align}
+     a^\text{int}_n &=  -a_{max} \Big(\frac{d^*(v_n,\Delta v_n)}{d_n} \Big) ^2  \nonumber \\
+     &= -a_{max} \Big(\frac{d_0 + v_n T_{\mathrm{gap}}}{d_n} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b} d_n} \Big) ^2
+     \label{eq:idm_int}
+\end{align}
+
+and free road term, when there is no leading vehicle
+\begin{equation}
+    a^\text{free}_n= a_\mathrm{max}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta\Big).
+    \label{eq:idm_free}
+\end{equation}
+
+
+%This is used to both model behaviors of other drivers and generate the acceleration for the ego vehicle. 
+%The yield action for ego, or yield intent for the other cars, would calculate two accelerations. A normal acceleration $a_{normal}$ and intersection acceleration $a_{intersection}$ with $s_\alpha = p_{int}$ and $v_{\alpha-1} = 0$ for stopping before the intersection. The final acceleration would then be $a=\min (a_{normal},a_{intersection})$.

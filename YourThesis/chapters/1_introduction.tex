@@ -1,14 +1,15 @@
 % !TEX root=../../Thesis.tex
 \chapter{Introduction} \label{ch:intro}
-The way we transport ourselves is currently evolving, and \gls{ad} technology is expected to have a big impact on this transformation~\cite{traffic21, McKinsey2023}. With \gls{av} the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. Number of parking spots in cities can be reduced if the vehicles can autonomously drive itself to a less crowded area when not in use and drive back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
+The way we transport ourselves is currently evolving, and \gls{ad} technology is expected to have a big impact on this transformation~\cite{traffic21, McKinsey2023}. With \gls{av} the efficiency of traffic can be improved by scheduling commercial transports outside of rush hours~\cite{FAGNANT2015167}. The number of parking spots in cities can be reduced if the vehicles can autonomously drive itself to a less crowded area when not in use and drive back when needed. Congestion and traffic jams could also be reduced if a large amount of vehicles in traffic are autonomous and optimize around the same goal e.g., traffic flow or fuel efficiency. 
 
-The rapid success of \gls{ml} during the last decades has lead to major progress towards deploying \gls{av}s in the real world. One clear benefactor of these new \gls{ml} technics are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
+The rapid success of \gls{ml} during the last decades has lead to major progress towards deploying \gls{av}s in the real world. One clear benefactor of these new \gls{ml} techniques are the perception systems~\cite{Janai2020}. Better perception enables more accurate representation of the environment. 
 % The low-level control of the vehicle is a mature research area and can be solved with classical control theory methods~\cite{Paden2016}.
 However, navigating complex scenarios such as urban intersections and roundabouts with dense traffic remain challenging for \gls{av}s because it requires a higher level of interaction between road users, as summarized in a review paper~\cite{Schwarting2018}. 
-When a human driver approach an intersection, they observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation to determine \textit{who has the right of way?} Before deciding weather to drive or yield. 
+When human drivers approach an intersection, they normally assess who has the right of way, before deciding whether to proceed or yield to other road users. However, human drivers do not always follow the rules.
+% When a human drivers approach an intersection, they observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation to determine \textit{who has the right of way?} Before deciding weather to drive or yield. 
 % If all drivers could perfectly assess the situation and follow the right of way, there would be no accidents or collisions between cars. 
 % Despite, each year over one million people are killed in traffic-related accidents, where the vast majority of the accidents are caused by human mistakes~\cite{WHO2018, NHTSA2018}. 
-But human drivers are not perfect, according to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light, whereas \num{928} of them were killed. 
+According to the Insurance Institute for Highway Safety~\cite{IIHS2019}, in 2019, an estimated \num{115741} people were injured by drivers running a red light, whereas \num{928} of them were killed. 
 While these accidents were mainly caused by driver inattention or reckless driving, it motivates the development of decision-making algorithms for \gls{av}s which not only follow the traffic rules but can also take into account other drivers future actions and inattention, which is the main focus in this thesis. 
 %\todo{Level 2: Volvo pilot assist and tesla auto pilot. Level 4: Waymo. Woven automated city}
 % That is why this thesis will focus on intersection scenarios that includes interactions of other vehicles and propose a \gls{rl} approach using deep Q-learning while considering the uncertainty of . 
@@ -22,13 +23,15 @@ While these accidents were mainly caused by driver inattention or reckless drivi
 
 \section{Autonomous Driving Levels}
 \label{sec:intro_ad}
-When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. The first level L0 is a vehicle with no autonomy, whereas a fully \gls{av} that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like lane centering or adaptive cruise control are classified as L1, while the Volvo Pilot Assist and Tesla Autopilot that provide both steering and acceleration/breaking are classified as level 2. The main criteria for L2 systems is that the driver is in control and only supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to ensure safety. For L3 and higher the responsibility of driving is shifted to the system. At L3, the driver still has to take control over the vehicle but at only the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. Examples of L4 are robot taxis developed by Waymo, Zoox, cruise and Toyota which only operate in a specified area or city. 
+% \tommy{I would start with one or two sentences introducing the problem. Saying that the thesis deals with intersections, and that's interesting because this and that (maybe super challenging, accidents, interactive situations, not sure what's best to mention). And the go into the details of how you define intersection, intention, and scenario.}
+When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. The first level L0 is a vehicle with no autonomy, whereas a fully \gls{av} that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like lane centering or adaptive cruise control are classified as L1, while the Volvo Pilot Assist and Tesla Autopilot that provide both steering and acceleration/braking are classified as level 2. The main criteria for L2 systems is that the driver is in control and only supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to ensure safety. For L3 and higher the responsibility of driving is shifted to the system. At L3, the driver still has to take control over the vehicle but at only the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. Examples of L4 are robot taxis developed by Waymo, Zoox, cruise and Toyota which only operate in a specified area or city. 
 
 % Another way to categorize these autonomy levels is: supervised and unsupervised driving. Supervised driving include L0-L3 where the driver has to supervise the system and take control when necessary, while unsupervised 
-% \tommy{Level 2: You are diving, provide steering and breaking support to the driver, lane centering and adaptive cruise control}
 
 The \gls{av} making the decisions in this work are referred to as the ego vehicle, while other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other \gls{av}s. 
-The methods presented in this thesis are aimed at an autonomy level L5. At this level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection. 
+The methods presented in this thesis are aimed at an autonomy level L3-L5. At the highest level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection at any location. 
+
+\include{YourThesis/chapters/intro_intersections.tex}
 
 \section{Research questions}
 \label{sec:research_questions}
@@ -38,7 +41,6 @@ The methods presented in this thesis are aimed at an autonomy level L5. At this 
 % In some cases like highway driving the uncertainty is very low, but when it comes to more urban environment this uncertainty increases. Compared to highway, urban environments introduce more uncertainty. 
 % Investigate how \gls{rl} methods can be used in practice to create a tactical decision making agent for \gls{ad}.
 
-% \tommy{This paper focus on the DQN algorithm and investigate how far we can push it for decision making}
 
 % \begin{enumerate}
 % 	\item The goal for the ego vehicle is to drive through intersections without colliding. 
@@ -48,25 +50,53 @@ The methods presented in this thesis are aimed at an autonomy level L5. At this 
 	
 % \end{enumerate}
 
-The work presented in this thesis investigate the following research questions:
+This thesis focuses on investigating and evaluating \gls{rl} agents for navigating complex intersection scenarios, with a particular emphasis on managing uncertainty. 
+The intersection navigation problem is formulated as a \gls{pomdp}, where observable states include positions and velocities of vehicles, while unobservable states pertain to the intentions of surrounding drivers. These following research questions are considered:
+
 \begin{enumerate}
-	\item[\textbf{Q1.}] How can \gls{rl} be used to create a decision-making agent for driving through intersections? (PAPER A and B)
-	\item[\textbf{Q2.}] In what way can an \gls{rl} agent utilize the uncertainty of its predictions and actions? (PAPER C and D)
-	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
-	
-	% \item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
-	% \item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
-	% (specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
-	% \item[\textbf{Q2.}] Can a good driving policy be found without explicitly predicting other drivers intentions?
-	% \item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
-	% LSTM or other netowrk structures can find the hidden state that is intention. 
-	% \item[\textbf{Q3.}] How can MPC be used to improve the action and state space for a RL agent? 
-	% \item[\textbf{Q3.}] How do we model the actions to drive through an intersection as discreet? (PAPER A and B)
-	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
-	% (How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
-	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
-	% (PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
+	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles?
 \end{enumerate}
+% To answer this, a deep Q-learning approach is employed to solve the POMDP, using short-term goals as actions. These short-term goals are translated into reference points and constraints for a controller. Specifically, Paper A utilizes a sliding mode controller, while Paper B employs \gls{mpc}.
+A deep Q-learning approach is used to solve the \gls{pomdp}, with short-term goal as actions. These short-term goals are translated into references points and constraints for a controller. \paperLSTM \ uses a sliding mode controller, while \paperMPC \ uses a \gls{mpc}.
+To address the challenge of unobservable intentions, the hidden state in the \gls{lstm} layer of the \gls{rl} agent is designed to incorporate estimations of these intentions, crucial for informed decision-making in dynamic traffic environments. 
+
+\begin{enumerate}
+	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? 
+\end{enumerate}
+Two main sources of uncertainty are tackled in this thesis: Q-value uncertainty and intention state uncertainty.
+For Q-value uncertainty, \paperEnsamble \ estimates the uncertainty in the Q-values predicted by using an ensemble of neural networks on different subsets of the available data. This ensemble provides a distribution over the estimated $Q$-values and the uncertainty in choosing different actions can be defined as the coefficient of variation of the $Q$-values.
+% the \gls{dqn} and applies a confidence criterion to avoid risky actions. 
+In \paperBelief, the hidden intention states of other vehicles are represented using a belief state generated via a particle filter. This belief state provides a probability distribution over possible true states, which informs the agent's decisions.
+
+Two methods are proposed to handle intention estimation: QMDP-IE and QID. QMDP-IE, derived from the QMDP algorithm, uses a single estimated intention state, reducing computational complexity while blending elements of POMDPs and MDPs. In contrast, QID represents the intention state using a belief state distribution, allowing for more adaptive and robust decision-making in uncertain environments.
+
+\begin{enumerate}
+	\item[\textbf{Q3.}] How can an \gls{rl} agent handle situations it has not been trained on? 
+\end{enumerate}
+A confidence criterion is applied to the uncertainty of the estimated $Q$-values in \paperEnsamble, making actions with high uncertainty invalid and if no action satisfies the confidence criterion a backup action e.g., emergency breaking, can be applied avoiding potential collisions. If the uncertainty measure from \paperEnsamble \ and \paperBelief \ can be used to identify that the agent is in the wrong environment, the transfer \gls{rl} approach from \paperTransfer can be employed to determine which environment out of a set of environments the agent is currently in, or to select the policy that best fits the current situation
+% The developed algorithms are evaluated in both trained and untrained scenarios. Detailed collision analyses are conducted to identify failure points in the agent's decision-making process. The performance of QMDP-IE and QID is compared against baseline algorithms (QMDP and QPF) to assess their effectiveness in reducing collisions and handling untrained scenarios. The results indicate that QID is better at handling scenarios outside the training set by taking passive actions that can alter the intention distribution and reduce uncertainty in subsequent states. Meanwhile, QMDP-IE offers a structured approach with moderate collision rates and higher computational efficiency.
+
+
+
+% The work presented in this thesis investigate the following research questions:
+% \begin{enumerate}
+% 	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? (PAPER A and B)
+% 	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? (PAPER C and D)
+% 	\item[\textbf{Q3.}] How can an \gls{rl} agent handle situations it has not been trained on? (PAPER C and E)
+	
+% 	% \item[\textbf{Q3.}] How can the quality of a RL agent be improved by accounting for uncertainty? (PAPER C and D)
+% 	% \item[\textbf{Q1.}] How can RL be used to create a decision-making agent for autonomous driving, that can handle different unsignalized intersections (complex urban scenarios)? Learn a scalable policy that is able to handle different scenarios. Relative coordinate system. Action space. 
+% 	% (specificera for att komma undan varfor har du inte kollat pa andra metoder. How can we use RL for AD )
+% 	% \item[\textbf{Q2.}] Can a good driving policy be found without explicitly predicting other drivers intentions?
+% 	% \item[\textbf{Q2.}] Can we find a driving policy without explicitly predicting other drivers intentions?
+% 	% LSTM or other netowrk structures can find the hidden state that is intention. 
+% 	% \item[\textbf{Q3.}] How can MPC be used to improve the action and state space for a RL agent? 
+% 	% \item[\textbf{Q3.}] How do we model the actions to drive through an intersection as discreet? (PAPER A and B)
+% 	% \item[\textbf{Q3.}] How can AD domain knowledge (and models) be used to improve the action and state space for a RL agent? MPC for actions, Particle filter for intention distribution. How can AD domain knowledge be used to create a state and action space that improves the RL agent?
+% 	% (How can the uncertainty of the RL agent be utilized?) (RPF-in the output and PF-in the input space)
+% 	% \item[\textbf{Q5.}] Where does ML/RL fit in the system architecure for decision making?
+% 	% (PAPER A shows that RL can make decisions that finds a gap inbetween cars, PAPER B found that we RL can learn the utility of different actions and decrease the computational power required by modeling and predicting each action in the MPC. While MPC can ganerate a safe path that guarantees safety.) 
+% \end{enumerate}
 
 \section{Scope and limitations}
 \label{sec:scope}
@@ -75,9 +105,11 @@ The following aspects of creating a tactical decision-making agent for autonomou
 \begin{enumerate}
 	% \item We have access to sensors on-board the ego vehicle. We do not have v2v, or v2x communication. 
 	% \item We do not assume any knowledge of traffic signs or traffic lights. 
-	\item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
+	% \item Do not guarantee safety, the best we can do its making the decisions not trigger collision avoidance functions. 
+	\item Guaranteeing safety in \gls{ad} systems is an important open question that is out of scope for this thesis. 
 	\item The work in this thesis is tested in simulation environments and not real world. 
 	\item This work considers the control of one vehicle and not multiple agents. 
+	% \item Although there are many interesting \gls{rl} algorithms out there, this work is only focused on deep Q-learning. 
 	% \item This work considers the control of one vehicle and not multiple agents. 
 	% \item A reward function is defined for each approach. 
 	
@@ -88,23 +120,25 @@ The following aspects of creating a tactical decision-making agent for autonomou
 
 \section{Contributions}
 \label{sec:contributions}
-\todo{Rewrite once thesis is in a better state}
+% \todo{Rewrite once thesis is in a better state}
 The main contributions of this thesis are:
 \begin{enumerate}
-	\item a \gls{pomdp} formulation for driving in intersections. 
+	\item A deep Q-learning approach for creating a decision-making agent navigating intersection that considers the intentions of other drivers. 
+	% \item A \gls{pomdp} formulation for driving in intersections. 
 	\item A neural network architecture that is invariant to permutations of the order of which surrounding traffic participants are observed, which speeds up training and improves the quality of the trained agent. 
-	\item REWRITE: A belief state representation using a particle filter and a comparison and analysis of different algorithms that utilize the belief state. 
-	\item Two approached to solving a \gls{pomdp} with hidden intention state. LSTM layer and belief state. 
+	\item A belief state representation of driver intentions using a particle filter.
+	\item A belief state \gls{dqn} method that can adjust the aggressiveness of the policy using one threshold parameter.
+	% \item Two approached to solving a \gls{pomdp} with hidden intention state. LSTM layer and belief state. 
 	% \item General state space representation that is invariat to permutations of the intersection design. 
-	\item Extension of \gls{rl} methods that provide an estimate of the epistemic uncertainty and use it to create a confidence criterion that can identify situations with high uncertainty. 
-	\item Method for choosing between a set of fully trained policies. 
-
+	\item Extension of \gls{rl} methods that provide an uncertainty estimate of the proposed decisions and use it to create a confidence criterion that can identify situations with high uncertainty. 
+	% \item Method for choosing between a set of fully trained policies. 
+	\item A transfer learning method that is able to identify the which \gls{mdp} the agent is in, out of a set of \gls{mdp}s.
 \end{enumerate}
 
 
 \section{Thesis outline}
-\todo{rewrite when thesis is more finished}
-The outline of the thesis is as follows: in Chapter \ref{ch:related_work} other research in the same field is presented. In Chapter \ref{ch:background} introduce the mathematical framework \gls{mdp} and \gls{pomdp} with a brief theory of \gls{rl}. 
-Chapter \ref{ch:modeling_intersection} is where the problem is formulated by defining the components of the \gls{pomdp}. Results from using deep Q-learning to solve the \gls{pomdp} is presented and later combined with a \gls{mpc} to improve the actions. Later in Chapter \ref{ch:uncertainty} two approaches to handle the uncertainty is presented. First the uncertainty in the decisions from the \gls{rl} algorithm and then an empirical study of how well a \gls{dqn} can handle uncertainty of others driving intentions. Chapter \ref{ch:generalize} present an approach to generalize over different \gls{mdp}s more specifically policies learned from different transfer functions. 
-
+% \todo{rewrite when thesis is more finished}
+The outline of the thesis is as follows: in Chapter \ref{ch:related_work} other research in the same field is presented. In Chapter \ref{ch:background} introduce the mathematical framework \gls{mdp} and \gls{pomdp} with a brief theory of \gls{rl}, deep Q-learning and the \gls{idm}. 
+Chapter \ref{ch:modeling_intersection} is where the problem is formulated by defining the components of the \gls{pomdp}. Results from using deep Q-learning to solve the \gls{pomdp} is presented and later combined with a \gls{mpc} to improve the actions. Later in Chapter \ref{ch:uncertainty} two approaches to handle the uncertainty is presented. First the uncertainty in the decisions from the \gls{rl} algorithm and then an empirical study of how well a \gls{dqn} can handle uncertainty of others driving intentions. Chapter \ref{ch:generalize} present an approach to generalize over different \gls{mdp}s more specifically policies learned from different transfer functions. Finally, Chapter \ref{ch:conclusion}provides some concluding remarks. 
+% \todo{add discussion, conclusions and included papers}
 

@@ -26,7 +26,7 @@ Self driving cars is a fast advancing field with Advanced Driver-Assistance Syst
 Many advancements aim to bring self driving Level 4 to the market by trying to imitate human drivers \cite{Bansal2018ChauffeurNet:Worst} or predicting what other drivers in traffic are planning to do \cite{Zyner2017LongPrediction}.
 
 Previous research \cite{Tram2018} showed that reinforcement learning (RL) can be used to learn a negotiation behavior between cars without vehicle to vehicle communication when driving in an intersection. The method found a policy that learned to drive through an intersection, with crossing traffic, where other vehicles have different intentions and avoided collision. The previous method could use the same algorithm, but trained on different type of intersections and still find a general policy that would get to the other side of the intersection while avoiding collision. 
-By modeling the decision process as a partially observable Markov decision process, uncertainty in the environment or sensing can be accounted for \cite{BrechtelProbabilisticPOMDPs} and still be safe \cite{BoutonReinforcementDriving}. 
+By modeling the decision process as a partially observable Markov decision process, uncertainty in the environment or sensing can be accounted for \cite{Brechtel2014} and still be safe \cite{BoutonReinforcementDriving}. 
 
 Because the decision policy is separated from the control, high level decision making can focus on the task, when to drive, while the low level control that handles the comfort of passengers in the car by generating a smooth acceleration profile. Previous work showed how this worked for intersections with a single crossing point, where Short Term Goal (STG) actions could choose one car to follow. This gives the RL policy a flexibility to choose actions that can safely transverse through the intersection by switching between different STG. %However, every time the policy chooses a new action it will generate a new acceleration profile that may generate jerk and discomfort for the passenger in the self driving car. 
 
@@ -40,7 +40,7 @@ Because the decision policy is separated from the control, high level decision m
 \end{figure}
 
 %In this paper, we use reinforcement learning in combination with a Model Predictive Controller (MPC). 
-A simple controller holds well when intersection crossing points are far away from each other, but when there are several crossing points in close succession, a simple controller would have a hard time handling it. In this paper, we instead propose using MPC that can consider multiple vehicles at the same time and generate an optimal trajectory. In contrast to \cite{hult}, where they prove stability and recursive feasibility using an MPC approach, and assuming that agents can cooperate, we restrict ourselves to non-cooperative scenarios. 
+A simple controller holds well when intersection crossing points are far away from each other, but when there are several crossing points in close succession, a simple controller would have a hard time handling it. In this paper, we instead propose using MPC that can consider multiple vehicles at the same time and generate an optimal trajectory. In contrast to \cite{hult2018}, where they prove stability and recursive feasibility using an MPC approach, and assuming that agents can cooperate, we restrict ourselves to non-cooperative scenarios. 
 The MPC is used to plan trajectories around other vehicles using available predictions from other vehicles, and in the worst case, use the prediction as early detection whenever a dangerous situation, e.g., a collision, may appear. 
 
 Applying MPC directly to the problem, could lead to a growing complexity with the number of vehicles in the intersection, e.g., which vehicle do we yield for and which vehicle do we drive in front. Therefore, we propose to separate the problem into two parts: the first being a high-level decision maker, which structures the problem, and the second being a low level planner, which optimizes a trajectory given the traffic configuration. 
@@ -204,7 +204,6 @@ There are three different intention agents for crossing traffic with predetermin
 \end{figure}
 \label{sec:q-learning}
 The deep Q-network is structured as a three layer neural network with shared weights and a Long Short-Term Memory based on previous work \cite{Tram2018} and shown in Fig. \ref{fig:Network}. The input features $\xi_n$ are composed of observations $o_t$, introduced in section \ref{sec:pomdp} and shown in Fig. \ref{fig:observations}, with up to four observed vehicles: 
-%, our findings showed the importance of sharing the weights for different target vehicles, similar work by Hoel et al. \cite{Hoel} but with a Convolutional Nerual Network and a pooling layer also come to the same conclusion. 
 
 %\vspace{0.3cm}
 \begin{equation}
@@ -224,7 +223,7 @@ Normalization of the input features is done by scaling the features down to valu
 \begin{equation}
 \bm{h}^{(2, i)} = \tanh\left(\bm{W}_2 \bm{h}^{(1, i)} + \bm{b}_2\right).
 \end{equation}
-A similar study for lane changes on a highway confirmed the importance of having equals weights for inputs that describe the state of interchangeable objects \cite{Hoel}. The output of each sub-network is then sent though a fully connecting layer 
+A similar study for lane changes on a highway confirmed the importance of having equals weights for inputs that describe the state of interchangeable objects \cite{Hoel2018}. The output of each sub-network is then sent though a fully connecting layer 
 %The output of each sub-network, $\bm{h}^{(2, i)}$ and $\bm h^{(ego)}$,  is fed as input into a third hidden layer $\bm{h}^{(3)}$.
 %The different sub-networks' $\bm{h}^{(2, i)}$ outputs are multiplied with different weights $\bm{W}_{31},\dots,\bm{W}_{34}$ in order to distinguish different cars for different follow car actions. The ego features are also fed into layer 3 with its own weights $\bm{W}^{(ego)}_2$. The neurons in layer $\bm{h}^{(3)}$ combine the inputs by adding them together:
 \begin{equation}

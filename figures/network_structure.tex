@@ -293,9 +293,12 @@
 
 	\beginpgfgraphicnamed{qpf}
 	\begin{tikzpicture}
+		\node[](obs_eq) at (-2.5,2) {$o = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop}, \{\hat{p}^{j}_\mathrm{int}, \hat{v}^j\}_{j=1}^N).$};
 		\node[](obs) at (-5.5,0) {\Large o};
+		\node (ego_state) at (0.1, 1.3) {$\hat{s}_e = (p^\mathrm{ego}_\mathrm{goal},p^\mathrm{ego}_\mathrm{int}, v^\mathrm{ego}, t_\mathrm{stop})$};
 
-		\node (intent_state) at (-3, -5) {Intent from particle};
+		\node (target_state) at (-2.9, -3.5) {$\hat{s}_j = \{p^{j}_\mathrm{int}, v^j, i^j\}_{j=1}^N$};
+		\node (intent_state) at (-3, -4) {Intent from particle};
 
 		\def\pfx{-3};
 		\def\pfy{0};
