@@ -92,7 +92,7 @@ Given the model, $\mdp^t$ and the associated reward function $\mathcal{R}$, the 
 \begin{equation}\label{eq:value_iteration}
     V_{\mdp^t}^{*}(s) = \underset{a}{\max} \, \sum_{s'}\mathcal{T}_{s,s'}^a\Big(\mathcal{R}(s,a)+\gamma V_{\mdp^t}^{*}(s')\Big).
 \end{equation}
-The fixed-point solution to Eq.\ref{eq:value_iteration} is the optimal value function. When the optimal value function has been obtained, one can simply select the action maximising the action-value function. Let $\pol^{t+1}$ be the policy selecting the maximising action for every state, then $\pol^{t+1}$ is the policy the model-based planner will use at time step $t+1$.
+The fixed-point solution to Eq.~\eqref{eq:value_iteration} is the optimal value function. When the optimal value function has been obtained, one can simply select the action maximising the action-value function. Let $\pol^{t+1}$ be the policy selecting the maximising action for every state, then $\pol^{t+1}$ is the policy the model-based planner will use at time step $t+1$.
 
 \noindent\textsc{RiccatiIteration.}
 A LQR-based control system, and thus, the corresponding MDP, is defined by four system matrices~\citep{kalman1960new}: $\mathbf{A}, \mathbf{B}, \mathbf{Q},\mathbf{R}$. The matrices $\mathbf{A, B}$ are associated with the transition model $\bm{s}_{t+1}-\bm{s}_t = \mathbf{A}\bm{s}_t + \mathbf{B}\bm{a}_t$. The matrices $\mathbf{Q, R}$ dictate the quadratic cost (or reward) of a policy $\pol$ under an MDP $\mdp$ is
@@ -100,4 +100,4 @@ A LQR-based control system, and thus, the corresponding MDP, is defined by four 
     V_{\mdp}^\pol = \sum_{t=0}^T \bm{s}_t^\top \mathbf{Q}\bm{s}_t + \bm{a}_t^\top \mathbf{R}\bm{a}_t.
 \end{equation*}
 Optimal policy is identified following~\citep{willems1971least} that states $\bm{a}_t = -\mathbf{K}\bm{s}_t$ at time $t$, where $\mathbf{K}$ is computed using $\mathbf{A}, \mathbf{B}, \mathbf{Q},\mathbf{R}$. %We refer to Appendix~\ref{sec:riccati} for details.
-We refer to Appendix B for details.
+% We refer to Appendix~\ref{sec:riccati} for details.

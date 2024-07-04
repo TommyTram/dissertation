@@ -1,20 +1,32 @@
 % !TEX root=../../Thesis.tex
 \chapter{Concluding remarks and future work}
+
+
 \section{Conclusions}\label{ch:conclusion}
-Looking at the reserach questions we posted in the beginning: 
-\begin{enumerate}
-	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? 
-	\item[\textbf{A1.}]By formulating the problem as a \gls{pomdp} with an unobservable intention state. Deep Q-learning showed potential in developing effective policies. Using short-term goals as actions and methods like IDM or MPC to control these actions for navigating intersections was proven to be effective.
-	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? 
-	\item[\textbf{A2.}] By creating estimate of the uncertainty of the Q-value from a \gls{dqn} a threshold value was able to reduce the number of simulated collisions. Similarly, another threshold  value can be applied to the estimation of the intention state, directly influencing the risk level taken by the driving policy. These approaches leverage uncertainty estimation to make more informed decisions in challenging and dynamic environments.
-	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? 
-	\item[\textbf{A3.}] If we have a set of pretrained \gls{dqn} models, transfer learning can be employed to switch models whenever it is identified that the agent is in an environment it has not been trained on. This allows the agent to adapt more effectively to new and unfamiliar scenarios by leveraging knowledge from previous training experiences.
-\end{enumerate}
+This thesis introduces how RL-based methods can be used to develop a decision-making agent and evaluates their efficacy in learning when to drive across intersections, with a focus on managing the uncertainty of other drivers' intentions. The intersection navigation problem is formulated as a \gls{pomdp}, where observable states include positions and velocities of the vehicles in the scenario, and unobservable states is the intentions of surrounding drivers. 
+In Chapter~\ref{ch:modeling_intersection}, a deep Q-learning approach is introduced to solve the \gls{pomdp}, with short-term goals, as discreet actions, translated into reference points and constraints for a controller. Two controllers are implemented and compared: one using sliding mode and another using \gls{mpc}. The results show that the \gls{dqn} effectively generates a policy for driving across an intersection crossing with dynamic behavior of other traffic participants, and its performance improved when combined with a robust controller like \gls{mpc}.  
+Additionally, the hidden state in the \gls{lstm} layer of the \gls{rl} agent incorporates estimations of driver intentions, which improved the performance of the \gls{rl} agent in dynamic traffic environments.
 
+A significant advantage of RL methods is their scalability to different scenarios through appropriate training. However, a drawback of deep Q-learning methods is the use of neural networks, which provide a black-box solution without indicating any confidence or uncertainty in their decisions. Chapter~\ref{ch:uncertainty} presents two approaches to address the uncertainty: an ensemble method addresses the uncertainty in the output of the DQN, and a belief-based method addresses the uncertainty in the intention estimation that is fed as an input to the DQN. The results demonstrate that accounting for uncertainty can significantly improve the agent's performance, especially in scenarios outside the training set, by avoiding collisions and improving decision-making robustness.
 
+In Chapter~\ref{ch:generalize}, the MLEMTRL algorithm is introduced to address the challenge of deploying \gls{rl} agents in new environments by leveraging knowledge from previously trained models. The approach involves constructing a convex hull of source \gls{mdp}s and using model transfer RL to identify the most relevant model for the target environment. This method is evaluated in various tasks, including a continuous state-action \gls{mdp}s, demonstrating improved learning speed and asymptotic performance.
+The results show that MLEMTRL can construct a new model for an RL agent using a set of source models, provided the target model is sufficiently similar to the source models. This capability can potentially enable the efficient deployment of \gls{ad} agents in new environments, reducing the need for extensive data collection and training specific to each new geographic location.
 
-% 1. RL by itself still has a long way to guarantee safety, but the methods presented in this paper. The uncertainty can be reduced. Safety is better suited for control or formal methods. RL is a great tool for creating policy that can adapt to different driver intentions. 
-% 2. Even with todays advancements in \gls{nn} DQN still has a hard time handling 
+% Looking at the research questions posted in the Chapter \ref{ch:intro}: 
+% \begin{enumerate}
+% 	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles? 
+% 	\item[\textbf{A1.}]By formulating the problem as a \gls{pomdp} with an unobservable intention state. Deep Q-learning showed potential in developing effective policies. Using short-term goals as actions and methods like IDM or MPC to control these actions for navigating intersections was proven to be effective.
+% 	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? 
+% 	\item[\textbf{A2.}] By creating estimate of the uncertainty of the Q-value from a \gls{dqn} a threshold value was able to reduce the number of simulated collisions. Similarly, another threshold  value can be applied to the estimation of the intention state, directly influencing the risk level taken by the driving policy. These approaches leverage uncertainty estimation to make more informed decisions in challenging and dynamic environments.
+% 	\item[\textbf{Q3.}] How do can a \gls{rl} agent handle situations it has not been trained on? 
+% 	\item[\textbf{A3.}] If we have a set of pretrained \gls{dqn} models, transfer learning can be employed to switch models whenever it is identified that the agent is in an environment it has not been trained on. This allows the agent to adapt more effectively to new and unfamiliar scenarios by leveraging knowledge from previous training experiences.
+% \end{enumerate}
+
+Overall, the research presented in this thesis contributes to the advancement of RL techniques for autonomous driving in diverse and dynamic environments. The findings show the critical roles of accurate intention estimation, effective uncertainty management, and the strategic use of transfer learning to build robust and versatile autonomous driving systems. While \Gls{rl} methods alone may still have challenges in guaranteeing safety for autonomous driving, integrating them with \gls{mpc} and other active safety systems can transform \gls{rl} into a powerful tool for creating comfortable and enjoyable rides for the passengers of autonomous vehicles, paving the way for safer and more efficient transportation solutions.
+
+% While \Gls{rl} methods alone may still have challenges in guaranteeing safety for autonomous driving, the research presented in this thesis contributes to the advancement of RL techniques for autonomous driving in diverse and dynamic environments.
+% The findings underscore the importance of accurate intention estimation, effective uncertainty management, and the benefits of leveraging existing knowledge through transfer learning to build robust and versatile autonomous driving systems, paving the way for safer and more efficient transportation solutions.
+
 \section{Future work}
 Future research should focus on transitioning from simulation environments to real-world implementations. While simulations offer a controlled setting for developing and testing algorithms, real-world driving presents unpredictable variables and complexities. Implementing and refining these models in actual driving scenarios will be crucial for validating their effectiveness and reliability. This step will involve rigorous testing, continuous learning, and adaptation to ensure the autonomous systems can handle diverse and dynamic real-world conditions, ultimately moving closer to the widespread adoption of safe and efficient autonomous vehicles.
 

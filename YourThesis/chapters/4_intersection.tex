@@ -16,14 +16,6 @@
 
 Navigating an intersection is a sequential decision-making problem that can be mathematically modeled using a \gls{mdp}, as introduced in Section~\ref{sec:background_mdp}. This thesis focuses on driving through intersections in the presence of other drivers, emphasizing not only to follow traffic rules but also the ability to adapt to the intentions of other drivers. Given that current sensors cannot directly observe other drivers' intentions, a \gls{pomdp} is a more suitable framework for formulating this problem.
 
-% Driving through an intersection is a sequential decision-making problem and can be mathematically formulated using a \gls{mdp}, introduced in Section~\ref{sec:background_mdp}. As mentioned in the introduction, this thesis will focus on driving in intersections together with other drivers and not only follow the traffic rules but also be able to adapt to other drivers intentions. Since the intention of other drivers is not observable with any existing sensors today, \gls{pomdp} is better suited to formulate the problem. 
-
-% Effectively modeling the intersection problem is key for developing an optimal decision-making policy. Although the some details in the \gls{pomdp} may differ between the papers, the general description is the same. Section \ref{sec:pomdp_fomulation} outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
- 
-% \Citet{Shalev2016} raises two concerns when using Machine learning, specially Reinforcement learning, for autonomous driving applications: ensuring functional safety of the Driving Policy and that the Markov Decision Process model is problematic, because of unpredictable behavior of other drivers.
-% In the real world, intentions of other drivers are not always deterministic or predefined. Depending on their intention, different actions can be chosen to give the most comfortable and safe passage through an intersection.
-% They also noted that in the context of autonomous driving, the dynamics of vehicles is Markovian but the behavior of other road users may not necessarily be Markovian.
-
 \section{POMDP formulation}
 \label{sec:pomdp_fomulation}
 Effectively modeling the intersection problem is key for developing an optimal decision-making policy. While specific details of the \gls{pomdp} may vary between different studies, the general description remains consistent. This section outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
@@ -86,7 +78,6 @@ Instead of using a Cartesian coordinate system to describe the position $p_\math
 The velocity of ego $v_\mathrm{ego}$ and all other the traffic participants $v_n$ is also necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants $\zeta_n$. As mentioned in Section \ref{sec:intro_intersections}, $\zeta_n$ encapsules information such as stop sign, traffic light or even inattention in to one state. 
 \paperBelief \ shows a comparison between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
 \paperLSTM \ used a \gls{lstm} network architecture to implicitly predict $\zeta$. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
-% \todo{add results for with and without $\zeta$ and DRQN and DQN}
 
 \subsection{Action space}
 \label{sec:pomdp_actionspace}
@@ -95,6 +86,7 @@ One limitation of deep Q-learning is the requirement for a discrete action space
 These short-term goals represent high-level objectives, such as driving through an intersection (take way), stopping at the start of an intersection (yield) or drive behind a specific car (follow car~$n$). Each high-level action is translated into a set of parameters that are input into a sliding mode controller in \paperLSTM \ and a \gls{mpc} in \paperMPC, which then generates the appropriate acceleration to control the ego car.
 
 \subsection{Transition model}
+\label{sec:pomdp_transistionmodel}
 The transition model is initially unknown, and \gls{rl} is employed to learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process. For more details on the simulation environment see Chapter~\ref{ch:simulation_env}.
 
 
@@ -232,7 +224,7 @@ For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$
 	\label{fig:zones}
 \end{figure}
 
-Observing the behavior of a fully trained agent from \paperLSTM \ and \paperMPC \ provides the insight that the path of the ego vehicle can be segmented into four zones, illuatrated in Figure~\ref{fig:zones}. Starting from the right, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
+Observing the behavior of a fully trained agent from \paperLSTM \ and \paperMPC \ provides the insight that the path of the ego vehicle can be segmented into four zones, illustrated in Figure~\ref{fig:zones}. Starting from the right, Zone 0 represents the 'safe zone,' where the ego vehicle is out of danger and can resume nominal driving. Zone 1 is the 'conflict zone,' where a collision with another vehicle is possible. Zone 2, the 'critical decision zone,' is the final opportunity for the vehicle to either stop or proceed through the intersection. The size of zone 2 is determined by the minimum distance required for the vehicle to come to a complete stop before entering the conflict zone, ensuring sufficient time for safe decision-making. Lastly, Zone 3, the 'information gathering zone,' is situated furthest from the intersection. Here, the agent can observe how other vehicles behave over time to estimate their intentions.
 
 The goal is to reach Zone 0. To achieve this, the agent aims to minimize the time spent in Zone 1 if there is a chance of intersection with another car. Our actions are formulated as short-term goals, designed for comfortable use with lower acceleration rates. The size of Zone 2 depends on the vehicle's current speed, which is influenced by its behavior in Zone 3.
 

@@ -104,7 +104,7 @@ The ensemble \gls{rpf} method outperforms the \gls{dqn} method when the agents a
 	\label{fig:thesis_RPFreturnAndSuccess}
 \end{figure}
 
-The average return and the average proportion of episodes where the ego vehicle reached the goal, as a function of number of training steps, is shown in Figure~\ref{fig:thesis_RPFreturnAndSuccess}, for the test episodes. The figure also shows the standard deviation for $5$ random seeds, which generates different sets of initial parameters of the networks and different training episodes, whereas the test episodes are kept fixed. The results show that the ensemble RPF method both learns faster, yields a higher return, and causes less collisions than the \gls{dqn} method. %A few collisions still remain, but how they can be mitigated is shown below.
+The average return and the average proportion of episodes where the ego vehicle reached the goal, as a function of number of training steps, is shown in Figure~\ref{fig:thesis_RPFreturnAndSuccess}, for the test episodes. The figure also shows the standard deviation for $5$ random seeds, which generates different sets of initial parameters of the networks and different training episodes, whereas the test episodes are kept fixed. The results show that the ensemble RPF method both learns faster, yields a higher return, and causes fewer collisions than the \gls{dqn} method. %A few collisions still remain, but how they can be mitigated is shown below.
 %
 
 \begin{figure}[h]
@@ -254,7 +254,7 @@ Because QMDP-IE uses the network from the Oracle DQN, it performs well when the 
 This suggests that QID is slightly better at taking passive actions in zone 3, which can change the intention distribution and reduce the uncertainty for the next state. This makes QID more effective at handling scenarios outside the training set than QMDP-IE.
 % QMDP also has the highest safe stop and deadlock rate at \SI{10.2}{\percent} and \SI{4.15}{\percent}, making it the most passive policy. 
 
-Overall, QID proves to be better than QMDP-IE in scenarios outside of the training set, offering more robustness to untrained behaviors. Meanwhile, QMDP-IE provides a structured approach with moderate collision rates and higher computational efficiency, performing well when the intentions are within the training set.
+Overall, QID proves to be better than QMDP-IE in scenarios outside the training set, offering more robustness to untrained behaviors. Meanwhile, QMDP-IE provides a structured approach with moderate collision rates and higher computational efficiency, performing well when the intentions are within the training set.
 
 \begin{table}
 	\caption{Results with an overtake agent}

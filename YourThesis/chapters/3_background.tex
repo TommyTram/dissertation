@@ -35,7 +35,7 @@ Sometimes the agent does not have direct access to the entire state of the envir
 
 For a \gls{pomdp}, the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$. The agent then receives an observation $o$ related to $s'$ and $a$ according to the observation model $O$. 
 
-In a \gls{pomdp}, after the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$, the agent receives an observation $o$. This observation $o$ is drawn according to the observation model $O(o|s',a)$, which specifies the porbability of observing the given new state $s'$ and taken action $a$.
+In a \gls{pomdp}, after the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$, the agent receives an observation $o$. This observation $o$ is drawn according to the observation model $O(o|s',a)$, which specifies the probability of observing the given new state $s'$ and taken action $a$.
 
 The observable states in this work are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} formulates the \gls{pomdp} studied in this work. 
 
