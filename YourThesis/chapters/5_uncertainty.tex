@@ -14,7 +14,7 @@ To demonstrate the effect of accounting for uncertainty, the results include two
 \section{Estimating the uncertainty of the Q-value}
 \label{ch:ensamble}
 To estimate the uncertainty in the $Q$-value of the trained agent, \paperEnsamble \ employed statistical bootstrapping to train an ensemble of neural networks on different subsets of the available experience. This ensemble provides a distribution over the estimated $Q$-values for any input. A better Bayesian posterior is obtained by adding different \gls{rpf} to each ensemble member~\cite{Osband2018}.
-The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with the same architecture, i.e.,
+The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with the same architecture but different values on the weights  $\theta_k$ and $\hat{\theta}_k$, i.e.,
 %
 \begin{align}
 	Q_k(s,a) = f(s,a;\theta_k) + \beta p(s,a;\hat{\theta}_k).
@@ -151,7 +151,7 @@ The proportion of collisions as a function of set speed of the surrounding vehic
 % Additionally, violations of the criterion increase as the speed of the surrounding vehicles increases, indicating that the scenarios are moving further from the training distribution.
 
 
-\section{Estimating the uncertainty of the input}
+\section{Estimating the uncertainty of the intention state}
 The ensemble RPF agent avoided collisions by not taking a bad action in zone 2, by accounting for the uncertainty of the Q-value estimate. However, can further reductions in collisions be achieved by accounting for uncertainty in the input? 
 In \paperBelief, the uncertainty regarding the intention state $\zeta_n$ is managed using a belief state represented as a probability distribution over possible states. This distribution, referred to as intention distributions, is generated using a particle filter. Based on these distributions, two methods were proposed: QMDP-IE and QID.
 

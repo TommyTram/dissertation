@@ -24,14 +24,122 @@ While these accidents were mainly caused by driver inattention or reckless drivi
 \section{Autonomous Driving Levels}
 \label{sec:intro_ad}
 % \tommy{I would start with one or two sentences introducing the problem. Saying that the thesis deals with intersections, and that's interesting because this and that (maybe super challenging, accidents, interactive situations, not sure what's best to mention). And the go into the details of how you define intersection, intention, and scenario.}
-When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. The first level L0 is a vehicle with no autonomy, whereas a fully \gls{av} that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like lane centering or adaptive cruise control are classified as L1, while the Volvo Pilot Assist and Tesla Autopilot that provide both steering and acceleration/braking are classified as level 2. The main criteria for L2 systems is that the driver is in control and only supported by the system. This puts a requirement on the driver to always supervise the vehicle and take over when needed to ensure safety. For L3 and higher the responsibility of driving is shifted to the system. At L3, the driver still has to take control over the vehicle but at only the request of the system, and at L4 and L5 the autonomous driving features no longer require the driver to take over. Finally, the main difference between L4 and L5 is the capability of driving anywhere, under all conditions. Examples of L4 are robot taxis developed by Waymo, Zoox, cruise and Toyota which only operate in a specified area or city. 
+When talking about autonomous driving, it is first important to specify which level of autonomy that is being discussed. The Society of Automotive Engineers has classified these different levels of autonomy ranging from zero to five~\cite{SAE2021}, also referred to as L0-L5. The first level L0 is a vehicle with no autonomy, whereas a fully \gls{av} that can operate in any environment and without any human supervision is defined as L5. Popular \gls{adas} functions today, like lane centering or adaptive cruise control are classified as L1, while the Volvo Pilot Assist and Tesla Autopilot that provide both steering and acceleration/braking are classified as level 2. The main criteria for L2 systems is that the driver is in control and only supported by the system. 
+This requires the driver to always supervise the vehicle and take over when needed to ensure safety. For L3 and higher, the responsibility of driving shifts to the system. At L3, the driver still has to take control over the vehicle, but only when the systems request it. At L4 and L5, the autonomous driving features no longer require the driver to take over. The main difference between L4 and L5 is the capability of driving anywhere under all conditions. Examples of L4 are robot taxis developed by Waymo, Zoox, Cruise and Toyota which only operate in a specified area or city. 
 
 % Another way to categorize these autonomy levels is: supervised and unsupervised driving. Supervised driving include L0-L3 where the driver has to supervise the system and take control when necessary, while unsupervised 
 
-The \gls{av} making the decisions in this work are referred to as the ego vehicle, while other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other \gls{av}s. 
+% The \gls{av} making the decisions in this work are referred to as the ego vehicle, while other traffic participants are assumed to be vehicles driven by other human drivers but could be extended to pedestrians bicyclist and other \gls{av}s. 
 The methods presented in this thesis are aimed at an autonomy level L3-L5. At the highest level the system is expected to handle all aspects of driving within a specific task such as crossing an intersection at any location. 
 
-\include{YourThesis/chapters/intro_intersections.tex}
+
+\section{Intersections, intentions and scenarios}
+\label{sec:intro_intersections}
+% This section aims to clarify the use of the terms' \textit{intersection}, \textit{intention}, and \textit{scenario} within the context of this thesis.
+% When a pedestrian approach a crossing they have been taught at a young age to look at both sides of the road before crossing. The same apply for a human driver approaching an intersection. 
+% When a human driver approach an intersection, it is natural to observe the environment to identify the traffic light, signs and other approaching vehicles. Then assess the situation, who has the right of way? 
+
+% The intention of the other driver can be guided by the 
+% Recently nontraditional intersections are also becoming increasingly popular. The goal of these designs is to reduce the number and/or severity of conflict points by altering the customary vehicular paths at the intersection. In light of the increased focus on and occurrence of these intersection types, it is expected that the application of nontraditional designs will continue to spread.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\begin{tikzpicture}
+			% Crossing
+			\def\crossleftx{-2}
+			\def\crossrightx{2}
+			\def\crosstopy{2}
+			\def\crossboty{-2}
+			\def\roadwidth{0.5}
+
+			\draw (0,0) circle (2pt);
+			\node at (1.2, 0.2) {conflict point};
+			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth, \roadwidth) -- (-\roadwidth, \crosstopy);
+			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth, -\roadwidth) -- (-\roadwidth-\roadwidth, \crossboty);
+			\draw[thick] (\roadwidth, \crosstopy) -- (\roadwidth, \roadwidth) -- (\crossrightx, \roadwidth);
+			\draw[thick] (\roadwidth-\roadwidth, \crossboty) -- (\roadwidth, -\roadwidth) -- (\crossrightx, -\roadwidth);
+
+			% 	cars
+			\node[inner sep=0pt] (ego_car) at (\crossleftx+0.5,0)
+			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+
+			\node[inner sep=0pt] (target_car) at (0,\crosstopy-0.5)
+			{\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+
+			\node[inner sep=0pt] (target_car) at (-.1,-0.8)
+			{\includegraphics[width=.18\textwidth, angle=-110]{figures/target_car_top_down.png}};
+
+
+		\end{tikzpicture}
+		\label{fig:single_intersection}
+		\caption{Single intersection}
+\end{subfigure}%
+	~ 
+	\begin{subfigure}[t]{0.48\columnwidth}
+		\centering
+		\begin{tikzpicture}
+			% Crossing
+			\def\crossleftx{-2.5}
+			\def\crossrightx{2.5}
+			\def\crosstopy{2}
+			\def\crossboty{-2}
+			\def\roadwidth{0.5}
+
+			\draw (-0.5,0) circle (2pt);
+			\draw (0.5,0) circle (2pt);
+			% \node at (0.7, 0.2) {crossing point$^1$};
+			\draw[thick] (\crossleftx, \roadwidth) -- (-\roadwidth-0.5, \roadwidth) -- (-\roadwidth-0.5, \crosstopy);
+			\draw[thick] (\crossleftx, -\roadwidth) -- (-\roadwidth-0.5, -\roadwidth) -- (-\roadwidth-0.5, \crossboty);
+			\draw[thick] (0, \crosstopy) -- (0, \roadwidth);
+			\draw[thick] (0, -\roadwidth) -- (0, \crossboty);
+			\draw[thick] (\roadwidth+0.5, \crosstopy) -- (\roadwidth+0.5, \roadwidth) -- (\crossrightx, \roadwidth);
+			\draw[thick] (\roadwidth+0.5, \crossboty) -- (\roadwidth+0.5, -\roadwidth) -- (\crossrightx, -\roadwidth);
+
+			% 	cars
+			\node[inner sep=0pt] (ego_car) at (\crossleftx+0.5,0)
+			{\includegraphics[width=.18\textwidth, angle=0]{figures/ego_car_top_down.png}};
+
+			\node[inner sep=0pt] (target_car) at (-0.5,\crosstopy-0.5) {\includegraphics[width=.18\textwidth, angle=-90]{figures/target_car_top_down.png}};
+
+			\node[inner sep=0pt] (target_car_2) at (0.5,\crossboty+0.5) {\includegraphics[width=.18\textwidth, angle=90]{figures/target_car_top_down.png}};
+
+		\end{tikzpicture}
+		\label{fig:double_intersection}
+
+		\caption{Double intersection}
+	\end{subfigure}
+
+	\caption{Examples of different intersections}
+	\label{fig:example_intersections}
+\end{figure}
+This section aims to clarify the use of the terms' \textit{intersection}, \textit{intention}, and \textit{scenario} within the context of this thesis.
+An intersection refers to the geometric layout of roads intersecting each other, encompassing elements such as the number of junctions, conflict points, turns, and angles of incidence, as illustrated in Figure~\ref{fig:example_intersections}. 
+Intersections can be categorized as signalized or unsignalized. A signalized intersection is equipped with infrastructure to designate the right-of-way, such as regulatory signs (e.g., STOP or YIELD) or traffic signals, while an unsignalized intersection lacks such features. However, as emphasized in the introduction, human drivers do not always follow these right-of-way rules, which can result in accidents. Therefore, this thesis defines intentions as the anticipated actions of other vehicles in the future, such as stopping or proceeding through the intersection.
+
+\begin{figure}[h]
+	% \mbox{\parbox{\textwidth}{
+	% \centering
+	% % \vspace{0.3cm}
+	% \includegraphics[width=0.6\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
+	% }}
+	\centering
+	\includegraphics[width=0.6\columnwidth]{YourThesis/papers/mpc/figures/velocity_profiles_agents.png}
+
+	\caption{An illustration showing velocity profiles for agents with three distinct intentions. Each agent shares the same initial position and velocity while approaching a common intersection.}
+	\label{fig:intro_intention_profiles}
+	% \vspace{-0.3cm}
+\end{figure}
+
+% Lets assume there are two main intentions, "take way" and "give way". However, it can be hard to distinguish between them, referring to Fig. 1..2.
+
+Assume there are two main intentions: "take way" and "give way" (yield). In Figure \ref{fig:intro_intention_profiles}, three different agents with a starting velocity $12\mathrm{m/s}$ are approaching an intersection. At time $0$s, agents with a give way intention will start to brake. With these two main intentions, other intentions can be derived; for example, a cautious intention can be modeled as a give way agent that changes its intention to take way at 2 seconds. The reason for the change can be that a cautious agent lowers the speed initially to have the possibility to give way, and later speed up only if there is no potential conflict.
+Distinguishing between the 'give way' and 'take way' intentions poses a challenge because even after the initial braking at 0 seconds, it is not certain that the agent will stop until 3 seconds after the initial braking. This uncertainty may be considered too conservative by the person riding the \gls{av}. 
+
+% \tommy{A hypothesis is that the intention of a driver approaching an intersection can be derriverd by its way of driving towards the intersection.}
+If intentions are known, intersections can be treated as unsignalized, as the right-of-way can be inferred from the intentions rather than relying solely on infrastructure. A \gls{rl} approach has the potential to improve driving in situations where it is beneficial to know the intention, such as when an intersection has both a stop sign and a traffic light or when another vehicle disregards traffic rules, like running a red light. By placing an \gls{rl} agent in a simulation environment with different driver intentions, it can infer the necessary information and take the best action based on trail and error. 
+
 
 \section{Research questions}
 \label{sec:research_questions}
@@ -51,14 +159,14 @@ The methods presented in this thesis are aimed at an autonomy level L3-L5. At th
 % \end{enumerate}
 
 This thesis focuses on investigating and evaluating \gls{rl} agents for navigating complex intersection scenarios, with a particular emphasis on managing uncertainty. 
-The intersection navigation problem is formulated as a \gls{pomdp}, where observable states include positions and velocities of vehicles, while unobservable states pertain to the intentions of surrounding drivers. These following research questions are considered:
+The intersection navigation problem is formulated as a \gls{pomdp}, where observable states include positions and velocities of vehicles, while unobservable states pertain to the intentions of surrounding drivers. With this in mind, this thesis aims to answer the following research questions:
 
 \begin{enumerate}
 	\item[\textbf{Q1.}] How can \gls{rl} techniques be used to develop a decision-making agent that effectively navigates intersections without explicitly estimating the intention state of other vehicles?
 \end{enumerate}
 % To answer this, a deep Q-learning approach is employed to solve the POMDP, using short-term goals as actions. These short-term goals are translated into reference points and constraints for a controller. Specifically, Paper A utilizes a sliding mode controller, while Paper B employs \gls{mpc}.
-A deep Q-learning approach is used to solve the \gls{pomdp}, with short-term goal as actions. These short-term goals are translated into references points and constraints for a controller. \paperLSTM \ uses a sliding mode controller, while \paperMPC \ uses a \gls{mpc}.
-To address the challenge of unobservable intentions, the hidden state in the \gls{lstm} layer of the \gls{rl} agent is designed to incorporate estimations of these intentions, crucial for informed decision-making in dynamic traffic environments. 
+A deep Q-learning approach is used to solve the \gls{pomdp}, with short-term goal as actions. These short-term goals are translated into reference points and constraints for a controller. \paperLSTM \ uses a sliding mode controller, while \paperMPC \ uses a \gls{mpc}.
+To address the challenge of unobservable intentions, the hidden state in the \gls{lstm} layer of the \gls{rl} agent is designed to incorporate estimations of these intentions.
 
 \begin{enumerate}
 	\item[\textbf{Q2.}] How can an \gls{rl} agent utilize the uncertainty in its predictions and actions to enhance decision-making in complex environments? 
@@ -73,7 +181,7 @@ Two methods are proposed to handle intention estimation: QMDP-IE and QID. QMDP-I
 \begin{enumerate}
 	\item[\textbf{Q3.}] How can an \gls{rl} agent handle situations it has not been trained on? 
 \end{enumerate}
-A confidence criterion is applied to the uncertainty of the estimated $Q$-values in \paperEnsamble, making actions with high uncertainty invalid and if no action satisfies the confidence criterion a backup action e.g., emergency breaking, can be applied avoiding potential collisions. If the uncertainty measure from \paperEnsamble \ and \paperBelief \ can be used to identify that the agent is in the wrong environment, the transfer \gls{rl} approach from \paperTransfer can be employed to determine which environment out of a set of environments the agent is currently in, or to select the policy that best fits the current situation
+A confidence criterion is applied to the uncertainty of the estimated $Q$-values in \paperEnsamble, making actions with high uncertainty invalid and if no action satisfies the confidence criterion a backup action e.g., emergency breaking, can be applied avoiding potential collisions. If the uncertainty measure from \paperEnsamble \ and \paperBelief \ can be used to identify that the agent is in the wrong environment, the transfer \gls{rl} approach from \paperTransfer \ can be employed to determine which environment out of a set of environments the agent is currently in, or to select the policy that best fits the current situation
 % The developed algorithms are evaluated in both trained and untrained scenarios. Detailed collision analyses are conducted to identify failure points in the agent's decision-making process. The performance of QMDP-IE and QID is compared against baseline algorithms (QMDP and QPF) to assess their effectiveness in reducing collisions and handling untrained scenarios. The results indicate that QID is better at handling scenarios outside the training set by taking passive actions that can alter the intention distribution and reduce uncertainty in subsequent states. Meanwhile, QMDP-IE offers a structured approach with moderate collision rates and higher computational efficiency.
 
 
@@ -132,13 +240,13 @@ The main contributions of this thesis are:
 	% \item General state space representation that is invariat to permutations of the intersection design. 
 	\item Extension of \gls{rl} methods that provide an uncertainty estimate of the proposed decisions and use it to create a confidence criterion that can identify situations with high uncertainty. 
 	% \item Method for choosing between a set of fully trained policies. 
-	\item A transfer learning method that is able to identify the which \gls{mdp} the agent is in from a set of \gls{mdp}s.
+	\item A transfer learning method that is able to identify which \gls{mdp} the agent is in from a set of \gls{mdp}s.
 \end{enumerate}
 
 
 \section{Thesis outline}
 % \todo{rewrite when thesis is more finished}
-The outline of the thesis is as follows: in Chapter \ref{ch:related_work} other research in the same field is presented. In Chapter \ref{ch:background} introduce the mathematical framework \gls{mdp} and \gls{pomdp} with a brief theory of \gls{rl}, deep Q-learning and the \gls{idm}. 
-Chapter \ref{ch:modeling_intersection} is where the problem is formulated by defining the components of the \gls{pomdp}. Results from using deep Q-learning to solve the \gls{pomdp} is presented and later combined with a \gls{mpc} to improve the actions. Later in Chapter \ref{ch:uncertainty} two approaches to handle the uncertainty is presented. First the uncertainty in the decisions from the \gls{rl} algorithm and then an empirical study of how well a \gls{dqn} can handle uncertainty of others driving intentions. Chapter \ref{ch:generalize} present an approach to generalize over different \gls{mdp}s more specifically policies learned from different transfer functions. Finally, Chapter \ref{ch:conclusion}provides some concluding remarks. 
+The outline of the thesis is as follows: in Chapter \ref{ch:related_work} other research in the same field is presented. Chapter \ref{ch:background} introduce the mathematical framework \gls{mdp} and \gls{pomdp} with a brief theory of \gls{rl}, deep Q-learning and the \gls{idm}. 
+Chapter \ref{ch:modeling_intersection} is where the problem is formulated by defining the components of the \gls{pomdp}. Results from using deep Q-learning to solve the \gls{pomdp} is presented and later combined with an \gls{mpc} to improve the actions. Later in Chapter \ref{ch:uncertainty} two approaches to handle the uncertainty is presented. First the uncertainty in the decisions from the \gls{rl} algorithm and then an empirical study of how well a \gls{dqn} can handle uncertainty of others driving intentions. Chapter \ref{ch:generalize} present an approach to generalize over different \gls{mdp}s more specifically policies learned from different transfer functions. Finally, Chapter \ref{ch:conclusion_fw} provides some concluding remarks. 
 % \todo{add discussion, conclusions and included papers}
 

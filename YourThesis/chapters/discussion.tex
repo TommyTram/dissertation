@@ -4,7 +4,7 @@ Chapter 4, 5 and 6 introduce to create an \gls{rl}
 
 \section{Guaranteeing safety}
 \label{sec:system_architecture}
-Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety \cite{tbd} in the same way e.g., a \gls{mpc} can. That is why this section will clarify where the work in this thesis would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
+Safety is the most important factor of a \gls{ad} system, but since \gls{rl} is a data driven approach it is very difficult to guarantee safety in the same way e.g., a \gls{mpc} can. Safety validation in a data driven approach can be very costly as it is usually done by driving many miles and showing statistical confidence in the safety metrics~\cite{koopman2016,asljung2017}, e.g., number of interventions. That is why this section will clarify where the work in this thesis would fit in by first defining a system architecture for \gls{ad}, its modules and a short summary of the ISO 26262 standard. Then, place itself within the system and motivate how safety can be guarantied. 
 
 The architecture of an autonomous driving system can be divided into perception, planning and control~\cite{Schwarting2018,Kortenkamp2008}.
 The perception module is responsible for sensing and mapping the environment with the use of sensors such as LIDARs, cameras, radars etc. The raw data from the sensors are then processed though various sensor fusion techniques to generate a representation of the environment, e.g., position, velocity of other traffic participants while also describing the road such as width and distance to the next intersection. This information is then used by the planner to create a driving strategy of how to transverse through the world. However, the information from the sensors are often noisy, with false positives and false negatives making it difficult for the planner.
@@ -77,6 +77,11 @@ Although safety is the most important requirement for enabling autonomous drivin
 
 % \section{Simulation and real world}
 % Bridging the gap between simulation and real world. Ever evolving driving styles. Building trust. 
+% Public trust is essential for the widespread adoption of AVs. Building this trust requires addressing concerns about safety, reliability, and the overall impact of AVs on society.
+% Transparency and Communication: Providing clear and transparent information about how AV systems work, their safety features, and their limitations can help in building public trust. This includes communicating the results of safety tests and real-world performance data.
+% Regulatory Compliance: Ensuring that AVs meet or exceed regulatory standards for safety and performance is crucial. Collaborating with regulatory bodies to establish and adhere to stringent safety protocols can reassure the public.
+% Demonstrations and Pilot Programs: Conducting public demonstrations and pilot programs can help in showcasing the capabilities and safety of AVs. Allowing people to experience AVs firsthand can alleviate fears and misconceptions.
+
 
 % \section{scalability}
 % One big model versus small models. Sovling the general problem of driving vs, special cases. 

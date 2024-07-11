@@ -1,8 +1,11 @@
 % !TEX root=../../Thesis.tex
 \chapter{Concluding remarks and future work}
+\label{ch:conclusion_fw}
+% This chapter summarizes the key findings and contributions of the research on RL-based decision-making agents for autonomous driving presented in this thesis. It highlights the advancements made in managing the uncertainty of other drivers' intentions, enhancing intersection navigation using deep Q-learning, and improving overall driving safety and efficiency. Additionally, this chapter outlines future research directions, emphasizing the need for real-world implementation and the integration of advanced technologies to further refine and validate autonomous driving systems in diverse and dynamic environments.
+% % , such as language prediction models and driver monitoring systems, to further refine and validate autonomous driving systems in diverse and dynamic environments.
 
-
-\section{Conclusions}\label{ch:conclusion}
+% \section{Conclusions}
+% \label{ch:conclusion}
 This thesis introduces how RL-based methods can be used to develop a decision-making agent and evaluates their efficacy in learning when to drive across intersections, with a focus on managing the uncertainty of other drivers' intentions. The intersection navigation problem is formulated as a \gls{pomdp}, where observable states include positions and velocities of the vehicles in the scenario, and unobservable states is the intentions of surrounding drivers. 
 In Chapter~\ref{ch:modeling_intersection}, a deep Q-learning approach is introduced to solve the \gls{pomdp}, with short-term goals, as discreet actions, translated into reference points and constraints for a controller. Two controllers are implemented and compared: one using sliding mode and another using \gls{mpc}. The results show that the \gls{dqn} effectively generates a policy for driving across an intersection crossing with dynamic behavior of other traffic participants, and its performance improved when combined with a robust controller like \gls{mpc}.  
 Additionally, the hidden state in the \gls{lstm} layer of the \gls{rl} agent incorporates estimations of driver intentions, which improved the performance of the \gls{rl} agent in dynamic traffic environments.

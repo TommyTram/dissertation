@@ -1,20 +1,20 @@
 % !TEX root=../../Thesis.tex
 \chapter{Technical background}\label{ch:background}
-This chapter briefly introduce the \gls{mdp} framework, its extension \gls{pomdp} and reinforcement learning. A more comprehensive overview of \gls{pomdp}s and \gls{rl} is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based. The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
+This chapter briefly introduces the \gls{mdp} framework and its extensions: \gls{pomdp} and \gls{rl}. A more comprehensive overview of \gls{pomdp}s and \gls{rl} is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based. The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
 
 \section{Markov decision process}\label{sec:background_mdp}
-A \gls{mdp} is a mathematical framework for modeling discrete time sequential decision making problems. It involves an agent making decisions in an environment evolving over time according to a stochastic process. The state of the environment contains all the information necessary about the agent and environment at a given time to be able to transition to any given state. This property is referred to as the Markov property. 
+A \gls{mdp} is a mathematical framework for modeling discrete time sequential decision-making problems. It involves an agent making decisions in an environment evolving over time according to a stochastic process. The state of the environment contains all the information necessary about the agent and environment at a given time to be able to transition to any given state. This property is referred to as the Markov property. 
 
-The \gls{mdp} is formally defines as the tuple $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$, described by the following list~\cite{Kochenderfer2015}:
+The \gls{mdp} is formally defined as the tuple $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$, described by the following list~\cite{Kochenderfer2015}:
 \begin{itemize}
     \item The state space $\mathcal{S}$ represents the set of all possible states of the environment. This set could consist of both discrete and continuous states.
     \item The action space $\mathcal{A}$ represents the set of all possible actions the agent can take. The action space can  consist of both discrete and continuous actions. Since this thesis focuses on high-level decision-making, only discrete actions are considered.
     \item The state transition model $T(s' \mid s,a)$ describes the probability $\Pr(s' \mid s,a)$ that the system transitions to the next state $s' \in \mathcal{S}$ from state $s \in \mathcal{S}$ when action $a \in \mathcal{A}$ is taken.
-    \item The reward function $R(s,a)$ returns a scalar reward $r$ for each action $a$ an agent takes in a given state $s$. The design of the reward function should reflect on the overall objective that the agent should maximize.
+    \item The reward function $R(s,a)$ returns a scalar reward $r$ for each action $a$ an agent takes in a given state $s$. The design of the reward function should reflect the overall objective that the agent should maximize.
     \item The discount factor $\gamma \in [0,1)$ is a scalar that discounts the value of future rewards. The discount factor $\gamma$ will affect the results of the optimization problem. A discount factor set close to $0$ will make immediate rewards more important while a $\gamma$ closer to $1$ would give some weight to expected future reward as well. 
 \end{itemize}
 
-A policy $\pi$ is defined as the mapping from state $s$ to action $a$ and the goal of the agent is to take a sequence of actions that maximize the accumulated reward $r$. The value of being in a state while following a policy is described by the value function
+A policy $\pi$ is defined as the mapping from state $s$ to action $a$ and the goal of the agent is to take a sequence of actions that maximizes the accumulated reward $r$. The value of being in a state while following a policy is described by the value function
 \begin{align}
     V^\pi(s) = \mathbb{E} \left[ \sum_{k=0}^\infty \gamma^k R(s_t, a_t) | s_0 = s, \pi \right].
 \end{align}
@@ -27,29 +27,46 @@ The optimal value function $V^*$ is unique and follows the Bellman equation:
 From the bellman equation one can deduce a state-action value function $Q(s,a)$ that satisfies $V^*(s)=\max_a Q(s,a)$. Given this Q function, a policy can be derived as $\pi(s) = \argmax_a Q(s,a)$. 
 
 \subsection{Partially observable Markov decision process}\label{sec:background_pomdp}
-Sometimes the agent does not have direct access to the entire state of the environment. In these cases, it is more common to use a \gls{pomdp}, which is an extension to the \gls{mdp}. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but a \gls{pomdp} has two additional elements: 
+Sometimes the agent does not have direct access to the entire state of the environment. In these cases, it is more common to model the problem as a \gls{pomdp}, which is an extension to the \gls{mdp}. A \gls{pomdp} is defined by the tuple $(\mathcal{S},\mathcal{A},\mathcal{O},T,O,R,\gamma)$, where the state space, action space, transition model, reward and discount factor is the same as the \gls{mdp}, but a \gls{pomdp} has two additional elements: 
 \begin{itemize}
     \item The observation space $\mathcal{O}$, which represents all possible observations that the agent can receive. This can be both discrete and continuous.
     \item The observation model $O(o|s',a)$, which describes the probability of observing $o \in \mathcal{O}$ in a given state $s'$ after taking an action $a$: $O(o,s',a)=\Pr(o|s',a)$.
 \end{itemize}
 
-For a \gls{pomdp}, the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$. The agent then receives an observation $o$ related to $s'$ and $a$ according to the observation model $O$. 
+In a \gls{pomdp}, the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$. The agent then receives an observation $o$ related to $s'$ and $a$ according to the observation model $O$. After the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$, the agent receives an observation $o$. This observation $o$ is drawn according to the observation model $O(o|s',a)$, which specifies the probability of observing the given new state $s'$ and taken action $a$.
 
-In a \gls{pomdp}, after the agent takes an action $a$ from a given state $s$ and the environment transitions to the next state $s'$ according to the transition model $T$, the agent receives an observation $o$. This observation $o$ is drawn according to the observation model $O(o|s',a)$, which specifies the probability of observing the given new state $s'$ and taken action $a$.
+Since the state is not observable, policies in a \gls{pomdp} are no longer described by mapping from states to actions. Instead, the agent must reason about the history of observations and actions. This history can sometimes be summarized in a statistic referred to as a belief state (or belief). A belief state $b$ is a probability distribution such that
+\begin{equation}
+b(s) = \Pr(s \mid o_{1:t})
+\label{eq:belief_state}
+\end{equation}
+is the probability of being in state $s$ at time $t$, given observations $o_{1:t}:=\{o_1,o_2,...,o_t\}$ up to time $t$. 
+At each time step $t$, the agent updates its belief using a Bayesian filtering approach given the previous belief and the current observation as follows:
+\begin{equation}\label{eq:belief_state2}
+    b'(s') \propto O(o \mid s', a) \int_{s \in S}T(s' \mid s,a)b(s),
+\end{equation}
 
-The observable states in this work are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} formulates the \gls{pomdp} studied in this work. 
+where $b'$ is the updated belief state after taking action $a$ and receiving observation $o$. By summarizing all relevant information into the current belief state, a \gls{pomdp} also satisfy the Markov property~\cite[Ch. 17]{Sutton2018}, ensuring that future states depend only on the current belief state and not on the entire history of actions and observations. This approximation is referred to as a $k$-Markov approximation, where $k$ defines the length of the included history. With a sufficiently long history, the Markov property is assumed to approximately hold, even in a partially observable environment.
 
-% Because the state is no longer observable, the agent must reason about the history of taken actions and observations. Often, this history can be summarized in a statistic refered to as a belief, or belief state. A belief is a probability distribution over states so that $b: \mathcal{S} \rightarrow [0,1]$ and $\sum_{s} b(s)=1$, or $\int_{s} b(s)=1$ for continuous states. 
+Policies are now described as mappings from beliefs to actions. The optimal belief state value function $V^*(b')$ that satisfies the Bellman equation can be formulated as: 
+\begin{equation}
+    V^*(b)= \max_{a} \left[ R(b, a) + \gamma \sum_{o \in \mathcal{O}} \Pr(o \mid b,a) V^*(b') \right]
+    \label{eq:belief_bellman}
+\end{equation}
+where $b'$ is computed using \eqref{eq:belief_state2}, and $R(b,a)=\int_{s \in \mathcal{S}} b(s)R(s,a)$ is the expected reward in a belief state $b$. Similarly, as in the \gls{mdp} one can deduce a belief-action function $Q(b,a)$ that satisfy $V^*(b)=\max_a Q(b,a)$ and the policy a policy can be derived as $\pi(b) = \argmax_a Q(b,a)$.
+
+The observable states in this work are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} will later formulate the \gls{pomdp} studied in this work.
 
 \section{Reinforcement learning}
 % \todo{rewrite}
 In some problems, the state transition probabilities or the reward function are unknown. These problems can be addressed using reinforcement learning, where the agent learns how to behave by interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. The data available to an RL agent depends on its current policy, necessitating a balance between exploring the environment and exploiting existing knowledge. Moreover, the reward an agent receives might hinge on a crucial decision made earlier, making it essential to attribute rewards to the correct decisions.
 
-RL algorithms are categorized into model-based and model-free approaches~\cite[Ch. 5]{Kochenderfer2015}. In model-based methods, the agent first estimates a representation of the state transition function $T$ and then uses a planning algorithm to find a policy. Conversely, model-free RL algorithms, as the name suggests, do not explicitly construct a model of the environment to determine actions.
+RL algorithms are categorized into two approaches: model-based and model-free~\cite[Ch. 5]{Kochenderfer2015}. In model-based methods, the agent first estimates a representation of the state transition function $T$ and then uses a planning algorithm to find a policy. Conversely, model-free RL algorithms, as the name suggests, do not explicitly construct a model of the environment to determine actions.
 
 Model-free approaches can be further divided into value-based and policy-based techniques. Value-based algorithms, such as $Q$-learning, aim to learn the value of each state, thereby implicitly defining a policy. Policy-based techniques directly search for the optimal policy within the policy space, either through policy gradient methods or gradient-free methods like evolutionary optimization. Hybrid techniques, such as actor-critic methods, combine both policy and value-based approaches.
 
-RL algorithms typically assume that the environment is modeled as a \gls{mdp}, where the agent knows the state of the environment. However, in many practical situations, only partial information about the state of the environment is available, which is modeled within the \gls{pomdp} framework. In such cases, it is common to approximate the state by either the observation or a finite history of observations~\cite[Ch. 17]{Sutton2018}. This approximation is referred to as a $k$-Markov approximation, where $k$ defines the length of the included history. With a sufficiently long history, the Markov property is assumed to approximately hold, even in a partially observable environment.
+RL algorithms typically assume that the environment is modeled as a \gls{mdp}, where the agent knows the state of the environment. However, in many practical situations, only partial information about the state of the environment is available, which is modeled within the \gls{pomdp} framework. In such cases, it is common to approximate the state as a belief $b$. 
+
 
 % In many problems, the state transition probabilities or the reward function are not known. These problems can be solved by reinforcement learning techniques, in which the agent learns how to behave from interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. Compared to supervised learning, reinforcement learning presents some additional challenges. Since the data that are available to an RL-agent depends on its current policy, the agent must balance exploring the environment and exploiting the knowledge it has already gained. Furthermore, a reward that the agent receives may depend on a crucial decision that was taken earlier in time, which makes it important to assign rewards to the correct decisions.
 
@@ -77,9 +94,31 @@ RL algorithms typically assume that the environment is modeled as a \gls{mdp}, w
 
 \subsection{Deep Q-learning}
 \label{ch:q-learning}
-\include{YourThesis/chapters/dqn}
+Q-learning~\cite{Watkins1992} is a model-free and value-based \gls{rl} algorithm, where the objective of the agent is to learn the optimal state-action value function $Q^*(s,a)$. This function is defined as the discounted expected return when taking action $a$ from state $s$ and then following the optimal policy $\pi^*$, i.e.,
+%
+\begin{align}
+     Q^*(s,a) = \max_\pi \mathbb{E} \left[ \sum_{k=0}^\infty \gamma^k R(s_k, a_k) | s_0 = s, a_0 = a, \pi\right].
+\end{align}
+The optimal state-action value function follows the Bellman equation
+\begin{align}
+    Q^*(s,a) = \mathbb{E}_{s' \sim T(s'|s,a)}\left[R(s,a) + \gamma \max_{a'} Q^*(s',a')\right],
+\end{align}
+%
+which recursively defines the $Q$-values of the state-action pairs $(s,a)$. The equation can intuitively be understood by the fact that if $Q^*$ is known, the optimal policy is to select the action $a'$ that maximizes $Q^*(s',a')$.
 
-\subsection{Intelligent Driver Model}
+In the \gls{dqn} algorithm, a \gls{nn} with weights $\theta$ is used as a function approximator of the optimal state-action value function, $Q(s,a;\theta) \approx Q^*(s,a)$~\cite{Mnih2015}. The weights of the network are adjusted to minimize the temporal difference (TD) error in the Bellman equation, typically with some kind of \gls{sgd} algorithm. Mini-batches with size $M$ of experiences, $e=(s,a,r,s')$, are drawn from an experience replay memory, and the loss is calculated as
+%
+\begin{align}
+    L(\theta) = \mathbb{E}_\mathrm{M} \Big[ (r + \gamma \max_{a'} Q(s',a';\theta^-)
+    - Q(s,a;\theta) )^2 \Big].
+    \label{eq:lossDQN}
+\end{align}
+%
+Here, $\theta^-$ represents the \gls{nn} parameters of a target network, which is kept fixed for a number of training steps, in order to stabilize the training process. 
+Several of improvements to this standard form of DQN have been proposed and are compared by Hessel et al.~\cite{Hessel2018}.
+See \paperLSTM \ for the details of the \gls{dqn} implementation in this thesis.
+
+\section{Intelligent Driver Model}
 \label{ch:idm}
 The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
 The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
