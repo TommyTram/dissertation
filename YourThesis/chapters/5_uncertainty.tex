@@ -6,7 +6,7 @@
 % 	\end{center}
 % 	\vspace{12pt}
 
-The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be utilized to create decision-making agents capable of navigating intersections. A significant advantage of RL methods is their scalability to different scenarios through appropriate training. However, a drawback of deep Q-learning methods, is the use of neural networks, which provide a black-box solution without indicating any confidence or uncertainty in their decisions.
+The previous chapter formulated the \gls{pomdp} and introduced how deep Q-learning methods can be utilized to create decision-making agents capable of navigating intersections. A significant advantage of RL methods is their scalability to different scenarios through appropriate training. However, a drawback of deep Q-learning methods, is the use of neural networks, which provide a black-box solution without indicating any confidence or uncertainty in their decisions~\cite{thrun2005probabilistic}.
 
 This chapter presents two approaches to estimating the uncertainty: \paperEnsamble \ addresses the uncertainty in the output of the \gls{dqn}, and \paperBelief \ addresses the uncertainty in the intention estimation that is fed as an input to the \gls{dqn}.
 To demonstrate the effect of accounting for uncertainty, the results include two types of experiments. In the first type, the trained agent is evaluated on scenarios within the training set. In the second type, the agent is evaluated on scenarios outside the training set. Both types of experiments are conducted using the same simulation environment described in Section~\ref{ch:simulation_env}.
@@ -22,7 +22,7 @@ The $Q$-values of each ensemble member $k$ is then calculated as the sum of two 
 Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat{\theta}_k$ of the prior network $p$ are fixed to the randomly initialized values. A parameter $\beta$ scales the importance of the networks. With the two networks, the loss function in Eq.~\ref{eq:lossDQN} becomes
 %
 \begin{align}
-	\label{eq:loss_boot}
+	\label{eq:thesis_loss_boot}
 	L(\theta_k) = \mathbb{E}_M \Big[ & (r + \gamma \max_{a'} (f_{\theta^-_k}+\beta p_{\hat{\theta}_k})(s',a') \nonumber \\
 	& - (f_{\theta_k}+ \beta p_{\hat{\theta}_k})(s,a) )^2 \Big].
 \end{align} 
@@ -31,7 +31,7 @@ Here, the weights $\theta_k$ of network $f$ are trainable, and the weights $\hat
 % The basic idea is to train an ensemble of neural network on different subsets of the available experience. The ensemble will then provide a distribution of $Q$-values, which can be used to estimate the variance. Osband et al. extended the ensemble method by adding a \gls{rpf} to each ensemble member, which gives a better Bayesian posterior~\cite{Osband2018}. The $Q$-values of each ensemble member $k$ is then calculated as the sum of two neural networks, $f$ and $p$, with equal architecture, i.e.,
 %
 
-The training process of an ensamble \gls{rpf} is described by Algorithm~\ref{alg:ensamble_training}. 
+The training process of an ensemble \gls{rpf} is described by Algorithm~\ref{alg:ensamble_training}. 
 An ensemble of $K$ \gls{dqn} are first initialized randomly. Each ensemble member is also assigned a separate experience replay memory buffer $m_k$. 
 For each new episode, a random ensemble member $\nu$ is selected and used to take greedy actions throughout the episode, which corresponds to an approximate Thompson sampling approach to the exploration vs.~exploration dilemma.
 Each new experience $e = (s_i, a_i, r_i, s_{i+1})$ is then added to the separate replay buffers $m_k$ with probability $p_\mathrm{add}$. The trainable weights of each ensemble member are then updated by uniformly sample a mini-batch $M$ of experiences and using \gls{sgd}.
@@ -197,7 +197,7 @@ A lower threshold value ($\zeta_\mathrm{threshold}$ $= 0,5$) means the agent rel
 			% \include{tikz/results Intention threshold}
 			\include{YourThesis/papers/belief/tikz/results Intention threshold all}
 			\vspace{-0.8cm}
-			\caption{QMDP-IE success time for different $\zeta_\mathrm{threshold}$ values. Increasing $\zeta_\mathrm{threshold}$ lowers the collision rate while at the same time increasing the safe stop rate and the time it takes to reach a success state.}
+			\caption{The success time and outcome percentages of QMDP-IE for different values of  $\zeta_\mathrm{threshold}$ values. The top figure show that increasing $\zeta_\mathrm{threshold}$ result in slower success times, whereas the lower figure indicates that higher $\zeta_\mathrm{threshold}$ reduces the collision rate while simultaneously increasing the safe stop rate.}
 	\label{fig:thesis_intent_threshold}
 \end{figure}
 In summary, while both QMDP and QMDP-IE rely on the Oracle DQN to predict Q-values, QMDP-IE reduces the complexity of decision-making by focusing on a single estimated intention state rather than a full belief state distribution reducing the computational complexity.

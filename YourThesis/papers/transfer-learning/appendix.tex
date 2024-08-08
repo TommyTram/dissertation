@@ -208,7 +208,6 @@ We investigate two LQR tasks in the \emph{Deepmind Control Suite}~\citep{tassa20
 \noindent\textbf{RL Environments: CartPole.} We also conduct some experiments on the CartPole~\citep{barto1983neuronlike} environment. In this case, we use a continuous control version of it and formulate it as a LQR problem. The environment has a single continuous action and a state space $s \in \mathbb{R}^4$. To create different tasks we vary the environmental parameters of the problem, namely the gravity, mass of cart, mass of pole the length of the pole.
 
 \subsection{Impacts of Realisability}
-% TODO update
 In the experiment depicted in Figure~\ref{fig:time}, we investigate the convergence rate and the jumpstart improvement of the MLEMTRL algorithm on $100$ independent target MDP realisations at six different levels of divergence. The divergence is measured from the centroid of the convex hull to the target MDP. Further, in the topmost row, all of the target MDPs belong to the convex hull of source models. 
 
 

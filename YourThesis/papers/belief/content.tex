@@ -1,12 +1,3 @@
-
-% \newcommand {\matr}[2]{\left[\begin{array}{#1}#2\end{array}\right]}
-% \newcommand{\E}{\mathbb{E}}
-% \newcommand{\tr}{\mathrm{tr}}
-% \newcommand{\x}{{\mathbf{x}}}
-% % \renewcommand{\u}{{\mathbf{u}}}
-% \newcommand{\w}{{\mathbf{w}}}
-% \renewcommand{\r}{{\mathbf{r}}}
-
 % \makeglossaries
 % \sisetup{
 % display-per-mode = fraction,
@@ -185,7 +176,6 @@ and free road term, when there is no leading vehicle
 \label{sec:approach}
 
 In this section, the intersection problem is modeled as a POMDP, and the particle filter used to estimate the belief state and its uncertainty is introduced. Finally, we present the \gls{rl} algorithms that are used to train the agent, controlling the ego vehicle.
-% \jonas{agent används här för första gången. Läsaren måste själv koppla till att det är ego vehicle som menas. Bra ifall detta kopplas ihop på rätt ställa i texten.}
 
 \subsection{POMDP formulation}
 \label{sec:pomdp_formulation}
@@ -229,12 +219,6 @@ consists of the ego vehicle state and the states of the surrounding vehicles. Th
 \subsubsection{Action space, $\mathcal{A}$}
 \label{sec:action}
 The motion of the ego vehicle is controlled by changing the acceleration according to the \gls{idm} \eqref{eq:idm}. This is done by two high-level actions \textit{take way} and \textit{yield}. The take way action sets the acceleration of the ego vehicle $a=a^\mathrm{free}$ according to \eqref{eq:idm_free}. While the yield action calculate $a^\mathrm{yield}$ by using \eqref{eq:idm_int} to slow down and stop at the intersection with $d_n = p_\mathrm{ego}^\mathrm{int}$ and $v_{n-1}=0$. If there is a car in front, the acceleration becomes $a=\min(a^\mathrm{int},a^\mathrm{yield})$. 
-% The take way action follow \ref{eq:idm_free} unless there is a vehicle in front, then \ref{eq:idm_int} applies. For the yield action, \ref{eq:idm_int} is used to stop at the intersection with $s_n = p^{\mathrm{ego}}_{\mathrm{int}}$ and $v_{n-1}=0$.
-%using the \gls{idm}, introduced in \ref{sec:driver_model}. Depending on the action, the \gls{idm} parameters for the target vehicle would be different.
-%\todo{remove idm section and rewrite this?}
-%The take way action uses the free term from \ref{eq:idm_free}, not following any car and just driving through the intersection. 
-%The yield action on the other hand uses the interaction term from \ref{eq:idm_int}, with the variable distance $s$ set to the distance to intersection and the velocity difference $\Delta v_n$ to $0$. 
-%The action then controls the acceleration of the ego vehicle. 
 
 \subsubsection{Transition model, $T$}
 \label{sec:transition_model}
@@ -305,7 +289,6 @@ When the state space is continuous and not well approximated by a linear Gaussia
 % We make use of what \citet{Kochenderfer2015} points out, when the state space is continuous and not well approximated by a linear Gaussian model, as it is in \eqref{eq:state}, a sampling-based approach can be used to perform belief updates, where the belief state is represented as a collection of particles with weights. 
 % \fredriksson{kanske en motivation till storleken på M}
 
-% \jonas{need to be on a higher level}
 The key idea is to initialize a set of particles with a uniform distribution of intention states $\zeta$. Then, predict the future state of these particles, using a prediction model depending on $\zeta$ (\ref{eq:idm_int}, \ref{eq:idm_free}). Finally, sample a new set of particles using the observation and the predicted states. The new set of particles will then have a better distribution of intentions. 
 % The \textbf{key} idea is to initialize $M$ number of particles with an even distribution of intention states $\zeta$. Then predict the future state of all particles by using a different prediction model depending on $\zeta$. The predicted states of the particles are then compared to the observation $o$ and the \textbf{worst matching} are removed while multiplying the \textbf{best matching} particles. The new set of particles will then have a different distribution of intention states that are \textbf{hopefully} closer to the real distribution. 
 
@@ -586,8 +569,6 @@ The main goal of the experiments is to show the performance difference between t
 In this section, we present the experiment setup in three parts. First, we describe how the simulator generates the different traffic scenarios. Second, the design of the reward function with some motivation to its values is described. Finally, we define the common network architecture, shown in Figure \ref{fig:network}.
 %This section describes the experiment setup. We start by describing how the simulator generates the different traffic scenarios, then we define the network architecture and the training procedure.
 
-% \todo{\textbf{Put this somewhere else}: The total number of particles for the system then becomes $MN$ and to prevent this from becoming too large, we assume that it is enough to only handle the closest cars to the intersection and keep $N$ \textbf{relatively} small.}  
-
 \subsection{Simulator setup}
 \label{sec:simulation_setup}
 
@@ -652,7 +633,6 @@ The ego vehicle is spawned last with an initial speed $v_\mathrm{ego}$ and desir
 % The simulator keeps track of the true state $s$ of all objects and an observation model is used to add noise to each observation, according to \eqref{eq:noise_pos} and \eqref{eq:noise_vel}. 
 Every time a vehicle in the perpendicular lane crosses the intersection, they are removed and a new vehicle is spawned at the start of the lane at a random time with new initial values $p_n^0, v_n^0, v^\mathrm{desired}_n$ and intention $\zeta_n$. 
 
-% \todo{insert an image of all scenrios N=1,2,3,4}
 As mentioned in the introduction, the scenario from our previous work \cite{tram2019} that had the most difficulty solving was a \textit{conflict scenario}, i.e., when another vehicle in the crossing lane has the same velocity and the same distance to the intersection. To create these conflict scenarios, the starting position of ego $p^0_\mathrm{ego}$ is set based on the time to intersection $\tau_{tti}$ of one of the other vehicles.
 This "other car" is referred to as the conflict car and is randomly chosen. 
 % This "other car" is referred to as the conflict car, as shown in \ref{fig:conflict_car}, and is randomly chosen. 
@@ -748,12 +728,9 @@ Each algorithm is evaluated on \num{2000} episodes.
 % The random seeds are based on the episode number, which generates the same values for the random parameters, defined in \ref{tab:hyperparameters}, for each test scenario when evaluating different agents.
 The metrics of interest are the average time it takes for the agent to reach the success state and how often each terminal state is reached. A success state refers to either reaching the goal or a safe stop. An ideal agent would cause no collisions or deadlocks, and pass the junction with the smallest possible success time.
 
-% \jonas{we will use the two adjectivs agressive and passive to discribe the algorithms performance, which are not totaly complementary to each other. in other words, the algorithms can both be aggressive and passive. \textbf{OLD:} Another way to compare the different agents is to look at how aggressive or passive it is. An agent is considered aggressive if it has a high collision rate combined with a low success time. While an agent with a high deadlock percentage combined with a high safe stop percentage is considered passive.}
 
 Another way to describe the algorithms' performance is by using aggressive and passive, which are not completely complementary to each other. An agent is considered aggressive if it has a low success time but a higher collision percentage, when compared to the Oracle DQN. An agent that does not collide often but instead ends up in deadlock more often is considered passive. So an agent that has low success time and high no collisions is neither aggressive nor passive, just a good agent.
 We start with analyzing how well a \gls{dqn} agent that does not consider intentions, performs in scenarios with different traffic densities. 
-% \jonas{vad menar vi men high, vart visar vi att det kan vara både aggressive och passive. }
-% \todo{lägg till another way to describe. agenten kan vara passiv men långsam.}
 % Starting with analyzing the traffic density in scenarios and showing its difficulty when not considering intentions. 
 
 \subsection{Traffic density experiment}
@@ -988,8 +965,6 @@ Looking at the results, we see that even with full observability the oracle \gls
 \end{figure}
 % \discuss{This sections present the results for QMDP-IE, by first illustrating the success time and outcome for different $\zeta_\text{threshold}$ in~\ref{fig:intent_threshold}. Then, we describe how $\zeta_\text{threshold}$ is chosen and compare the results with the Oracle DQN and QMDP.}
 Starting with QMDP-IE, we first demonstrate how the $\zeta_\text{threshold}$ is chosen and then compare its results with QMDP. Both algorithms use the same network weights as the Oracle DQN, but QMPD-IE is less computational than QMDP since the threshold $\zeta_\text{threshold}$ transforms the set of particles into a point estimate of the intention state, as described in \ref{sec:belief_rl_algo}. Therefore, the choice of $\zeta_\text{threshold}$ is an important hyperparameter that directly correlates with the aggressiveness of the agent.
-
-% \jonas{First we will demonstrate how the threshold is chosen, then illustrate the difference. This section, first the experiment set up is described, and then   the ... benefit? of this is illustrates}
 
 The threshold value $\zeta_\text{threshold}$, used in QMDP-IE, is determined by evaluating the agent with different $\zeta_\text{threshold}$ and observing the outcome percentage and success time. The results are shown in~\ref{fig:intent_threshold}. The lowest threshold $\zeta_\text{threshold}=0.5$ is equivalent to just taking the most likely estimation of the intention and resulting in an aggressive agent. At the same time, threshold values that are too large result in a passive agent. In summary, the parameter $\zeta_\text{threshold}$ directly correlates with the agent's aggressiveness, and a good trade-off between aggressiveness and passiveness is around $\zeta_\text{threshold}=0.9$. 
 With $\zeta_\text{threshold}=0.9$, QMDP-IE performs significantly better on most evaluation metrics than QMDP, see \ref{tab:results_summary}. 

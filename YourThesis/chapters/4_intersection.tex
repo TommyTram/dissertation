@@ -1,11 +1,5 @@
 % !TEX root=../../Thesis.tex
 \newcommand {\matr}[2]{\left[\begin{array}{#1}#2\end{array}\right]}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\tr}{\mathrm{tr}}
-\newcommand{\x}{{\mathbf{x}}}
-\renewcommand{\u}{{\mathbf{u}}}
-\newcommand{\w}{{\mathbf{w}}}
-\renewcommand{\r}{{\mathbf{r}}}
 
 \chapter{Modeling Intersection Driving Scenarios}
 \label{ch:modeling_intersection}
@@ -16,9 +10,11 @@
 
 Navigating an intersection is a sequential decision-making problem that can be mathematically modeled using an \gls{mdp}, as introduced in Section~\ref{sec:background_mdp}. This thesis focuses on driving through intersections in the presence of other drivers, emphasizing not only to follow traffic rules but also the ability to adapt to the intentions of other drivers. Given that current sensors cannot directly observe other drivers' intentions, a \gls{pomdp} is a more suitable framework for formulating this problem.
 
+This chapter explores the modeling of intersection driving scenarios for autonomous vehicles. 
+
 \section{POMDP formulation}
 \label{sec:pomdp_fomulation}
-Effectively modeling the intersection problem is key for developing an optimal decision-making policy. While specific details of the \gls{pomdp} may vary between different studies, the general description remains consistent. This section outlines the essential aspects of the \gls{pomdp} framework as applied to the intersection problem in this thesis.
+Effectively modeling the intersection problem is key for developing an optimal decision-making policy. This section outlines each component of the \gls{pomdp} framework as applied to the intersection problem in this thesis. While specific details of the \gls{pomdp} may vary between Paper A-D, the general description remains consistent. 
 
 \subsection{State space}
 \label{sec:pomdp_statespace}
@@ -77,18 +73,43 @@ consists of positions state $p_\mathrm{ego}$ and $p_n$, where subscript \textit{
 Instead of using a Cartesian coordinate system to describe the position $p_\mathrm{ego}$ and $p_n$, relative distance measures are proposed. This way, the state space is generalizable to different intersection designs, e.g., the angle of incidence and the number of crossing points. 
 The velocity of ego $v_\mathrm{ego}$ and of all the other traffic participants $v_n$ are also necessary to be able to predict what position they will be in the next state. Finally, the intention of all the other participants $\zeta_n$. As mentioned in Section \ref{sec:intro_intersections}, $\zeta_n$ encapsulates information such as stop sign, traffic light or even inattention in to one variable. 
 \paperBelief \ shows a comparison between two fully observable \gls{mdp}s, one with intention and the other one without and the results show that having an intention state reduce number of collisions. 
-\paperLSTM \ used a \gls{lstm} network architecture to implicitly predict $\zeta$. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
+% \paperLSTM \ used a \gls{lstm} network architecture to implicitly predict $\zeta$. %The states describing ego and other vehicle are spearated. Repeat the states for each other vehicle we observe. 
 
 \subsection{Action space}
 \label{sec:pomdp_actionspace}
-One limitation of deep Q-learning is the requirement for a discrete action space. In various \gls{ad} studies \cite{bouton2019}, it is common practice to define the action space in terms of different acceleration requests. The approach in \paperLSTM \ proposes using short-term goals as actions: \{\textit{`take way', `yield', `follow car~$\{1, \dots , N\}$'}\}.
+One limitation of deep Q-learning is the requirement for a discrete action space. In various \gls{ad} studies \cite{bouton2019}, it is common practice to define the action space in terms of different discretized acceleration requests. 
+To address the challenge of managing a potentially high-dimensional action space with fine discretization or a coarse action space with large steps between accelerations, Paper A proposes using short-term goals as actions: \{\textit{`take way', `yield', `follow car~$\{1, \dots , N\}$'}\}.
 
 These short-term goals represent high-level objectives, such as driving through an intersection (take way), stopping at the start of an intersection (yield) or drive behind a specific car (follow car~$n$). Each high-level action is translated into a set of parameters that are input into a sliding mode controller in \paperLSTM \ and a \gls{mpc} in \paperMPC, which then generates the appropriate acceleration to control the ego car.
 
 \subsection{Transition model}
 \label{sec:pomdp_transistionmodel}
-The transition model is initially unknown, and \gls{rl} is employed to implicitly learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions, governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions makes the interactions between vehicles more complex, which complicates the learning process. For more details on the simulation environment see Chapter~\ref{ch:simulation_env}.
+The transition model is initially unknown, and \gls{rl} is employed to implicitly learn this model by taking actions in the environment from different states, recording the resulting rewards, and noting the subsequent state transitions. In this work, the environment is a simulator, and the primary objective for the agent is to learn the transition dynamics of other vehicles, which depend on their intentions $\zeta$. These intentions are modeled as predetermined actions governed by an \gls{idm}. Using the \gls{idm} to guide predetermined actions enhances the dynamics of vehicle interactions, bringing them closer to real-world scenarios. 
 
+\subsubsection{Intelligent Driver Model}
+\label{ch:idm}
+The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
+The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
+\begin{align}
+    \dot p_n & = v_n\\
+    \dot v_n & = a_{\mathrm{max}}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta-\Big( \frac{d^*(v_n,\Delta v_n)}{d_n}\Big)^2\Big) \label{eq:idm} \\
+    & \mathrm{with ~} d^*(v_n, \Delta v_n) = d_0 + v_n T_{\mathrm{gap}} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b}} \nonumber
+\end{align}
+where $v^\mathrm{desired}_n$ is the desired velocity, $d_0$ is the minimum distance between cars, $T_{\mathrm{gap}}$ is the desired time gap to the vehicle in front, $a_\mathrm{max}$ is the maximum vehicle acceleration, $d_n$ is the distance to the vehicle in front, $\Delta v_n = v_n - v_{n-1}$ is the velocity difference between vehicle $n$ and the vehicle directly in front $n-1$, and $\alpha_b$ and $\delta$ are model parameters for comfortable deceleration or acceleration.
+
+The acceleration can be simplified into two terms: an interaction term for when there is a vehicle in front 
+\begin{align}
+     a^\text{int}_n &=  -a_{max} \Big(\frac{d^*(v_n,\Delta v_n)}{d_n} \Big) ^2  \nonumber \\
+     &= -a_{max} \Big(\frac{d_0 + v_n T_{\mathrm{gap}}}{d_n} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b} d_n} \Big) ^2
+     \label{eq:idm_int}
+\end{align}
+
+and free road term, when there is no leading vehicle
+\begin{equation}
+    a^\text{free}_n= a_\mathrm{max}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta\Big).
+    \label{eq:idm_free}
+\end{equation}
+In this thesis, \gls{idm}'s application ensures realistic simulation of surrounding vehicle behavior, which is crucial for testing and validating the proposed decision-making algorithms for autonomous vehicles.
 
 \subsection{Observation model}
 The observation space is closely aligned with the state space $\mathcal{S}$, but it includes some added noise and excludes the intention state $\zeta_n$, because current sensors cannot directly detect the intentions of other drivers.
@@ -109,10 +130,19 @@ where, $\epsilon_\mathrm{p} \sim \mathcal{N}(0, \sigma^2_p)$ and $\epsilon_\math
 
 
 \subsection{Reward function}
+\label{ch:reward_function_def}
 The design of the reward function is pivotal as it determines the value associated with each state, ultimately shaping the driving policy of the agent. A well-crafted reward function is instrumental in guiding the agent towards achieving its objectives effectively.
-The reward model in this work is formulated based on terminal states, including reaching the goal, collision events, and timeouts. These terminal states play a critical role in defining the success or failure of the agent's driving behavior and are accordingly reflected in the reward structure.
+The reward model in this thesis is formulated based on terminal states, including reaching the goal $r^\mathrm{succ}$, collision events $r^\mathrm{fail}$, timeouts $r^\mathrm{t.o.}$, and on non-terminal states $r^\mathrm{comf}$ e.g, every step update the agent has not reached a terminal state. These terminal states play a critical role in defining the success or failure of the agent's driving behavior and are accordingly reflected in the reward structure. One example of a reward function used in this thesis, from \paperMPC, is 
+\begin{align}\label{eq:thesis_reward_function}
+	r_t = &\begin{cases}
+	r^\mathrm{succ} & \text{on success, }\\
+	r^\mathrm{fail} & \text{on failure},\\
+	r^\mathrm{t.o.} & \text{on timeout, i.e. } \tau \ge \tau_m,\\
+	r^\mathrm{comf} & \text{on non-terminating updates},\\
+	\end{cases} 
+\end{align}
+where the reward for reaching the goal is typically assigned a relatively high value, such as $r^\mathrm{succ}=1$, while the reward for colliding is assigned a very low value, such as $r^\mathrm{fail}=-1$. These two rewards establish the maximum and minimum possible rewards for a single simulation run. If the defined reward values are too large, the $Q$-values in \eqref{eq:lossDQN} can become large and cause the gradients to grow and potentially lead to instability~\cite{VanHasseltLearningMagnitude}. Although the absolute values can be chosen arbitrarily, the most important aspect is their relative values to each other. This relative scaling ensures that the agent prioritizes achieving the goal and avoiding collisions appropriately. The other rewards for timeout and non-terminal states are then usually set somewhere between $r^\mathrm{succ}$ and $r^\mathrm{fail}$, such as $r^\mathrm{t.o.}=-0.1$. The reward for non-terminal states $r^\mathrm{comf}$ was utilized differently: \paperLSTM \ used $r^\mathrm{comf}$ to account for comfort by assigning a higher negative reward for high acceleration jerk, while \paperMPC \ added a negative reward was given if the \gls{mpc} predicted a collision.
 
-% \todo{shouldn't you give a concrete example here? Or at least comment on the different designs in the different papers if they are different.}
 
 \section{Simulation environment}
 \label{ch:simulation_env}
@@ -122,27 +152,47 @@ For example, if a vehicle's intention $\zeta_n$ is yield, it would set the \gls{
 
 During the simulation, whenever a vehicle in the perpendicular lane crosses the intersection, it is removed from the environment. Subsequently, a new vehicle is spawned at the start of that lane at a random time, with new initial values for position $p_n^0$, velocity $v_n^0$, desired velocity $v^\mathrm{desired}_n$ and intention $\zeta_n$. 
 This dynamic spawning process ensures that the traffic scenario continually evolves, presenting varying challenges and interactions for the agent navigating the intersection.
-Each episode continues until a terminal state is reached, which can be reaching the goal, collision, safe stop, or deadlock. Rewards are assigned based on a predefined reward function designed to reinforce desired behaviors.
+Each episode continues until a terminal state is reached, which can be reaching the goal, collision, or timeout for Paper A-C and goal, collision, safe stop, or deadlock for \paperBelief. Rewards are assigned based on a predefined reward function designed to reinforce desired behaviors. 
 
 
 \section{Deep Q-learning approach}
-% \todo{In this section, I think you need to give more detail about the methods e.g. detail the DQN structure, explain the MPC in a bit more details. I think this will help understand the section 4.4. }
-To find a driving policy $\pi$ for the \gls{pomdp} detailed in the previous section, both \paperLSTM \ and \paperMPC \ used deep Q-learning, described Chapter~\ref{ch:q-learning}. \paperLSTM \ proposed a \gls{dqn} structure with shared weights and \gls{lstm} layer to approximate the Q-function. The shared weight effectively reduces the input space, as the state for each car $n$ can be initially weighted the same as any other car, independent of the order it comes into the neural network. While the \gls{lstm} layer has the role of utilizing the previous states to implicitly estimate a hidden state that could possibly encapsulate the intention of other cars.
+To find a driving policy $\pi$ for the \gls{pomdp} detailed in the previous section, both \paperLSTM \ and \paperMPC \ used deep Q-learning, described Chapter~\ref{ch:q-learning}, using a decision-making architecture shown in Figure~\ref{fig:mpc_architecture}. \paperLSTM \ proposed a network architecture with shared weights and \gls{lstm} layer to approximate the Q-function. The shared weight effectively reduces the input space, as the state for each car $n$ can be initially weighted the same as any other car, independent of the order it comes into the neural network. While the \gls{lstm} layer has the role of utilizing the previous states to implicitly estimate a hidden state that could possibly encapsulate the intention of other cars.
 
-As mentioned in Chapter~\ref{sec:pomdp_actionspace}, the actions in \paperLSTM \ are controlled by a sliding mode controller while \paperMPC \ uses an \gls{mpc} to generate a velocity profile for a short time horizon. Instead of specifying which car to drive behind, the action in this context determines which gap between cars the vehicle should drive through. This gap is then translated into constraints that the \gls{mpc} uses to create the velocity profile.
+\begin{figure}
+	\centering
+	% \vspace{0.3cm}
+	\includegraphics[width=0.8\columnwidth]{YourThesis/papers/mpc/figures/figures-architecture.pdf}
+	\caption{Representation of the decision-making architecture. Policy represents the DQN that chooses an action that is sent to a Controller that can either be a sliding mode controller or \gls{mpc}. The Environment represents the simulation environment in which the vehicles operate, but can be replaced by the real world. The State Reward is the reward given by the terminal state ($r^\mathrm{succ},r^\mathrm{fail},r^\mathrm{t.o.}$) from the environment and the Immediate Reward $r^\mathrm{comf}$ is given by the controller.}
+	\label{fig:mpc_architecture}
+	% \vspace{-0.3cm}
+\end{figure}
 
-\gls{mpc} excels at creating plans within given constraints but faces challenges with mixed integer problems, making the calculation of the optimal path for all possible actions computationally intensive. On the other hand, Q-learning is effective at estimating the value of an action given a state, but it requires exploring many suboptimal actions before converging on a good one. By combining \gls{rl} and \gls{mpc}, an agent can efficiently select a good action, which the \gls{mpc} can then use to generate a safe and efficient velocity profile.
+As mentioned in Chapter~\ref{sec:pomdp_actionspace}, the actions in \paperLSTM \ are controlled by a sliding mode controller while \paperMPC \ uses an \gls{mpc} to generate a velocity profile for a short time horizon. 
+The sliding mode controller, which is used interchangeably with the \gls{idm} in this thesis, aims to maintain a minimum distance from a target vehicle by controlling acceleration in a manner similar to \gls{idm}.
 
-The agents from \paperLSTM \ and \paperMPC \ are evaluated on both a single intersection, shown in Figure~\ref{fig:example_intersections}\subref{fig:single_intersection}, and a double intersection with two crossing points, shown in Figure~\ref{fig:example_intersections}\subref{fig:double_intersection}. The results are summarized in Table~\ref{tab:results_single_double_crossing}.
+\subsection{Model Predictive Control}
+\gls{mpc} is an optimization-based control technique where an Optimal Control Problem (OCP) is repeatedly solved over a receding limited time horizon, starting from the current system state. For every time instance, a mathematical model of the controlled system is used to simulate future states over a finite horizon, while a sequence of control inputs is selected and optimized given an objective cost function. The first element in the sequence of control inputs is then applied to the real system, and a new OCP with an updated state is solved at the next time instance.
+
+\gls{mpc} faces challenges as a mixed integer problem, where calculating the optimal path for all possible actions is computationally intensive. \gls{dqn} on the other hand, only handles discrete actions. While \gls{dqn} cannot guarantee safety, it excels at choosing actions with the highest utility (Q-value). 
+The reward function in \gls{dqn} can incorporate the predicted outcome from the \gls{mpc} model, penalizing suboptimal actions. However, if experience shows a better outcome than the model predicts, \gls{dqn} can opt for an action that leads to a better total reward. \paperMPC \ integrates the \gls{mpc} cost as a negative immediate reward, allowing the \gls{dqn} to balance this cost with the high-level goal of reaching the target. This enables the \gls{dqn} to choose actions that are generally beneficial at a high level, even if they may not seem optimal to the \gls{mpc}.
+
+% The reward function in \gls{dqn} can incorporate the predicted outcome from the \gls{mpc} model, penalizing suboptimal actions. However, if experience shows a better outcome than the model predicts, \gls{dqn} can opt for an action that leads to a better total reward compared to strictly following a conservative model.
+
+% \paperMPC \ incorporates the \gls{mpc} cost as a negative immediate reward, the \gls{dqn} can balance the \gls{mpc} cost with the high-level goal of reaching the target, even choosing actions that are generally good at a high level but may not seem optimal to the \gls{mpc}. Instead of specifying which car to drive behind, like the sliding mode controller from \paperLSTM, the action in \paperMPC \ determines which gap between cars the vehicle should drive through. This gap is then translated into constraints that the \gls{mpc} uses to create the velocity profile.
+
+% The agent's objective is to safely track a reference path with target speed, acceleration, and jerk profile, while driving comfortably and avoiding collisions with crossing vehicles at intersections. 
+% his is formulated as a finite horizon, constrained optimal control problem:
+
+% \gls{mpc} is good at creating plans within given constraints but faces challenges with mixed integer problems, making the calculation of the optimal path for all possible actions computationally intensive. On the other hand, Q-learning is good at estimating high-return actions based solely on the current state $s$, but requires exploring many suboptimal actions in simulation before converging on a good one. By combining \gls{rl} and \gls{mpc}, the \gls{dqn} can effectively select actions that the \gls{mpc} subsequently utilizes to generate a safe and efficient velocity profile, removing the need to calculate the optimal path for all possible actions.
+
+The agents from \paperLSTM \ and \paperMPC \ are evaluated on two scenarios: a single intersection and a double intersection with two crossing points, both shown in Figure~\ref{fig:example_intersections}. The next section presents the experimental results from \paperLSTM \ and \paperMPC \ for both intersections.
 
 \section{Results from simulation}
 \label{sec:results_dqn}
-% \todo{I am a bit confused here, in the previous sentence you mention 96% success, here 3/4=75%, are you discussing another scenario?}
-% \todo{you might want to acknowledge the 4% of cases where it fails and mention some strategies or that it should be addressed in future work.}
 The results from Table~\ref{tab:results_single_double_crossing} show that the proposed \gls{dqn} agent from \paperLSTM \ found a policy that successfully crossed a single intersection $96.1\%$ of the time, with $2.8\%$ resulting in collisions and $1.1\%$ resulting in timeouts. 
 When comparing agents trained with and without an \gls{lstm} layer, those with the \gls{lstm} succeeded in 3 out of 4 attempts where those without it would fail.
-This demonstrates that deep Q-learning has great potential for creating decision-making agents capable of navigating intersections. Additionally, the results from Figure~\ref{fig:results_shared} indicate that using a network structure with shared weights between cars significantly improved the convergence speed of the network. Shared weights, along with other enhancements like dropout and experience replay, are essential components for this improvement.
-% \todo{For me, it is obvious what this means, but probably not for your thesis readers. You have not really introduced network structure before. If you want to mention some results here, probably you want to discuss the structure? Or at least refer to the paper where you introduce the structure. Something like. "One of the contribution of this thesis is to propose network architectures that are particularly well suited to the intersection navigation problem. In paper X, we propose an architecture with shared weights to process the information about each observed vehicle. Figure 4.2 ... "}
+This demonstrates that deep Q-learning has great potential for creating decision-making agents capable of navigating intersections. OA key contribution of this thesis is the proposal of network architectures specifically designed for this problem. In \paperLSTM, an architecture employing shared weights is introduced, and the results shown in Figure~\ref{fig:results_shared} reveal that utilizing a network with shared weights for processing information about observed vehicles notably enhances convergence speed. The combination of shared weights with other improvements, such as dropout and experience replay, is crucial for achieving these performance gains.
+
 
 \begin{figure}[!ht]
 	\centering
@@ -151,12 +201,9 @@ This demonstrates that deep Q-learning has great potential for creating decision
 	\label{fig:results_shared}
 \end{figure}
 
-% \todo{This whole paragraph is a bit hard to follow because one needs to have read paper A and paper B. If you want to have this I think you need to add some paragraphs describing on a high level the methods of paper A and paper B.}
-As mentioned previously, the controller from \paperLSTM \ could only consider one car at a time, which placed a heavy burden on the \gls{dqn} compensate by frequently switching actions. 
+As mentioned previously, the controller from \paperLSTM \ could only consider one car at a time, which placed a heavy burden on the \gls{dqn} compensate by frequently switching actions. % \jonas{? var ser vi det? vad betder det?}
 In contrast, in \paperMPC, the \gls{mpc} showed significant improvement in handling more complex intersections.
-For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$ of the time with a collision rate of $3.6\%$, compared to the sliding mode controller, which only succeeded $90.9\%$ of the time with a collision rate of $8.3\%$.
-
-
+For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$ of the time with a collision rate of $3.6\%$, compared to the sliding mode controller, which only succeeded $90.9\%$ of the time with a collision rate of $8.3\%$. 
 
 % \begin{figure}[!ht]
 % 	\centering

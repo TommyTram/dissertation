@@ -1,6 +1,6 @@
 % !TEX root=../../Thesis.tex
 \chapter{Technical background}\label{ch:background}
-This chapter briefly introduces the \gls{mdp} framework and its extensions: \gls{pomdp} and \gls{rl}. A more comprehensive overview of \gls{pomdp}s and \gls{rl} is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based. The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
+This chapter briefly introduces the \gls{mdp} framework and its extension \gls{pomdp} and \gls{rl}. A more comprehensive overview of \gls{pomdp}s and \gls{rl} is given in the books by Kochenderfer~\cite{Kochenderfer2015} and Sutton and Barto~\cite{Sutton2018}, upon which this chapter is based. The purpose of the chapter is to summarize the most important concepts and introduce the notation that are used in the subsequent chapters. 
 
 \section{Markov decision process}\label{sec:background_mdp}
 A \gls{mdp} is a mathematical framework for modeling discrete time sequential decision-making problems. It involves an agent making decisions in an environment evolving over time according to a stochastic process. The state of the environment contains all the information necessary about the agent and environment at a given time to be able to transition to any given state. This property is referred to as the Markov property. 
@@ -58,39 +58,13 @@ where $b'$ is computed using \eqref{eq:belief_state2}, and $R(b,a)=\int_{s \in \
 The observable states in this work are information that sensors on the ego vehicle can provide e.g., distance to intersection, position and speeds of other vehicles. While the unobservable states are the intentions of other drivers that are approaching the same intersection as ego. Chapter \ref{ch:modeling_intersection} will later formulate the \gls{pomdp} studied in this work.
 
 \section{Reinforcement learning}
-% \todo{rewrite}
 In some problems, the state transition probabilities or the reward function are unknown. These problems can be addressed using reinforcement learning, where the agent learns how to behave by interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. The data available to an RL agent depends on its current policy, necessitating a balance between exploring the environment and exploiting existing knowledge. Moreover, the reward an agent receives might hinge on a crucial decision made earlier, making it essential to attribute rewards to the correct decisions.
 
 RL algorithms are categorized into two approaches: model-based and model-free~\cite[Ch. 5]{Kochenderfer2015}. In model-based methods, the agent first estimates a representation of the state transition function $T$ and then uses a planning algorithm to find a policy. Conversely, model-free RL algorithms, as the name suggests, do not explicitly construct a model of the environment to determine actions.
 
-Model-free approaches can be further divided into value-based and policy-based techniques. Value-based algorithms, such as $Q$-learning, aim to learn the value of each state, thereby implicitly defining a policy. Policy-based techniques directly search for the optimal policy within the policy space, either through policy gradient methods or gradient-free methods like evolutionary optimization. Hybrid techniques, such as actor-critic methods, combine both policy and value-based approaches.
+Model-free approaches can be further divided into value-based and policy-based techniques. Value-based algorithms, such as $Q$-learning~\cite{Watkins1992}, aim to learn the value of each state, thereby implicitly defining a policy. Policy-based techniques~\cite{sutton2018reinforcement} directly search for the optimal policy within the policy space, either through policy gradient methods~\cite{Williams2004} or gradient-free methods like evolutionary optimization. Hybrid techniques, such as actor-critic methods~\cite{Konda1999}, combine both policy and value-based approaches.
 
-RL algorithms typically assume that the environment is modeled as a \gls{mdp}, where the agent knows the state of the environment. However, in many practical situations, only partial information about the state of the environment is available, which is modeled within the \gls{pomdp} framework. In such cases, it is common to approximate the state as a belief $b$. 
-
-
-% In many problems, the state transition probabilities or the reward function are not known. These problems can be solved by reinforcement learning techniques, in which the agent learns how to behave from interacting with the environment~\cite[Ch. 5]{Kochenderfer2015}. Compared to supervised learning, reinforcement learning presents some additional challenges. Since the data that are available to an RL-agent depends on its current policy, the agent must balance exploring the environment and exploiting the knowledge it has already gained. Furthermore, a reward that the agent receives may depend on a crucial decision that was taken earlier in time, which makes it important to assign rewards to the correct decisions.
-
-% RL algorithms can be divided into model-based and model-free approaches~\cite[Ch. 5]{Kochenderfer2015}. In the model-based versions, the agent first tries to estimate a representation of the state transition function $T$ and then use a planning algorithm to find a policy. On the contrary, as the name suggests, model-free RL algorithms do not explicitly construct a model of the environment to decide which actions to take. 
-% The model-free approaches can be further divided into value-based and policy-based techniques. Value-based algorithms, such as $Q$-learning, aim to learn the value of each state and thereby implicitly define a policy. Policy-based techniques instead search for the optimal policy directly in the policy space, either by policy gradient methods or gradient-free methods, such as evolutionary optimization. There are also hybrid techniques that are both policy and value-based, such as actor critic methods.
-
-% RL algorithms generally assume that the environment is modeled as a \gls{mdp}, i.e., that the state of the environment is known by the agent. However, in many cases of interest, only partial information about the state of the environment is available, which is modeled in the \gls{pomdp} framework. For such cases, it is common to approximate the state by either the observation or a finite history of observations~\cite[Ch. 17]{Sutton2018}. The latter is referred to as a $k$-Markov approximation, where $k$ defines the length of the included history. For a sufficiently long history, the Markov property is assumed to approximately hold, even though the environment is partially observable.
-
-% \tommy{Reinforcement learning}
-
-
-% If all the elements $( \mathcal{S}, \mathcal{A}, T, R, \gamma )$ of an MDP are known, an agent can use this model to directly compute an optimal policy. Such a problem is often considered a planning problem. For small MDPs, dynamic programming\footnote{Dynamic programming refers to simplifying a complex problem by breaking it down into smaller sub-problems, often in a recursive manner.} techniques can provide an exact solution, which is calculated offline, i.e., before the agent is deployed in the environment. For example, in value iteration~\cite[Ch. 4]{Kochenderfer2015}, the Bellman operator is iteratively applied to the value function for all states,
-% %
-% \begin{align}
-%     V_{n+1}(s) = \max_a \left[ R(s,a) + \gamma \sum_{s'}T(s'|,a,s)V_n(s') \right].
-% \end{align}
-% %
-% As $n$ goes to infinity, $V_n$ converges to the unique optimal value function $V^*$, and an optimal policy (not necessarily unique) is extracted by
-% %
-% \begin{align}
-%     \pi(s) = \argmax_a \left[ R(s,a) + \gamma \sum_{s'}T(s'|,a,s)V^*(s') \right].
-% \end{align}
-% %
-% However, for many real-world problems with high dimensional state spaces, it is intractable to compute and store a policy offline. Contrarily to offline methods, online search methods perform planning from the current state up to some horizon, when the agent has been deployed. Thereby, the agent can limit the computation to states that are reachable from the current state, which is often significantly smaller than the full state space~\cite[Ch. 4]{Kochenderfer2015}.
+\gls{rl} algorithms typically assume that the environment is modeled as a \gls{mdp}, where the agent knows the state of the environment. However, in many practical situations, only partial information about the state of the environment is available, which is modeled within the \gls{pomdp} framework. In such cases, it is common to approximate the state as a belief $b$~\cite{Cassandra1997}. 
 
 \subsection{Deep Q-learning}
 \label{ch:q-learning}
@@ -118,29 +92,29 @@ Here, $\theta^-$ represents the \gls{nn} parameters of a target network, which i
 Several of improvements to this standard form of DQN have been proposed and are compared by Hessel et al.~\cite{Hessel2018}.
 See \paperLSTM \ for the details of the \gls{dqn} implementation in this thesis.
 
-\section{Intelligent Driver Model}
-\label{ch:idm}
-The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
-The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
-\begin{align}
-    \dot p_n & = v_n\\
-    \dot v_n & = a_{\mathrm{max}}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta-\Big( \frac{d^*(v_n,\Delta v_n)}{d_n}\Big)^2\Big) \label{eq:idm} \\
-    & \mathrm{with ~} d^*(v_n, \Delta v_n) = d_0 + v_n T_{\mathrm{gap}} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b}} \nonumber
-\end{align}
-where $v^\mathrm{desired}_n$ is the desired velocity, $d_0$ is the minimum distance between cars, $T_{\mathrm{gap}}$ is the desired time gap to the vehicle in front, $a_\mathrm{max}$ is the maximum vehicle acceleration, $d_n$ is the distance to the vehicle in front, $\Delta v_n = v_n - v_{n-1}$ is the velocity difference between vehicle $n$ and the vehicle directly in front $n-1$, and $\alpha_b$ and $\delta$ are model parameters for comfortable deceleration or acceleration.
+% \section{Intelligent Driver Model}
+% \label{ch:idm}
+% The \glsfirst{idm} is a widely used car-following model in traffic flow theory and simulation~\cite{idm2000}. It describes how drivers adapt their speed and spacing based on the distance to the vehicle ahead. IDM helps in understanding and predicting traffic dynamics, optimizing traffic flow, and developing \gls{adas} functions. In this thesis the \gls{idm} is used to model the general behavior of surrounding vehicles.
+% The \gls{idm} models a vehicle $n$'s position $p_n$ and velocity $v_n$ as
+% \begin{align}
+%     \dot p_n & = v_n\\
+%     \dot v_n & = a_{\mathrm{max}}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta-\Big( \frac{d^*(v_n,\Delta v_n)}{d_n}\Big)^2\Big) \label{eq:idm} \\
+%     & \mathrm{with ~} d^*(v_n, \Delta v_n) = d_0 + v_n T_{\mathrm{gap}} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b}} \nonumber
+% \end{align}
+% where $v^\mathrm{desired}_n$ is the desired velocity, $d_0$ is the minimum distance between cars, $T_{\mathrm{gap}}$ is the desired time gap to the vehicle in front, $a_\mathrm{max}$ is the maximum vehicle acceleration, $d_n$ is the distance to the vehicle in front, $\Delta v_n = v_n - v_{n-1}$ is the velocity difference between vehicle $n$ and the vehicle directly in front $n-1$, and $\alpha_b$ and $\delta$ are model parameters for comfortable deceleration or acceleration.
 
-The acceleration can be simplified into two terms: an interaction term for when there is a vehicle in front 
-\begin{align}
-     a^\text{int}_n &=  -a_{max} \Big(\frac{d^*(v_n,\Delta v_n)}{d_n} \Big) ^2  \nonumber \\
-     &= -a_{max} \Big(\frac{d_0 + v_n T_{\mathrm{gap}}}{d_n} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b} d_n} \Big) ^2
-     \label{eq:idm_int}
-\end{align}
+% The acceleration can be simplified into two terms: an interaction term for when there is a vehicle in front 
+% \begin{align}
+%      a^\text{int}_n &=  -a_{max} \Big(\frac{d^*(v_n,\Delta v_n)}{d_n} \Big) ^2  \nonumber \\
+%      &= -a_{max} \Big(\frac{d_0 + v_n T_{\mathrm{gap}}}{d_n} + \frac{v_n \Delta v_n}{2 \sqrt{a_{\mathrm{max}} \alpha_b} d_n} \Big) ^2
+%      \label{eq:idm_int}
+% \end{align}
 
-and free road term, when there is no leading vehicle
-\begin{equation}
-    a^\text{free}_n= a_\mathrm{max}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta\Big).
-    \label{eq:idm_free}
-\end{equation}
+% and free road term, when there is no leading vehicle
+% \begin{equation}
+%     a^\text{free}_n= a_\mathrm{max}\Big(1-\Big(\frac{v_n}{v^\mathrm{desired}_n}\Big)^\delta\Big).
+%     \label{eq:idm_free}
+% \end{equation}
 
 
 %This is used to both model behaviors of other drivers and generate the acceleration for the ego vehicle. 
