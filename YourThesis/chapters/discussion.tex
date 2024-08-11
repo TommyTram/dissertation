@@ -17,42 +17,35 @@ In the industry today the main standard for functional safety in motorized vehic
 
 \begin{figure}[h]
 	\centering
-	 \includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf}
-%	\begin{tikzpicture}[
-%		node distance=8mm and 30mm,
-%		node font= \Large,
-%		box/.style = {draw, thick, rectangle, rounded corners=0.1cm, fill=gray!10, minimum width=3.5cm, minimum height=2cm, align=center},
-%		sx+/.style = {xshift = 2mm},
-%		sx+/.style = {xshift = 2mm}
-%		]
-%
-%		% \node[draw,thick,rectangle,rounded corners =0.05cm,fill=gray!10,minimum width=2cm,minimum height = 2cm] (SF) at (2,0) {Sensor Fusion};
-%		
-%		% \draw[arrow,thick] (0,0) --(SF) node [midway,above] {Sensors: Lidar, Radar, Camera, Sonar};
-%
-%		% \node[draw,thick,rectangle,rounded corners =0.05cm,fill=gray!10,minimum width=2cm,minimum height = 2cm, shift={(2,0,0)}] (SF) at (2,0) {Sensor \\ Fusion};
-%		
-%		\node (start) at (0,0) {};
-%		\node (SF) [box, right=of start.east] {Sensor \\ Fusion};
-%		\node (PS) [box, right=of SF.east] {Precautionary \\ Safety};
-%		\node (DM) [box, right=of PS.east] {Decision \\ Maker};
-%		\node (Con) [box, right=of DM.east] {Controller};
-%		\node (CA) [box, below=of Con] {Collision \\ Avoidance};
-%		\node (Act) [box, right=of Con.east] {Actuator};
-%		\node (end) [right=of Act] {};
-%
-%		\draw[arrow,thick,align=left] (start) --+(SF) node [midway,above] {Lidar\\Camera\\etc.};
-%		\draw[arrow,thick,align=left] (SF) --+(PS) node [midway,above] {Position\\Velocity\\etc.};
-%		\draw[arrow,thick,align=left] (PS) --+(DM) node [midway,above] {Safe\\Actions};
-%		\draw[arrow,thick,align=left] (DM) --+(Con) node [midway,above] {Action\\Reference};
-%		\draw[arrow,thick,align=left] (DM) -| ($(DM.east) + (1.5,0mm)$) |- (CA) node [midway,above] {};
-%		\draw[arrow,thick,align=left] (CA) -| ($(CA.east) + (1.5,0mm)$) |- (Act) node [midway,above] {};
-%		\draw[arrow,thick,align=left] (Con) --+(Act) node [midway,above] {Acceleration\\Request};
-%		\draw[arrow,thick,align=left] (Act) --+(end) node [midway,above] {};
-%	% --> Sensor Fusion --> Precautionary Safety --> |Decision Maker --> Controller |--> Actuator -->
-%	% 																->Collision Avoidance |
-%
-%	\end{tikzpicture} 
+	%  \includegraphics[width=\linewidth]{YourThesis/chapters/figures/pomdp/figures-system_architecture.pdf}
+	\begin{tikzpicture}[
+		node distance=8mm and 16mm,
+		node font= \small,
+		box/.style = {draw, thick, rectangle, rounded corners=0.1cm, fill=gray!10, minimum width=1.5cm, minimum height=1cm, align=center},
+		% sx+/.style = {xshift = 1mm},
+		sx+/.style = {xshift = 1mm}
+		]
+		
+		\node (start1) at (0,0) {};
+		\node[circle, draw, dashed, thick, fill=gray!30, minimum size=1.0cm] (world) {World};
+		\node (SF) [box, right=of world.east] {Sensor \\ Fusion};
+		\node (PS) [box, right=of SF.east] {Precautionary \\ Safety};
+		\node (DM) [box, below=of PS.south] {Decision \\ Maker};
+		\node (Con) [box, below=of SF] {Controller};
+		\node (CA) [box, below=of Con] {Collision \\ Avoidance};
+		\node (Act) [box, below=of world, yshift=.08cm] {Vehicle};
+		\node (end) [left=of Act] {};
+
+		\draw[->,thick,align=left] (world) --+(SF) node [midway,above] {Lidar\\Camera\\etc.};
+		\draw[->,thick,align=left] (SF) --+(PS) node [midway,above] {Position\\Velocity\\etc.};
+		\draw[->,thick,align=right] (PS) -| ($(PS.east) + (.5,0mm)$) |- (DM) node [above, xshift=10mm, yshift=5mm] {Safe\\Actions};
+		\draw[->,thick,align=left] (Con) --+(Act) node [midway,above, xshift=3mm] {Acceleration\\Request};
+		\draw[->,thick,align=left] (Act) -| ($(Act.west) - (.5,0mm)$) |- (world) node [midway,left] {};
+		\draw[->,thick,align=left] (DM) --+(Con) node [midway,above] {Action\\Reference};
+		\draw[->,thick,align=left] (DM) -| ($(DM.west) - (1,0mm)$) |- (CA) node [midway,above] {};
+		\draw[->,thick,align=left] (CA) -| ($(CA.west) - (.7,0mm)$) |- (Act) node [midway,above] {};
+
+	\end{tikzpicture} 
 	\caption{Representation of the system architecture.}
 	\label{fig:system_architecture}
 \end{figure}

@@ -220,17 +220,18 @@ Both QMDP-IE and QID were evaluated on the intersection scenario introduced in S
 	\label{tab:belief_results_summary}
 	\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
 	\toprule
-	Experiments     & Goal reached & Safe stop & Collision & Deadlock & Time \\ 
+	Experiments & Goal reached & Safe stop & Collision & Deadlock & Success \\ 
+							&  						 &  &  				 &  				& Time \\ 
 			 & $\%$ & $\%$ & $\%$ & $\%$ & s & \\ 
 	\midrule
 	Oracle DQN    & $84.50$ & $14.45$ & $1.05$ & $0.00$ & $15.49$\\ % $1\unit{\day}7\unit{\hour}$ \\ 
 	% Noisy DQN & $84.25$ & $14.10$ & $1.65$ & $0.00$ & $15.48$ \\ 
-	\textbf{QMDP-IE}   & $\textbf{80.00}$ & $\textbf{18.15}$ & $\textbf{1.35}$ & $\textbf{0.50}$ & $\textbf{17.14}$ \\ 
+	\rowcolor{gray!20} {QMDP-IE}   & ${80.00}$ & ${18.15}$ & ${1.35}$ & ${0.50}$ & ${17.14}$ \\ 
 	% QMDP-IE   & $80.30$ & $16.20$ & $3.30$ & $0.20$ & $16.54$ & N/A \\ 
 	QMDP      & $71.95$ & $15.05$ & $5.70$ & $7.30$ & $20.56$ \\ 
 	% \arrayrulecolor{red}\hline
 	% \arrayrulecolor{black}
-	\textbf{QID}       & $\textbf{85.60}$ & $\textbf{10.40}$ & $\textbf{3.70}$ & $\textbf{0.30}$ & $\textbf{16.64}$ \\ %$\textbf{5\unit{\day}5\unit{\hour}}$ \\ 
+	\rowcolor{gray!20} {QID} & ${85.60}$ & ${10.40}$ & ${3.70}$ & ${0.30}$ & ${16.64}$ \\ %${5\unit{\day}5\unit{\hour}}$ \\ 
 	QPF       & $63.50$ & $21.80$ & $12.15$ & $2.55$ & $16.61$ \\ % $5\unit{\day}4\unit{\hour}$\\ 
 	
 	\bottomrule
@@ -257,21 +258,22 @@ This suggests that QID is slightly better at taking passive actions in zone 3, w
 Overall, QID proves to be better than QMDP-IE in scenarios outside the training set, offering more robustness to untrained behaviors. Meanwhile, QMDP-IE provides a structured approach with moderate collision rates and higher computational efficiency, performing well when the intentions are within the training set.
 
 \begin{table}
-	\caption{Results with an overtake agent}
-	\label{tab:theis_results_overtake}
-	\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
-	\toprule
-	Experiments & Goal reached & Safe stop & Collision & Deadlock & Time \\ 
-			 & $\%$ & $\%$ & $\%$ & $\%$ & s \\ 
-	\midrule
-	Oracle DQN & $89.80$ & $0.15$ & $10.05$ & $0.00$ & $16.01$ \\ 
-	\textbf{QMDP-IE} & $\textbf{94.55}$ & $\textbf{0.20}$ & $\textbf{4.60}$ & $\textbf{0.65}$ & $\textbf{16.62}$ \\ 
-	QMDP & $79.70$ & $10.20$ & $5.95$ & $4.15$ & $19.84$ \\ 
-	\textbf{QID} & $\textbf{96.89}$ & $\textbf{0.11}$ & $\textbf{2.53}$ & $\textbf{0.47}$ & $\textbf{16.38}$ \\ 
-	QPF & $96.15$ & $0.10$ & $3.70$ & $0.05$ & $17.62$ \\ 
-	\bottomrule
-	\end{tabularx}
-	\end{table}
+\caption{Results with an overtake agent}
+\label{tab:theis_results_overtake}
+\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
+\toprule
+Experiments & Goal reached & Safe stop & Collision & Deadlock & Time \\ 
+			& $\%$ & $\%$ & $\%$ & $\%$ & s \\ 
+\midrule
+Oracle DQN & $89.80$ & $0.15$ & $10.05$ & $0.00$ & $16.01$ \\ 
+\rowcolor{gray!20} {QMDP-IE} & ${94.55}$ & ${0.20}$ & ${4.60}$ & ${0.65}$ & ${16.62}$ \\ 
+QMDP & $79.70$ & $10.20$ & $5.95$ & $4.15$ & $19.84$ \\ 
+\rowcolor{gray!20} {QID} & ${96.89}$ & ${0.11}$ & ${2.53}$ & ${0.47}$ & ${16.38}$ \\ 
+QPF & $96.15$ & $0.10$ & $3.70$ & $0.05$ & $17.62$ \\ 
+\bottomrule
+\end{tabularx}
+\end{table}
+
 % \begin{figure}[!h]
 % 	\centering
 % 			% \includegraphics[width=0.99\columnwidth]{figures/results Scenarios 1-5 Take way Cars wo intent.png}
