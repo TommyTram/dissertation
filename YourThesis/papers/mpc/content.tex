@@ -73,7 +73,7 @@ The goal of the ego-vehicle is to drive along a predefined route that has one or
 %observations and actions.
 
 \subsection{Partially Observable Markov Decision Process}\label{sec:pomdp}
-The decision making process is modeled as a Partially Observable Markov Decision Process (POMDP). A POMDP is defined by the 7-tuple $(\mathcal{S},\mathcal{A},\mathcal{T},\mathcal{R},\Omega ,\mathcal{O},\gamma)$, where $\mathcal{S}$ is the state space, $\mathcal{A}$ an action space that is defined in section \ref{sec:mpc}, $\mathcal{T}$ the transition function, %conditional transition probabilities between states
+The decision making process is modeled as a Partially Observable Markov Decision Process (POMDP). A POMDP is defined by the  tuple $(\mathcal{S},\mathcal{A},\mathcal{T},\mathcal{R},\Omega ,\mathcal{O},\gamma)$, where $\mathcal{S}$ is the state space, $\mathcal{A}$ an action space that is defined in section \ref{sec:mpc}, $\mathcal{T}$ the transition function, %conditional transition probabilities between states
 $\mathcal{R}$ the reward function $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$ is defined in \ref{sec:reward}, $\Omega$ an observation space, $\mathcal{O}$ the probability of being in state $s_{t}$ given the observation $o_t$, and $\gamma$ the discount factor.
 
 A POMDP is a generalization of the Markov Decision Process (MDP) \cite{BellmanMDP} and therefore works in the same way in most aspects. At each time instant $t$, an action, $a_t\in \mathcal{A}$, is taken, which will change the environment state $s_t$ to a new state $s_{t+1}$. Each transition to a state $s_t$ with an action $a_t$ has a reward $r_t$ given by a reward function $\mathcal{R} $. The Key difference from a regular MDP is that the environment state $s_t$ is not entirely observable because the intention of other vehicles are not known. In order to find the optimal solution for our problem, we need to know the future intention of other drivers. Instead we can only partially perceive the state though observations $o_t\in \Omega$.
@@ -230,7 +230,7 @@ A similar study for lane changes on a highway confirmed the importance of having
 \label{eq:shared_weights}
 \bm{h}^{(3)} = \tanh\left(\sum_{i=1}^4 \bm{W}_{3i} \, \bm{h}^{(2, i)} + \bm{b}_3\right).
 \end{equation}
-That is then connected to an Long Short-Term Memory (LSTM) \cite{Hochreiter1997LONGMEMORY} that can store and use previous features
+That is then connected to a Long Short-Term Memory (LSTM) \cite{Hochreiter1997LONGMEMORY} that can store and use previous features
 %The final layer $\bm{h}^{(4)}$ uses the LSTM, described in section \ref{sec:method}. This layer handles the storage and usage of previous observations, making it the recurrent layer of the network. 
 \begin{equation}
 \bm{h}^{(4)}_t = \text{LSTM}\left( \bm{h}^{(3)} | \bm{h}^{(4)}_{t-1} \right).

@@ -1,11 +1,11 @@
 
 \newcommand {\matr}[2]{\left[\begin{array}{#1}#2\end{array}\right]}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\tr}{\mathrm{tr}}
-\newcommand{\x}{{\mathbf{x}}}
-\renewcommand{\u}{{\mathbf{u}}}
-\newcommand{\w}{{\mathbf{w}}}
-\renewcommand{\r}{{\mathbf{r}}}
+% \newcommand{\E}{\mathbb{E}}
+% \newcommand{\tr}{\mathrm{tr}}
+% \newcommand{\x}{{\mathbf{x}}}
+% \renewcommand{\u}{{\mathbf{u}}}
+% \newcommand{\w}{{\mathbf{w}}}
+% \renewcommand{\r}{{\mathbf{r}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
@@ -133,7 +133,6 @@ Assuming the states are not known, we want a model-free method of finding a poli
 	\item As stochastic policy $\pi(a|s) = \mathcal{P}[\mathcal{A}=a|\mathcal{S}=s]$
 	\item As deterministic policy $a = \pi(s)$
 \end{itemize}
-%TODO: add epislon greedy
 The standard assumption is made that the future reward is discounted by a factor $\gamma$ per time step, making the discounted future reward $\mathcal{R}_t = \sum_{t}^{\tau} \gamma^{t-1} r_t$, where $\tau$ is the time step where the simulation ends, e.g. when the agent crosses an intersection safely. 
 
 Similar to \cite{Mnih2015}, the optimal action-value function $Q^*(s_t, a_t)$ is defined as the maximum expected reward achievable by following a policy $\pi$ given the state $s_t$ and taking an action $a_t$:
@@ -223,7 +222,7 @@ The simulation environment is set up as an intersection described in section \re
 \end{itemize}
 \vspace{0.2cm}
 
-At the start of an episode, the ego vehicle's position and velocity, the number of other vehicles and their intentions are randomly generated. The episode only end when the ego vehicle fulfills one out of  three conditions: 1. Crossing the intersection and reaching the other side, 2. Colliding with another vehicle. or 3. Running out of time $\tau_m$. Each car follows the control law from eq. \ref{eq:control}, trying to keep a set speed while keeping a set distance to the vehicle in front of its own lane. 
+At the start of an episode, the ego vehicle's position and velocity, the number of other vehicles and their intentions are randomly generated. The episode only end when the ego vehicle fulfills one out of  three conditions: 1. Crossing the intersection and reaching the other side, 2. Colliding with another vehicle or 3. Running out of time $\tau_m$. Each car follows the control law from eq. \ref{eq:control}, trying to keep a set speed while keeping a set distance to the vehicle in front of its own lane. 
 
 All cars including the ego vehicle in these scenarios have a maximum acceleration set to $5 m/s^2$ and was set after comfort and normal driving conditions. 
 
@@ -243,7 +242,7 @@ r_t = \hat{r}_t + &\begin{cases}
 \end{cases}
 \end{align*}
 
-\noindent The actions $\alpha_3, \dots, \alpha_6$ described should only be selected when a vehicle is visible and a valid target to follow. To learn when these action are valid, the agent gets punished on invalid choices using $\hat r_t$. Accelerations returned by the controller for different STG can vary, which increases jerk and can make the ride uncomfortable. Therefore the reward function also punishes the agent when acceleration jerk $j^{e}_t$ is large, where $\tau$ is the elapsed time sense the episode started and $\tau_m$ is the maximum time has before a timeout. 
+\noindent The actions $\alpha_3, \dots, \alpha_6$ described should only be selected when a vehicle is visible and a valid target to follow. To learn when these actions are valid, the agent gets punished on invalid choices using $\hat r_t$. Accelerations returned by the controller for different STG can vary, which increases jerk and can make the ride uncomfortable. Therefore, the reward function also punishes the agent when acceleration jerk $j^{e}_t$ is large, where $\tau$ is the elapsed time sense the episode started and $\tau_m$ is the maximum time has before a timeout. 
 
 \subsection{Neural Network Setup}
 %features, shared weights, LSTM in the end. figure on network setup. Figure \ref{fig:network}
@@ -281,7 +280,7 @@ In case a vehicle is not visible, the input vector $\bm{\xi}$ are set to -1. All
 
 %To make the learning process faster and to improve performance, the network structure is modified to share some network weights. 
 The output $\bm{Q}$ should be independent of which order other vehicles was observed in the input $\xi_i$. In other words, whether a vehicle was fed into $\xi_1$ or into $\xi_4$, the network should optimally result in the same decision, only based on the features' values. 
-The network is therefore structured such that input features of one car, for instance $\xi_1$, are used as input to a sub-network with two layers$\bm{h}^{(1, i)}$ and $\bm{h}^{(2, i)}$. Each other vehicle has a copy of this sub-network, resulting in them sharing weights ($\bm{W}_1$ and $\bm{W}_2$), as shown in Fig. \ref{fig:network}. The first hidden layers are then given by:
+The network is therefore structured such that input features of one car, for instance $\xi_1$, are used as input to a sub-network with two layers $\bm{h}^{(1, i)}$ and $\bm{h}^{(2, i)}$. Each other vehicle has a copy of this sub-network, resulting in them sharing weights ($\bm{W}_1$ and $\bm{W}_2$), as shown in Fig. \ref{fig:network}. The first hidden layers are then given by:
 
 \begin{equation}
 \bm{h}^{(1, i)} = \tanh\left(\bm{W}_1 \bm\xi_i + \bm{b}_1\right)

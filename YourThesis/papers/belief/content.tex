@@ -183,7 +183,7 @@ In this section, the intersection problem is modeled as a POMDP, and the particl
 The problem setting considered in this work is an intersection shown in \ref{fig:states}, and here we outline a general overview of the \gls{pomdp} formulation, whereas \ref{sec:experiments} specifies the numerical values. 
 The ego vehicle approaches an intersection with at least one other vehicle on the perpendicular lane with about the same time-to-intersection assuming they keep a constant velocity. The goal for the ego vehicle is to reach the other side of the intersection as fast as possible without colliding with the other cars. With only onboard sensors on the ego vehicle, it can observe the physical state of other vehicles but not the drivers' intention. 
 
-Such an intersection problem can be described as a \gls{pomdp} with $(\mathcal{S},\mathcal{A},T,R,\Omega,O,\gamma)$ as:
+Such an intersection problem can be described as a \gls{pomdp} with \\ $(\mathcal{S},\mathcal{A},T,R,\Omega,O,\gamma)$ as:
 
 \subsubsection{State space, $\mathcal{S}$}
 \begin{figure}[!t]
@@ -439,7 +439,7 @@ The \gls{dqn} uses a combination of improvement suggestions from~\cite{rainbow},
     \label{fig:network}
 \end{figure}
 
-Firstly, the naive approach, QPF, is trained on the entire belief state $b$, as shown in \ref{fig:qpf}. The observation $o$, is divided into the ego state $s_\mathrm{ego}= (p_\mathrm{ego}^\mathrm{goal},p_\mathrm{ego}^\mathrm{int}, v_\mathrm{ego}, t_\mathrm{stop})$ and the observation of the other vehicles $o_{1:N} = \{\hat p_n,\hat v_n \}_{n=1}^N$. The observation of the other vehicles $o_{1:N}$ is sent to the particle filter to update the belief state $b$ and we get the updated particles $x$ according to \ref{alg:particle_filter}. Both $s_\mathrm{ego}$ and $x$ are sent to the \gls{dqn}, where the number of particles $M$ determines the depth $Z$ of the \gls{dqn}, which in turn increases the number of weights as a function of Z. The output of the \gls{dqn} is then sent to a dimension-reducing layer, by calculating the mean value for each action and in turn outputs a single $Q$ vector, denoted as $Q_\mathrm{PF}$. 
+First, the naive approach, QPF, is trained on the entire belief state $b$, as shown in \ref{fig:qpf}. The observation $o$, is divided into the ego state $s_\mathrm{ego}= (p_\mathrm{ego}^\mathrm{goal},p_\mathrm{ego}^\mathrm{int}, v_\mathrm{ego}, t_\mathrm{stop})$ and the observation of other vehicles $o_{1:N} = \{\hat p_n,\hat v_n \}_{n=1}^N$. The observation of the other vehicles $o_{1:N}$ is sent to the particle filter to update the belief state $b$ and we get the updated particles $x$ according to \ref{alg:particle_filter}. Both $s_\mathrm{ego}$ and $x$ are sent to the \gls{dqn}, where the number of particles $M$ determines the depth $Z$ of the \gls{dqn}, which in turn increases the number of weights as a function of Z. The output of the \gls{dqn} is then sent to a dimension-reducing layer, by calculating the mean value for each action and in turn outputs a single $Q$ vector, denoted as $Q_\mathrm{PF}$. 
 As mentioned in the introduction, one challenge with this approach is that the number of particles representing the belief can be very large and this in turn requires more weights which leads to problems for training to converge. 
 \begin{figure}[!h]
     \centering
@@ -718,7 +718,7 @@ Finally, to incentivize the agent to quickly reach a terminal state, a small neg
 
 
 
-\section{Results / Results and discussion}
+\section{Results and discussion}
 \label{sec:results}
 
 This section presents the evaluation metrics and results from the experiments, described in \ref{sec:simulation_setup}. 
@@ -1027,7 +1027,7 @@ The particle filter was used to create the belief state and filter the noisy obs
 \ref{fig:intent_threshold} shows that the aggressiveness of the policy from QMDP-IE is correlated with $\zeta_\text{threshold}$ and by choosing a relatively high value, it could get a collision rate close to the Oracle DQN, and in this case could, to some extent, compensate for the not fully optimized particle filter. The ability to adjust the aggressiveness of the policy by changing $\zeta_\text{threshold}$ is also a strength of QMDP-IE compared to QMDP and our previous black box methods that use an \gls{lstm} to estimate the latent state~\cite{Tram2018}. %For QMDP and QMDP-IE, it is not unreasonable to assume that the true intention of other drivers is accessible during training. These intentions can be labeled after the fact, by looking at if the driver ended up crossing the intersection or stopping before it. 
 The downside with QMDP-IE is that, in practice, they require the true intention during training, this can be obtained by either human labeling or auto labeling techniques, which can be either expensive or tedious to generate. 
 
-The other agents' possible actions were simplified to take way or yield. These actions could be expanded to left turn, right turn, or accelerate. But these actions would mainly affect the velocity profile of these cars coming into the intersection and slightly limit how fast ego can accelerate after a car that has turned into its lane. Looking at the overtake scenario, we can assume that these actions would not perform worse than using an overtake agent, shown in \ref{tab:results_overtake}.
+The other agents' possible actions were simplified to take way or yield. These actions could be expanded to left turn, right turn, or accelerate. In the road segment leading to the intersecting point, these actions would mainly affect the velocity profile of these cars coming into the intersection and slightly limit how fast ego can accelerate after a car that has turned into its lane. Looking at the overtake scenario, we can assume that these actions would not perform worse than using an overtake agent, shown in Table~\ref{tab:results_overtake}.
 
 % \tommy{\cite{Seong2021} using attention to better find and use important states and cars of interest.}
 \section{Conclusion}

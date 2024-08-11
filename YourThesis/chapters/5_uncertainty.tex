@@ -178,7 +178,7 @@ The QMDP algorithm is comprised by the following steps:
 
 QMDP-IE modifies the QMDP approach:
 \begin{enumerate}
-	\item Utilization of Oracle DQN: QMDP-IE uses the same Q-values $Q(a,s;\theta_\mathrm{MDP})$ as calculated by the Oracle DQN.
+	\item Utilization of Oracle DQN: QMDP-IE uses the same Q-values \\ $Q(a,s;\theta_\mathrm{MDP})$ as calculated by the Oracle DQN.
 	\item Intention State Estimation $D^\mathrm{IE}(b)$: Instead of considering the full distribution of potential states (belief state $b$), QMDP-IE estimates a single intention state. This estimation $D^\mathrm{IE}(b)$ is done using a threshold $\zeta_\mathrm{threshold}$ on the intention distribution
 	\begin{align}
 		D^\mathrm{IE}(b) = \zeta^\mathrm{IE}_n = & \begin{cases}
@@ -220,7 +220,7 @@ Both QMDP-IE and QID were evaluated on the intersection scenario introduced in S
 	\label{tab:belief_results_summary}
 	\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
 	\toprule
-	Experiments     & Goal reached & Safe stop & Collision & Deadlock & Success time \\ 
+	Experiments     & Goal reached & Safe stop & Collision & Deadlock & Time \\ 
 			 & $\%$ & $\%$ & $\%$ & $\%$ & s & \\ 
 	\midrule
 	Oracle DQN    & $84.50$ & $14.45$ & $1.05$ & $0.00$ & $15.49$\\ % $1\unit{\day}7\unit{\hour}$ \\ 
@@ -261,7 +261,7 @@ Overall, QID proves to be better than QMDP-IE in scenarios outside the training 
 	\label{tab:theis_results_overtake}
 	\begin{tabularx}{\columnwidth}{@{}l*{10}{c}c@{}}
 	\toprule
-	Experiments & Goal reached & Safe stop & Collision & Deadlock & Success time \\ 
+	Experiments & Goal reached & Safe stop & Collision & Deadlock & Time \\ 
 			 & $\%$ & $\%$ & $\%$ & $\%$ & s \\ 
 	\midrule
 	Oracle DQN & $89.80$ & $0.15$ & $10.05$ & $0.00$ & $16.01$ \\ 
