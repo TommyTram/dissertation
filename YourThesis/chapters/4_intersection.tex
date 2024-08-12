@@ -168,7 +168,7 @@ To find a driving policy $\pi$ for the \gls{pomdp} detailed in the previous sect
 \end{figure}
 
 As mentioned in Chapter~\ref{sec:pomdp_actionspace}, the actions in \paperLSTM \ are controlled by a sliding mode controller while \paperMPC \ uses an \gls{mpc} to generate a velocity profile for a short time horizon. 
-The sliding mode controller, which is used interchangeably with the \gls{idm} in this thesis, aims to maintain a minimum distance from a target vehicle by controlling acceleration in a manner similar to \gls{idm}.
+The sliding mode controller, which is used interchangeably with the \gls{idm} in this thesis, aims to maintain a minimum distance from a target vehicle by controlling acceleration in a manner similar to \gls{idm}. 
 
 \subsection{Model Predictive Control}
 \gls{mpc} is an optimization-based control technique where an Optimal Control Problem (OCP) is repeatedly solved over a receding limited time horizon, starting from the current system state. For every time instance, a mathematical model of the controlled system is used to simulate future states over a finite horizon, while a sequence of control inputs is selected and optimized given an objective cost function. The first element in the sequence of control inputs is then applied to the real system, and a new OCP with an updated state is solved at the next time instance.
@@ -201,7 +201,8 @@ This demonstrates that deep Q-learning has great potential for creating decision
 	\label{fig:results_shared}
 \end{figure}
 
-As mentioned previously, the controller from \paperLSTM \ could only consider one car at a time, which placed a heavy burden on the \gls{dqn} compensate by frequently switching actions. % \jonas{? var ser vi det? vad betder det?}
+As mentioned in Section~\ref{sec:pomdp_actionspace}, the controller from \paperLSTM \ could only consider one car at a time e.g., follow car $n$. 
+If the agent needs to achieve a velocity between two discrete actions, it can do so by switching between them in a manner similar to pulse-width modulation. However, this placed a heavy burden on the \gls{dqn} compensate by frequently switching actions. 
 In contrast, in \paperMPC, the \gls{mpc} showed significant improvement in handling more complex intersections.
 For instance, in the double intersection, the \gls{mpc} agent succeeded $95.2\%$ of the time with a collision rate of $3.6\%$, compared to the sliding mode controller, which only succeeded $90.9\%$ of the time with a collision rate of $8.3\%$. 
 

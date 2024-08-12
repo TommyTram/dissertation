@@ -7,18 +7,18 @@
 
 % Acronym definitions
 \glsresetall
-\newacronym{mdp}{MDP}{Markov Decision Process}
-\newacronym{pomdp}{POMDP}{Partially Observable Markov Decision Process}
-\newacronym{lstm}{lstm}{long short-term memory}
-\newacronym{dqn}{DQN}{deep Q-network}
-\newacronym{drqn}{DRQN}{deep recurrent Q-network}
-\newacronym{ddqn}{DDQN}{double deep Q-network}
-\newacronym{idm}{IDM}{intelligent driver model}
-\newacronym{rl}{RL}{reinforcement learning}
-\newacronym{ad}{AD}{autonomous driving}
-\newacronym{av}{AV}{autonomous vehicles}
-\newacronym{adas}{ADAS}{advance driver assistance systems}
-\newacronym{mcts}{MCTS}{Monte Carlo tree search}
+% \newacronym{mdp}{MDP}{Markov Decision Process}
+% \newacronym{pomdp}{POMDP}{Partially Observable Markov Decision Process}
+% \newacronym{lstm}{lstm}{long short-term memory}
+% \newacronym{dqn}{DQN}{deep Q-network}
+% \newacronym{drqn}{DRQN}{deep recurrent Q-network}
+% \newacronym{ddqn}{DDQN}{double deep Q-network}
+% \newacronym{idm}{IDM}{intelligent driver model}
+% \newacronym{rl}{RL}{reinforcement learning}
+% \newacronym{ad}{AD}{autonomous driving}
+% \newacronym{av}{AV}{autonomous vehicles}
+% \newacronym{adas}{ADAS}{advance driver assistance systems}
+% \newacronym{mcts}{MCTS}{Monte Carlo tree search}
 
 \input{YourThesis/papers/belief/tikz/network_init}
 
@@ -434,7 +434,7 @@ The \gls{dqn} uses a combination of improvement suggestions from~\cite{rainbow},
     \centering
         % \includegraphics[width=0.9\columnwidth]{figures/belief.pdf}
     \input{YourThesis/papers/belief/tikz/network_base}
-    \caption{Common network architecture, where ego input $s_\mathrm{ego}$ represents the input features for the ego vehicle, and input of all other vehicles $s_{1:N}$. The layers consist of one convolution (Conv), three fully connected (FC), and one concatenation (CONCAT) layer. Finally, the depth of the layers $Z$ represents the belief size. The network illustrations in this work are generated using \cite{PlotNeuralNet}}.
+    \caption{Common network architecture, where ego input $s_\mathrm{ego}$ represents the input features for the ego vehicle, and input of all other vehicles $s_{1:N}$. The layers consist of one convolution (Conv), three fully connected (FC), and one concatenation (CONC) layer. Finally, the depth of the layers $Z$ represents the belief size. The network illustrations in this work are generated using \cite{PlotNeuralNet}}.
     \label{fig:network}
 \end{figure}
 
@@ -879,7 +879,7 @@ Looking at the results, we see that even with full observability the oracle \gls
     \centering
         % \includegraphics[width=0.99\columnwidth]{figures/figures-intention-t.pdf}
         % \include{YourThesis/papers/belief/tikz/results Intention threshold}
-        \include{YourThesis/papers/belief/tikz/results Intention threshold all}
+        \include{YourThesis/papers/belief/tikz/results Intention threshold all.tex}
         \vspace{-0.8cm}
         \caption{QMDP-IE performance (aggressiveness) for different $\zeta_\text{threshold}$ values. Increasing $\zeta_\text{threshold}$ lowers the collision rate while at the same time increasing the safe stop rate and the time it takes to reach a success state.}
     \label{fig:intent_threshold}
